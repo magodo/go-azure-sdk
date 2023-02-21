@@ -129,7 +129,7 @@ func NewAuthorizerFromCredentials(ctx context.Context, c Credentials, api enviro
 		opts := AccessTokenAuthorizerOptions{
 			Api:                    api,
 			TokenMap:               c.AccessTokenMap,
-			AllowInvalidAuthorizer: c.AllowInvalidAuthorizer,
+			AllowInvalidAuthorizer: c.AccessTokenAllowInvalid,
 		}
 		a, err := NewAccessTokenAuthorizer(ctx, opts)
 		if err != nil {
