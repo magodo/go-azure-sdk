@@ -52,4 +52,9 @@ type Credentials struct {
 	GitHubOIDCTokenRequestURL string
 	// GitHubOIDCTokenRequestToken specifies the bearer token for the request to GitHub's OIDC provider
 	GitHubOIDCTokenRequestToken string
+
+	// EnableAccessToken specifies whether access token authentication should be checked.
+	EnableAccessToken bool
+	// AccessTokenMap is a map of access tokens (JWT) issued by the Microsoft Identity Platform, where the key is the api's name, and the value is the token.
+	AccessTokenMap map[string][]byte
 }
