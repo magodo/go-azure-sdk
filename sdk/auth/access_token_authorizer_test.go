@@ -67,3 +67,43 @@ func testAccessTokenAuthorizer(ctx context.Context, t *testing.T) (token *oauth2
 
 	return
 }
+
+func TestAccInvalidAccessTokenAuthorizer(t *testing.T) {
+	ctx := context.Background()
+	testInvalidAccessTokenAuthorizer(ctx, t)
+}
+
+func testInvalidAccessTokenAuthorizer(ctx context.Context, t *testing.T) (token *oauth2.Token) {
+	test.AccTest(t)
+
+	env, err := environments.FromName(test.Environment)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	opts := auth.AccessTokenAuthorizerOptions{
+		Api:      env.MicrosoftGraph,
+		TokenMap: map[string][]byte{},
+	}
+
+	authorizer, err := auth.NewAccessTokenAuthorizer(ctx, opts)
+	if err == nil {
+		t.Fatalf("expect NewAccessTokenAuthorizer() to get error")
+	}
+
+	opts.AllowInvalidAuthorizer = true
+
+	authorizer, err = auth.NewAccessTokenAuthorizer(ctx, opts)
+	if err != nil {
+		t.Fatalf("NewAccessTokenAuthorizer(): %v", err)
+	}
+	if authorizer == nil {
+		t.Fatal("authorizer is nil, expected Authorizer")
+	}
+	token, err = authorizer.Token(ctx, nil)
+	if err == nil {
+		t.Fatalf("expect authorizer.Token() to get error")
+	}
+
+	return
+}
