@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/hashicorp/go-azure-sdk/sdk/environments"
 	"golang.org/x/oauth2"
@@ -29,9 +30,12 @@ type AccessTokenAuthorizerOptions struct {
 // NewAccessTokenAuthorizer returns an Authorizer which authenticates using the Access Token.
 func NewAccessTokenAuthorizer(ctx context.Context, options AccessTokenAuthorizerOptions) (auth Authorizer, err error) {
 	defer func() {
-		if err != nil && options.AllowInvalidAuthorizer {
-			auth = &InvalidAccessTokenAuthorizer{err: err}
-			err = nil
+		if err != nil {
+			err = newTokenRefreshError(err)
+			if options.AllowInvalidAuthorizer {
+				auth = &invalidAccessTokenAuthorizer{err: err}
+				err = nil
+			}
 		}
 	}()
 
@@ -75,24 +79,49 @@ type AccessTokenAuthorizer struct {
 // Token returns an access token using the Access token as an authentication mechanism.
 func (a *AccessTokenAuthorizer) Token(_ context.Context, _ *http.Request) (*oauth2.Token, error) {
 	if time.Now().After(a.token.Expiry) {
-		return nil, fmt.Errorf("token has already expired")
+		return nil, newTokenRefreshError(fmt.Errorf("token has already expired"))
 	}
 	return &a.token, nil
 }
 
 // AuxiliaryTokens returns additional tokens for auxiliary tenant IDs, for use in multi-tenant scenarios
 func (a *AccessTokenAuthorizer) AuxiliaryTokens(_ context.Context, _ *http.Request) ([]*oauth2.Token, error) {
-	return nil, fmt.Errorf(" AuxiliaryTokens is not supported for AccessTokenAuthorizer")
+	// We are not returning error, but nil auxiliary tokens here since this method is always called.
+	// See: https://github.com/manicminer/hamilton-autorest/blob/2e25d83affaf261180cad1156d2a8f30fe5e8a0a/auth/auth.go#L33
+	return nil, nil
 }
 
-// InvalidAccessTokenAuthorizer is an invalid Authorizer whose methods always return the pre-captured error
-type InvalidAccessTokenAuthorizer struct {
+// invalidAccessTokenAuthorizer is an invalid Authorizer whose methods always return the pre-captured error
+type invalidAccessTokenAuthorizer struct {
 	err error
 }
 
-func (a *InvalidAccessTokenAuthorizer) Token(_ context.Context, _ *http.Request) (*oauth2.Token, error) {
+func (a *invalidAccessTokenAuthorizer) Token(_ context.Context, _ *http.Request) (*oauth2.Token, error) {
 	return nil, a.err
 }
-func (a *InvalidAccessTokenAuthorizer) AuxiliaryTokens(_ context.Context, _ *http.Request) ([]*oauth2.Token, error) {
+func (a *invalidAccessTokenAuthorizer) AuxiliaryTokens(_ context.Context, _ *http.Request) ([]*oauth2.Token, error) {
 	return nil, a.err
+}
+
+// tokenRefreshError is an internal type that implements adal.TokenRefreshError.
+// This is the type of the returned error of the (Invalid)AccessTokenAuthorizer, so that these kinds of errors won't be retried (as it will always fail).
+// See: https://github.com/Azure/go-autorest/blob/9038e4a609b1899f0eb382d03c3e823b70537125/autorest/sender.go#L331
+type tokenRefreshError struct {
+	err error
+}
+
+var _ adal.TokenRefreshError = tokenRefreshError{}
+
+// Error implements the error interface which is part of the TokenRefreshError interface.
+func (tre tokenRefreshError) Error() string {
+	return tre.err.Error()
+}
+
+// Response implements the TokenRefreshError interface, it returns the raw HTTP response from the refresh operation.
+func (tre tokenRefreshError) Response() *http.Response {
+	return nil
+}
+
+func newTokenRefreshError(err error) error {
+	return tokenRefreshError{err: err}
 }
