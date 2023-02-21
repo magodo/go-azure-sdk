@@ -52,4 +52,15 @@ type Credentials struct {
 	GitHubOIDCTokenRequestURL string
 	// GitHubOIDCTokenRequestToken specifies the bearer token for the request to GitHub's OIDC provider
 	GitHubOIDCTokenRequestToken string
+
+	// EnableCustomCommand specifies whether custom command should be checked.
+	EnableCustomCommand bool
+	// CustomCommand is the exec form of command used to retrieve the access token from the stdout.
+	// Each command argument will be rendered as a Go template with an input object that has following fields:
+	// - .Endpoint: The token endpoint if exists, otherwise is an empty string.
+	// - .TenantID: The tenant ID. For auxiliary tokens, it is set as one of each auxiliary token.
+	// E.g. []string{"az", "account", "get-access-token", "--resource={{.Endpoint}}"}"}
+	CustomCommand []string
+	// CustomCommandTokenType specifies the type of the access token retrieved by the custom command. By default, it is "Bearer".
+	CustomCommandTokenType string
 }
