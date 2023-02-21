@@ -127,8 +127,9 @@ func NewAuthorizerFromCredentials(ctx context.Context, c Credentials, api enviro
 
 	if c.EnableAccessToken && len(c.AccessTokenMap) != 0 {
 		opts := AccessTokenAuthorizerOptions{
-			Api:      api,
-			TokenMap: c.AccessTokenMap,
+			Api:                    api,
+			TokenMap:               c.AccessTokenMap,
+			AllowInvalidAuthorizer: c.AllowInvalidAuthorizer,
 		}
 		a, err := NewAccessTokenAuthorizer(ctx, opts)
 		if err != nil {
