@@ -7,12 +7,12 @@ require (
 	github.com/Azure/go-autorest/autorest/adal v0.9.22
 	github.com/davecgh/go-spew v1.1.1
 	github.com/golang-jwt/jwt/v4 v4.4.3
-	github.com/hashicorp/go-azure-helpers v0.52.0
+	github.com/hashicorp/go-azure-helpers v0.55.0
 	github.com/hashicorp/go-retryablehttp v0.7.2
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/go-version v1.6.0
-	golang.org/x/crypto v0.5.0
 	golang.org/x/oauth2 v0.4.0
+	software.sslmate.com/src/go-pkcs12 v0.2.0
 )
 
 require (
@@ -46,6 +46,7 @@ require (
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect
+	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
