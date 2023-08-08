@@ -7,6 +7,7 @@ import (
 
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
+	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonids"
 )
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -18,7 +19,7 @@ type CreateOrUpdateParentOperationResponse struct {
 }
 
 // CreateOrUpdateParent ...
-func (c ApplyUpdatesClient) CreateOrUpdateParent(ctx context.Context, id ResourceGroupProviderId) (result CreateOrUpdateParentOperationResponse, err error) {
+func (c ApplyUpdatesClient) CreateOrUpdateParent(ctx context.Context, id commonids.ScopeId) (result CreateOrUpdateParentOperationResponse, err error) {
 	req, err := c.preparerForCreateOrUpdateParent(ctx, id)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "applyupdates.ApplyUpdatesClient", "CreateOrUpdateParent", nil, "Failure preparing request")
@@ -41,7 +42,7 @@ func (c ApplyUpdatesClient) CreateOrUpdateParent(ctx context.Context, id Resourc
 }
 
 // preparerForCreateOrUpdateParent prepares the CreateOrUpdateParent request.
-func (c ApplyUpdatesClient) preparerForCreateOrUpdateParent(ctx context.Context, id ResourceGroupProviderId) (*http.Request, error) {
+func (c ApplyUpdatesClient) preparerForCreateOrUpdateParent(ctx context.Context, id commonids.ScopeId) (*http.Request, error) {
 	queryParameters := map[string]interface{}{
 		"api-version": defaultApiVersion,
 	}

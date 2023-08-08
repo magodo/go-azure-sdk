@@ -17,7 +17,7 @@ type GetParentOperationResponse struct {
 }
 
 // GetParent ...
-func (c ApplyUpdatesClient) GetParent(ctx context.Context, id Providers2ApplyUpdateId) (result GetParentOperationResponse, err error) {
+func (c ApplyUpdatesClient) GetParent(ctx context.Context, id ScopedApplyUpdateId) (result GetParentOperationResponse, err error) {
 	req, err := c.preparerForGetParent(ctx, id)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "applyupdates.ApplyUpdatesClient", "GetParent", nil, "Failure preparing request")
@@ -40,7 +40,7 @@ func (c ApplyUpdatesClient) GetParent(ctx context.Context, id Providers2ApplyUpd
 }
 
 // preparerForGetParent prepares the GetParent request.
-func (c ApplyUpdatesClient) preparerForGetParent(ctx context.Context, id Providers2ApplyUpdateId) (*http.Request, error) {
+func (c ApplyUpdatesClient) preparerForGetParent(ctx context.Context, id ScopedApplyUpdateId) (*http.Request, error) {
 	queryParameters := map[string]interface{}{
 		"api-version": defaultApiVersion,
 	}

@@ -17,9 +17,9 @@ type DeleteOperationResponse struct {
 }
 
 // Delete ...
-func (c CapabilitiesClient) Delete(ctx context.Context, id CapabilityId) (result DeleteOperationResponse, err error) {
+func (c CapabilitiesClient) Delete(ctx context.Context, id ScopedCapabilityId) (result DeleteOperationResponse, err error) {
 	opts := client.RequestOptions{
-		ContentType: "application/json",
+		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
 			http.StatusNoContent,
 			http.StatusOK,

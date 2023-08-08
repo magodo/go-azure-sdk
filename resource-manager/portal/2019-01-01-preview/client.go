@@ -4,9 +4,12 @@ package v2019_01_01_preview
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 import (
-	"github.com/Azure/go-autorest/autorest"
+	"fmt"
+
 	"github.com/hashicorp/go-azure-sdk/resource-manager/portal/2019-01-01-preview/dashboard"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/portal/2019-01-01-preview/tenantconfiguration"
+	"github.com/hashicorp/go-azure-sdk/sdk/client/resourcemanager"
+	sdkEnv "github.com/hashicorp/go-azure-sdk/sdk/environments"
 )
 
 type Client struct {
@@ -14,16 +17,21 @@ type Client struct {
 	TenantConfiguration *tenantconfiguration.TenantConfigurationClient
 }
 
-func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Client)) Client {
-
-	dashboardClient := dashboard.NewDashboardClientWithBaseURI(endpoint)
-	configureAuthFunc(&dashboardClient.Client)
-
-	tenantConfigurationClient := tenantconfiguration.NewTenantConfigurationClientWithBaseURI(endpoint)
-	configureAuthFunc(&tenantConfigurationClient.Client)
-
-	return Client{
-		Dashboard:           &dashboardClient,
-		TenantConfiguration: &tenantConfigurationClient,
+func NewClientWithBaseURI(sdkApi sdkEnv.Api, configureFunc func(c *resourcemanager.Client)) (*Client, error) {
+	dashboardClient, err := dashboard.NewDashboardClientWithBaseURI(sdkApi)
+	if err != nil {
+		return nil, fmt.Errorf("building Dashboard client: %+v", err)
 	}
+	configureFunc(dashboardClient.Client)
+
+	tenantConfigurationClient, err := tenantconfiguration.NewTenantConfigurationClientWithBaseURI(sdkApi)
+	if err != nil {
+		return nil, fmt.Errorf("building TenantConfiguration client: %+v", err)
+	}
+	configureFunc(tenantConfigurationClient.Client)
+
+	return &Client{
+		Dashboard:           dashboardClient,
+		TenantConfiguration: tenantConfigurationClient,
+	}, nil
 }

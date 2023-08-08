@@ -17,9 +17,9 @@ type DeleteOperationResponse struct {
 }
 
 // Delete ...
-func (c TargetsClient) Delete(ctx context.Context, id TargetId) (result DeleteOperationResponse, err error) {
+func (c TargetsClient) Delete(ctx context.Context, id ScopedTargetId) (result DeleteOperationResponse, err error) {
 	opts := client.RequestOptions{
-		ContentType: "application/json",
+		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
 			http.StatusNoContent,
 			http.StatusOK,

@@ -7,6 +7,7 @@ import (
 
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
+	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonids"
 )
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -18,7 +19,7 @@ type CreateOrUpdateOperationResponse struct {
 }
 
 // CreateOrUpdate ...
-func (c ApplyUpdatesClient) CreateOrUpdate(ctx context.Context, id ProviderId) (result CreateOrUpdateOperationResponse, err error) {
+func (c ApplyUpdatesClient) CreateOrUpdate(ctx context.Context, id commonids.ScopeId) (result CreateOrUpdateOperationResponse, err error) {
 	req, err := c.preparerForCreateOrUpdate(ctx, id)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "applyupdates.ApplyUpdatesClient", "CreateOrUpdate", nil, "Failure preparing request")
@@ -41,7 +42,7 @@ func (c ApplyUpdatesClient) CreateOrUpdate(ctx context.Context, id ProviderId) (
 }
 
 // preparerForCreateOrUpdate prepares the CreateOrUpdate request.
-func (c ApplyUpdatesClient) preparerForCreateOrUpdate(ctx context.Context, id ProviderId) (*http.Request, error) {
+func (c ApplyUpdatesClient) preparerForCreateOrUpdate(ctx context.Context, id commonids.ScopeId) (*http.Request, error) {
 	queryParameters := map[string]interface{}{
 		"api-version": defaultApiVersion,
 	}

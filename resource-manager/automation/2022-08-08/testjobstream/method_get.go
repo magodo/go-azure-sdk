@@ -18,9 +18,9 @@ type GetOperationResponse struct {
 }
 
 // Get ...
-func (c TestJobStreamClient) Get(ctx context.Context, id StreamId) (result GetOperationResponse, err error) {
+func (c TestJobStreamClient) Get(ctx context.Context, id TestJobStreamId) (result GetOperationResponse, err error) {
 	opts := client.RequestOptions{
-		ContentType: "application/json",
+		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
 			http.StatusOK,
 		},
