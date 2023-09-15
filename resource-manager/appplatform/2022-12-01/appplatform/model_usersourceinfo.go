@@ -12,6 +12,15 @@ import (
 type UserSourceInfo interface {
 }
 
+// RawModeOfTransitImpl is returned when the Discriminated Value
+// doesn't match any of the defined types
+// NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
+// and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
+type RawUserSourceInfoImpl struct {
+	Type   string
+	Values map[string]interface{}
+}
+
 func unmarshalUserSourceInfoImplementation(input []byte) (UserSourceInfo, error) {
 	if input == nil {
 		return nil, nil
@@ -43,10 +52,30 @@ func unmarshalUserSourceInfoImplementation(input []byte) (UserSourceInfo, error)
 		return out, nil
 	}
 
-	type RawUserSourceInfoImpl struct {
-		Type   string                 `json:"-"`
-		Values map[string]interface{} `json:"-"`
+	if strings.EqualFold(value, "Jar") {
+		var out JarUploadedUserSourceInfo
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into JarUploadedUserSourceInfo: %+v", err)
+		}
+		return out, nil
 	}
+
+	if strings.EqualFold(value, "NetCoreZip") {
+		var out NetCoreZipUploadedUserSourceInfo
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into NetCoreZipUploadedUserSourceInfo: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "Source") {
+		var out SourceUploadedUserSourceInfo
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into SourceUploadedUserSourceInfo: %+v", err)
+		}
+		return out, nil
+	}
+
 	out := RawUserSourceInfoImpl{
 		Type:   value,
 		Values: temp,

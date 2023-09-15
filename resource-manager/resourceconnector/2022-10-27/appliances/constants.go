@@ -1,6 +1,10 @@
 package appliances
 
-import "strings"
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+)
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
@@ -17,6 +21,19 @@ func PossibleValuesForAccessProfileType() []string {
 		string(AccessProfileTypeClusterCustomerUser),
 		string(AccessProfileTypeClusterUser),
 	}
+}
+
+func (s *AccessProfileType) UnmarshalJSON(bytes []byte) error {
+	var decoded string
+	if err := json.Unmarshal(bytes, &decoded); err != nil {
+		return fmt.Errorf("unmarshaling: %+v", err)
+	}
+	out, err := parseAccessProfileType(decoded)
+	if err != nil {
+		return fmt.Errorf("parsing %q: %+v", decoded, err)
+	}
+	*s = *out
+	return nil
 }
 
 func parseAccessProfileType(input string) (*AccessProfileType, error) {
@@ -45,6 +62,19 @@ func PossibleValuesForDistro() []string {
 	}
 }
 
+func (s *Distro) UnmarshalJSON(bytes []byte) error {
+	var decoded string
+	if err := json.Unmarshal(bytes, &decoded); err != nil {
+		return fmt.Errorf("unmarshaling: %+v", err)
+	}
+	out, err := parseDistro(decoded)
+	if err != nil {
+		return fmt.Errorf("parsing %q: %+v", decoded, err)
+	}
+	*s = *out
+	return nil
+}
+
 func parseDistro(input string) (*Distro, error) {
 	vals := map[string]Distro{
 		"aksedge": DistroAKSEdge,
@@ -61,30 +91,37 @@ func parseDistro(input string) (*Distro, error) {
 type Provider string
 
 const (
-	ProviderHCI       Provider = "HCI"
-	ProviderKubeVirt  Provider = "KubeVirt"
-	ProviderOpenStack Provider = "OpenStack"
-	ProviderSCVMM     Provider = "SCVMM"
-	ProviderVMWare    Provider = "VMWare"
+	ProviderHCI    Provider = "HCI"
+	ProviderSCVMM  Provider = "SCVMM"
+	ProviderVMWare Provider = "VMWare"
 )
 
 func PossibleValuesForProvider() []string {
 	return []string{
 		string(ProviderHCI),
-		string(ProviderKubeVirt),
-		string(ProviderOpenStack),
 		string(ProviderSCVMM),
 		string(ProviderVMWare),
 	}
 }
 
+func (s *Provider) UnmarshalJSON(bytes []byte) error {
+	var decoded string
+	if err := json.Unmarshal(bytes, &decoded); err != nil {
+		return fmt.Errorf("unmarshaling: %+v", err)
+	}
+	out, err := parseProvider(decoded)
+	if err != nil {
+		return fmt.Errorf("parsing %q: %+v", decoded, err)
+	}
+	*s = *out
+	return nil
+}
+
 func parseProvider(input string) (*Provider, error) {
 	vals := map[string]Provider{
-		"hci":       ProviderHCI,
-		"kubevirt":  ProviderKubeVirt,
-		"openstack": ProviderOpenStack,
-		"scvmm":     ProviderSCVMM,
-		"vmware":    ProviderVMWare,
+		"hci":    ProviderHCI,
+		"scvmm":  ProviderSCVMM,
+		"vmware": ProviderVMWare,
 	}
 	if v, ok := vals[strings.ToLower(input)]; ok {
 		return &v, nil
@@ -100,6 +137,7 @@ type Status string
 const (
 	StatusConnected                             Status = "Connected"
 	StatusConnecting                            Status = "Connecting"
+	StatusETCDSnapshotFailed                    Status = "ETCDSnapshotFailed"
 	StatusImageDeprovisioning                   Status = "ImageDeprovisioning"
 	StatusImageDownloaded                       Status = "ImageDownloaded"
 	StatusImageDownloading                      Status = "ImageDownloading"
@@ -122,6 +160,10 @@ const (
 	StatusUpgradePrerequisitesCompleted         Status = "UpgradePrerequisitesCompleted"
 	StatusUpgradingKVAIO                        Status = "UpgradingKVAIO"
 	StatusValidating                            Status = "Validating"
+	StatusValidatingETCDHealth                  Status = "ValidatingETCDHealth"
+	StatusValidatingImageDownload               Status = "ValidatingImageDownload"
+	StatusValidatingImageUpload                 Status = "ValidatingImageUpload"
+	StatusValidatingSFSConnectivity             Status = "ValidatingSFSConnectivity"
 	StatusWaitingForCloudOperator               Status = "WaitingForCloudOperator"
 	StatusWaitingForHeartbeat                   Status = "WaitingForHeartbeat"
 	StatusWaitingForKVAIO                       Status = "WaitingForKVAIO"
@@ -131,6 +173,7 @@ func PossibleValuesForStatus() []string {
 	return []string{
 		string(StatusConnected),
 		string(StatusConnecting),
+		string(StatusETCDSnapshotFailed),
 		string(StatusImageDeprovisioning),
 		string(StatusImageDownloaded),
 		string(StatusImageDownloading),
@@ -153,16 +196,34 @@ func PossibleValuesForStatus() []string {
 		string(StatusUpgradePrerequisitesCompleted),
 		string(StatusUpgradingKVAIO),
 		string(StatusValidating),
+		string(StatusValidatingETCDHealth),
+		string(StatusValidatingImageDownload),
+		string(StatusValidatingImageUpload),
+		string(StatusValidatingSFSConnectivity),
 		string(StatusWaitingForCloudOperator),
 		string(StatusWaitingForHeartbeat),
 		string(StatusWaitingForKVAIO),
 	}
 }
 
+func (s *Status) UnmarshalJSON(bytes []byte) error {
+	var decoded string
+	if err := json.Unmarshal(bytes, &decoded); err != nil {
+		return fmt.Errorf("unmarshaling: %+v", err)
+	}
+	out, err := parseStatus(decoded)
+	if err != nil {
+		return fmt.Errorf("parsing %q: %+v", decoded, err)
+	}
+	*s = *out
+	return nil
+}
+
 func parseStatus(input string) (*Status, error) {
 	vals := map[string]Status{
 		"connected":                             StatusConnected,
 		"connecting":                            StatusConnecting,
+		"etcdsnapshotfailed":                    StatusETCDSnapshotFailed,
 		"imagedeprovisioning":                   StatusImageDeprovisioning,
 		"imagedownloaded":                       StatusImageDownloaded,
 		"imagedownloading":                      StatusImageDownloading,
@@ -185,6 +246,10 @@ func parseStatus(input string) (*Status, error) {
 		"upgradeprerequisitescompleted":         StatusUpgradePrerequisitesCompleted,
 		"upgradingkvaio":                        StatusUpgradingKVAIO,
 		"validating":                            StatusValidating,
+		"validatingetcdhealth":                  StatusValidatingETCDHealth,
+		"validatingimagedownload":               StatusValidatingImageDownload,
+		"validatingimageupload":                 StatusValidatingImageUpload,
+		"validatingsfsconnectivity":             StatusValidatingSFSConnectivity,
 		"waitingforcloudoperator":               StatusWaitingForCloudOperator,
 		"waitingforheartbeat":                   StatusWaitingForHeartbeat,
 		"waitingforkvaio":                       StatusWaitingForKVAIO,
