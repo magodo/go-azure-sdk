@@ -18,7 +18,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -225,16 +224,13 @@ func (a *ClientAssertionAuthorizer) assertion(tokenUrl string) (*string, error) 
 			Type:  "JWT",
 			KeyId: keyId,
 			X5t:   base64.StdEncoding.EncodeToString(thumbprint(a.conf.Certificate)),
+			X5c:   a.conf.X5C,
 		},
 		claims: clientAssertionTokenClaims{
 			Audience: audience,
 			Issuer:   a.conf.ClientID,
 			Subject:  a.conf.ClientID,
 		},
-	}
-
-	if os.Getenv("AZURE_CLIENT_SEND_CERTIFICATE_CHAIN") != "" {
-		t.header.X5c = a.conf.X5C
 	}
 
 	assertion, err := t.encode(a.conf.PrivateKey)
