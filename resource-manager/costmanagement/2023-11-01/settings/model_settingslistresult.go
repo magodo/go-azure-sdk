@@ -29,7 +29,7 @@ func (s *SettingsListResult) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]Setting, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalSettingImplementation(val)
+			impl, err := UnmarshalSettingImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'Value' for 'SettingsListResult': %+v", i, err)
 			}
@@ -37,5 +37,6 @@ func (s *SettingsListResult) UnmarshalJSON(bytes []byte) error {
 		}
 		s.Value = &output
 	}
+
 	return nil
 }

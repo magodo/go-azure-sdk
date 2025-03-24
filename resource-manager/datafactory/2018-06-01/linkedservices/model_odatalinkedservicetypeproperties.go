@@ -9,29 +9,39 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type ODataLinkedServiceTypeProperties struct {
-	AadResourceId                        *string                                 `json:"aadResourceId,omitempty"`
+	AadResourceId                        *interface{}                            `json:"aadResourceId,omitempty"`
 	AadServicePrincipalCredentialType    *ODataAadServicePrincipalCredentialType `json:"aadServicePrincipalCredentialType,omitempty"`
 	AuthHeaders                          *map[string]string                      `json:"authHeaders,omitempty"`
 	AuthenticationType                   *ODataAuthenticationType                `json:"authenticationType,omitempty"`
-	AzureCloudType                       *string                                 `json:"azureCloudType,omitempty"`
+	AzureCloudType                       *interface{}                            `json:"azureCloudType,omitempty"`
 	EncryptedCredential                  *string                                 `json:"encryptedCredential,omitempty"`
 	Password                             SecretBase                              `json:"password"`
 	ServicePrincipalEmbeddedCert         SecretBase                              `json:"servicePrincipalEmbeddedCert"`
 	ServicePrincipalEmbeddedCertPassword SecretBase                              `json:"servicePrincipalEmbeddedCertPassword"`
-	ServicePrincipalId                   *string                                 `json:"servicePrincipalId,omitempty"`
+	ServicePrincipalId                   *interface{}                            `json:"servicePrincipalId,omitempty"`
 	ServicePrincipalKey                  SecretBase                              `json:"servicePrincipalKey"`
-	Tenant                               *string                                 `json:"tenant,omitempty"`
-	Url                                  string                                  `json:"url"`
-	UserName                             *string                                 `json:"userName,omitempty"`
+	Tenant                               *interface{}                            `json:"tenant,omitempty"`
+	Url                                  interface{}                             `json:"url"`
+	UserName                             *interface{}                            `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &ODataLinkedServiceTypeProperties{}
 
 func (s *ODataLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ODataLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AadResourceId                     *interface{}                            `json:"aadResourceId,omitempty"`
+		AadServicePrincipalCredentialType *ODataAadServicePrincipalCredentialType `json:"aadServicePrincipalCredentialType,omitempty"`
+		AuthHeaders                       *map[string]string                      `json:"authHeaders,omitempty"`
+		AuthenticationType                *ODataAuthenticationType                `json:"authenticationType,omitempty"`
+		AzureCloudType                    *interface{}                            `json:"azureCloudType,omitempty"`
+		EncryptedCredential               *string                                 `json:"encryptedCredential,omitempty"`
+		ServicePrincipalId                *interface{}                            `json:"servicePrincipalId,omitempty"`
+		Tenant                            *interface{}                            `json:"tenant,omitempty"`
+		Url                               interface{}                             `json:"url"`
+		UserName                          *interface{}                            `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ODataLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AadResourceId = decoded.AadResourceId
@@ -51,7 +61,7 @@ func (s *ODataLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'ODataLinkedServiceTypeProperties': %+v", err)
 		}
@@ -59,7 +69,7 @@ func (s *ODataLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["servicePrincipalEmbeddedCert"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalEmbeddedCert' for 'ODataLinkedServiceTypeProperties': %+v", err)
 		}
@@ -67,7 +77,7 @@ func (s *ODataLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["servicePrincipalEmbeddedCertPassword"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalEmbeddedCertPassword' for 'ODataLinkedServiceTypeProperties': %+v", err)
 		}
@@ -75,11 +85,12 @@ func (s *ODataLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'ODataLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

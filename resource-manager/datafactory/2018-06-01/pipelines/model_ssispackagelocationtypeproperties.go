@@ -12,8 +12,8 @@ type SSISPackageLocationTypeProperties struct {
 	AccessCredential              *SSISAccessCredential `json:"accessCredential,omitempty"`
 	ChildPackages                 *[]SSISChildPackage   `json:"childPackages,omitempty"`
 	ConfigurationAccessCredential *SSISAccessCredential `json:"configurationAccessCredential,omitempty"`
-	ConfigurationPath             *string               `json:"configurationPath,omitempty"`
-	PackageContent                *string               `json:"packageContent,omitempty"`
+	ConfigurationPath             *interface{}          `json:"configurationPath,omitempty"`
+	PackageContent                *interface{}          `json:"packageContent,omitempty"`
 	PackageLastModifiedDate       *string               `json:"packageLastModifiedDate,omitempty"`
 	PackageName                   *string               `json:"packageName,omitempty"`
 	PackagePassword               SecretBase            `json:"packagePassword"`
@@ -22,10 +22,17 @@ type SSISPackageLocationTypeProperties struct {
 var _ json.Unmarshaler = &SSISPackageLocationTypeProperties{}
 
 func (s *SSISPackageLocationTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SSISPackageLocationTypeProperties
-	var decoded alias
+	var decoded struct {
+		AccessCredential              *SSISAccessCredential `json:"accessCredential,omitempty"`
+		ChildPackages                 *[]SSISChildPackage   `json:"childPackages,omitempty"`
+		ConfigurationAccessCredential *SSISAccessCredential `json:"configurationAccessCredential,omitempty"`
+		ConfigurationPath             *interface{}          `json:"configurationPath,omitempty"`
+		PackageContent                *interface{}          `json:"packageContent,omitempty"`
+		PackageLastModifiedDate       *string               `json:"packageLastModifiedDate,omitempty"`
+		PackageName                   *string               `json:"packageName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SSISPackageLocationTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccessCredential = decoded.AccessCredential
@@ -42,11 +49,12 @@ func (s *SSISPackageLocationTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["packagePassword"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PackagePassword' for 'SSISPackageLocationTypeProperties': %+v", err)
 		}
 		s.PackagePassword = impl
 	}
+
 	return nil
 }

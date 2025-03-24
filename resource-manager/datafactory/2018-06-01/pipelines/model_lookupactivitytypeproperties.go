@@ -17,10 +17,12 @@ type LookupActivityTypeProperties struct {
 var _ json.Unmarshaler = &LookupActivityTypeProperties{}
 
 func (s *LookupActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias LookupActivityTypeProperties
-	var decoded alias
+	var decoded struct {
+		Dataset      DatasetReference `json:"dataset"`
+		FirstRowOnly *bool            `json:"firstRowOnly,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into LookupActivityTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Dataset = decoded.Dataset
@@ -32,11 +34,12 @@ func (s *LookupActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["source"]; ok {
-		impl, err := unmarshalCopySourceImplementation(v)
+		impl, err := UnmarshalCopySourceImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Source' for 'LookupActivityTypeProperties': %+v", err)
 		}
 		s.Source = impl
 	}
+
 	return nil
 }

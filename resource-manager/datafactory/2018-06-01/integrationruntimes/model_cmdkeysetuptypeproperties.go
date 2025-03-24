@@ -9,18 +9,20 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type CmdkeySetupTypeProperties struct {
-	Password   SecretBase `json:"password"`
-	TargetName string     `json:"targetName"`
-	UserName   string     `json:"userName"`
+	Password   SecretBase  `json:"password"`
+	TargetName interface{} `json:"targetName"`
+	UserName   interface{} `json:"userName"`
 }
 
 var _ json.Unmarshaler = &CmdkeySetupTypeProperties{}
 
 func (s *CmdkeySetupTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias CmdkeySetupTypeProperties
-	var decoded alias
+	var decoded struct {
+		TargetName interface{} `json:"targetName"`
+		UserName   interface{} `json:"userName"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into CmdkeySetupTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.TargetName = decoded.TargetName
@@ -32,11 +34,12 @@ func (s *CmdkeySetupTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'CmdkeySetupTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

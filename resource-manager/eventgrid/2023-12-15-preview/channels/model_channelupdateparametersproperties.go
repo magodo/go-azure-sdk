@@ -32,10 +32,12 @@ func (o *ChannelUpdateParametersProperties) SetExpirationTimeIfNotActivatedUtcAs
 var _ json.Unmarshaler = &ChannelUpdateParametersProperties{}
 
 func (s *ChannelUpdateParametersProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ChannelUpdateParametersProperties
-	var decoded alias
+	var decoded struct {
+		ExpirationTimeIfNotActivatedUtc *string                 `json:"expirationTimeIfNotActivatedUtc,omitempty"`
+		PartnerTopicInfo                *PartnerUpdateTopicInfo `json:"partnerTopicInfo,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ChannelUpdateParametersProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ExpirationTimeIfNotActivatedUtc = decoded.ExpirationTimeIfNotActivatedUtc
@@ -47,11 +49,12 @@ func (s *ChannelUpdateParametersProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["partnerDestinationInfo"]; ok {
-		impl, err := unmarshalPartnerUpdateDestinationInfoImplementation(v)
+		impl, err := UnmarshalPartnerUpdateDestinationInfoImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PartnerDestinationInfo' for 'ChannelUpdateParametersProperties': %+v", err)
 		}
 		s.PartnerDestinationInfo = impl
 	}
+
 	return nil
 }

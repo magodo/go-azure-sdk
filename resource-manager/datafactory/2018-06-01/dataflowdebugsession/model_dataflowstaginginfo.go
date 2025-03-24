@@ -9,17 +9,18 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type DataFlowStagingInfo struct {
-	FolderPath    *string   `json:"folderPath,omitempty"`
-	LinkedService Reference `json:"linkedService"`
+	FolderPath    *interface{} `json:"folderPath,omitempty"`
+	LinkedService Reference    `json:"linkedService"`
 }
 
 var _ json.Unmarshaler = &DataFlowStagingInfo{}
 
 func (s *DataFlowStagingInfo) UnmarshalJSON(bytes []byte) error {
-	type alias DataFlowStagingInfo
-	var decoded alias
+	var decoded struct {
+		FolderPath *interface{} `json:"folderPath,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DataFlowStagingInfo: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.FolderPath = decoded.FolderPath
@@ -30,11 +31,12 @@ func (s *DataFlowStagingInfo) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["linkedService"]; ok {
-		impl, err := unmarshalReferenceImplementation(v)
+		impl, err := UnmarshalReferenceImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'LinkedService' for 'DataFlowStagingInfo': %+v", err)
 		}
 		s.LinkedService = impl
 	}
+
 	return nil
 }

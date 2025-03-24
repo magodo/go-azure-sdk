@@ -9,21 +9,26 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SapBWLinkedServiceTypeProperties struct {
-	ClientId            string     `json:"clientId"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Password            SecretBase `json:"password"`
-	Server              string     `json:"server"`
-	SystemNumber        string     `json:"systemNumber"`
-	UserName            *string    `json:"userName,omitempty"`
+	ClientId            interface{}  `json:"clientId"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Password            SecretBase   `json:"password"`
+	Server              interface{}  `json:"server"`
+	SystemNumber        interface{}  `json:"systemNumber"`
+	UserName            *interface{} `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &SapBWLinkedServiceTypeProperties{}
 
 func (s *SapBWLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SapBWLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ClientId            interface{}  `json:"clientId"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Server              interface{}  `json:"server"`
+		SystemNumber        interface{}  `json:"systemNumber"`
+		UserName            *interface{} `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SapBWLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClientId = decoded.ClientId
@@ -38,11 +43,12 @@ func (s *SapBWLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SapBWLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

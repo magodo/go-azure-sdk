@@ -9,21 +9,26 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type CassandraLinkedServiceTypeProperties struct {
-	AuthenticationType  *string    `json:"authenticationType,omitempty"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Host                string     `json:"host"`
-	Password            SecretBase `json:"password"`
-	Port                *int64     `json:"port,omitempty"`
-	Username            *string    `json:"username,omitempty"`
+	AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Host                interface{}  `json:"host"`
+	Password            SecretBase   `json:"password"`
+	Port                *int64       `json:"port,omitempty"`
+	Username            *interface{} `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &CassandraLinkedServiceTypeProperties{}
 
 func (s *CassandraLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias CassandraLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Host                interface{}  `json:"host"`
+		Port                *int64       `json:"port,omitempty"`
+		Username            *interface{} `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into CassandraLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -38,11 +43,12 @@ func (s *CassandraLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'CassandraLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

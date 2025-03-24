@@ -21,10 +21,16 @@ type RecoveryPointResource struct {
 var _ json.Unmarshaler = &RecoveryPointResource{}
 
 func (s *RecoveryPointResource) UnmarshalJSON(bytes []byte) error {
-	type alias RecoveryPointResource
-	var decoded alias
+	var decoded struct {
+		ETag     *string            `json:"eTag,omitempty"`
+		Id       *string            `json:"id,omitempty"`
+		Location *string            `json:"location,omitempty"`
+		Name     *string            `json:"name,omitempty"`
+		Tags     *map[string]string `json:"tags,omitempty"`
+		Type     *string            `json:"type,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into RecoveryPointResource: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ETag = decoded.ETag
@@ -40,11 +46,12 @@ func (s *RecoveryPointResource) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["properties"]; ok {
-		impl, err := unmarshalRecoveryPointImplementation(v)
+		impl, err := UnmarshalRecoveryPointImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Properties' for 'RecoveryPointResource': %+v", err)
 		}
 		s.Properties = impl
 	}
+
 	return nil
 }

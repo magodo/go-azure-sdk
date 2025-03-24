@@ -13,19 +13,26 @@ type FtpServerLinkedServiceTypeProperties struct {
 	EnableServerCertificateValidation *bool                  `json:"enableServerCertificateValidation,omitempty"`
 	EnableSsl                         *bool                  `json:"enableSsl,omitempty"`
 	EncryptedCredential               *string                `json:"encryptedCredential,omitempty"`
-	Host                              string                 `json:"host"`
+	Host                              interface{}            `json:"host"`
 	Password                          SecretBase             `json:"password"`
 	Port                              *int64                 `json:"port,omitempty"`
-	UserName                          *string                `json:"userName,omitempty"`
+	UserName                          *interface{}           `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &FtpServerLinkedServiceTypeProperties{}
 
 func (s *FtpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias FtpServerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType                *FtpAuthenticationType `json:"authenticationType,omitempty"`
+		EnableServerCertificateValidation *bool                  `json:"enableServerCertificateValidation,omitempty"`
+		EnableSsl                         *bool                  `json:"enableSsl,omitempty"`
+		EncryptedCredential               *string                `json:"encryptedCredential,omitempty"`
+		Host                              interface{}            `json:"host"`
+		Port                              *int64                 `json:"port,omitempty"`
+		UserName                          *interface{}           `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into FtpServerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -42,11 +49,12 @@ func (s *FtpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'FtpServerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

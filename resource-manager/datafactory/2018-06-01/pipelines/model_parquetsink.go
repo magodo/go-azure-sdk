@@ -15,12 +15,26 @@ type ParquetSink struct {
 	StoreSettings  StoreWriteSettings    `json:"storeSettings"`
 
 	// Fields inherited from CopySink
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SinkRetryCount           *int64  `json:"sinkRetryCount,omitempty"`
-	SinkRetryWait            *string `json:"sinkRetryWait,omitempty"`
-	WriteBatchSize           *int64  `json:"writeBatchSize,omitempty"`
-	WriteBatchTimeout        *string `json:"writeBatchTimeout,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SinkRetryCount           *int64       `json:"sinkRetryCount,omitempty"`
+	SinkRetryWait            *interface{} `json:"sinkRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+	WriteBatchSize           *int64       `json:"writeBatchSize,omitempty"`
+	WriteBatchTimeout        *interface{} `json:"writeBatchTimeout,omitempty"`
+}
+
+func (s ParquetSink) CopySink() BaseCopySinkImpl {
+	return BaseCopySinkImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SinkRetryCount:           s.SinkRetryCount,
+		SinkRetryWait:            s.SinkRetryWait,
+		Type:                     s.Type,
+		WriteBatchSize:           s.WriteBatchSize,
+		WriteBatchTimeout:        s.WriteBatchTimeout,
+	}
 }
 
 var _ json.Marshaler = ParquetSink{}
@@ -34,9 +48,10 @@ func (s ParquetSink) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling ParquetSink: %+v", err)
 	}
+
 	decoded["type"] = "ParquetSink"
 
 	encoded, err = json.Marshal(decoded)
@@ -50,17 +65,26 @@ func (s ParquetSink) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &ParquetSink{}
 
 func (s *ParquetSink) UnmarshalJSON(bytes []byte) error {
-	type alias ParquetSink
-	var decoded alias
+	var decoded struct {
+		FormatSettings           *ParquetWriteSettings `json:"formatSettings,omitempty"`
+		DisableMetricsCollection *bool                 `json:"disableMetricsCollection,omitempty"`
+		MaxConcurrentConnections *int64                `json:"maxConcurrentConnections,omitempty"`
+		SinkRetryCount           *int64                `json:"sinkRetryCount,omitempty"`
+		SinkRetryWait            *interface{}          `json:"sinkRetryWait,omitempty"`
+		Type                     string                `json:"type"`
+		WriteBatchSize           *int64                `json:"writeBatchSize,omitempty"`
+		WriteBatchTimeout        *interface{}          `json:"writeBatchTimeout,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ParquetSink: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
-	s.DisableMetricsCollection = decoded.DisableMetricsCollection
 	s.FormatSettings = decoded.FormatSettings
+	s.DisableMetricsCollection = decoded.DisableMetricsCollection
 	s.MaxConcurrentConnections = decoded.MaxConcurrentConnections
 	s.SinkRetryCount = decoded.SinkRetryCount
 	s.SinkRetryWait = decoded.SinkRetryWait
+	s.Type = decoded.Type
 	s.WriteBatchSize = decoded.WriteBatchSize
 	s.WriteBatchTimeout = decoded.WriteBatchTimeout
 
@@ -70,11 +94,12 @@ func (s *ParquetSink) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["storeSettings"]; ok {
-		impl, err := unmarshalStoreWriteSettingsImplementation(v)
+		impl, err := UnmarshalStoreWriteSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'StoreSettings' for 'ParquetSink': %+v", err)
 		}
 		s.StoreSettings = impl
 	}
+
 	return nil
 }

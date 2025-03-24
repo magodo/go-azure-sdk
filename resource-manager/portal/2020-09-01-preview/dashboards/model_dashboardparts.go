@@ -16,10 +16,11 @@ type DashboardParts struct {
 var _ json.Unmarshaler = &DashboardParts{}
 
 func (s *DashboardParts) UnmarshalJSON(bytes []byte) error {
-	type alias DashboardParts
-	var decoded alias
+	var decoded struct {
+		Position DashboardPartsPosition `json:"position"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DashboardParts: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Position = decoded.Position
@@ -30,11 +31,12 @@ func (s *DashboardParts) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["metadata"]; ok {
-		impl, err := unmarshalDashboardPartMetadataImplementation(v)
+		impl, err := UnmarshalDashboardPartMetadataImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Metadata' for 'DashboardParts': %+v", err)
 		}
 		s.Metadata = impl
 	}
+
 	return nil
 }

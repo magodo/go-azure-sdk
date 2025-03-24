@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SourceShareSynchronizationSetting interface {
+	SourceShareSynchronizationSetting() BaseSourceShareSynchronizationSettingImpl
 }
 
-// RawSourceShareSynchronizationSettingImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ SourceShareSynchronizationSetting = BaseSourceShareSynchronizationSettingImpl{}
+
+type BaseSourceShareSynchronizationSettingImpl struct {
+	Kind SourceShareSynchronizationSettingKind `json:"kind"`
+}
+
+func (s BaseSourceShareSynchronizationSettingImpl) SourceShareSynchronizationSetting() BaseSourceShareSynchronizationSettingImpl {
+	return s
+}
+
+var _ SourceShareSynchronizationSetting = RawSourceShareSynchronizationSettingImpl{}
+
+// RawSourceShareSynchronizationSettingImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawSourceShareSynchronizationSettingImpl struct {
-	Type   string
-	Values map[string]interface{}
+	sourceShareSynchronizationSetting BaseSourceShareSynchronizationSettingImpl
+	Type                              string
+	Values                            map[string]interface{}
 }
 
-func unmarshalSourceShareSynchronizationSettingImplementation(input []byte) (SourceShareSynchronizationSetting, error) {
+func (s RawSourceShareSynchronizationSettingImpl) SourceShareSynchronizationSetting() BaseSourceShareSynchronizationSettingImpl {
+	return s.sourceShareSynchronizationSetting
+}
+
+func UnmarshalSourceShareSynchronizationSettingImplementation(input []byte) (SourceShareSynchronizationSetting, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalSourceShareSynchronizationSettingImplementation(input []byte) (Sou
 		return nil, fmt.Errorf("unmarshaling SourceShareSynchronizationSetting into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["kind"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["kind"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "ScheduleBased") {
@@ -44,10 +61,15 @@ func unmarshalSourceShareSynchronizationSettingImplementation(input []byte) (Sou
 		return out, nil
 	}
 
-	out := RawSourceShareSynchronizationSettingImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseSourceShareSynchronizationSettingImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseSourceShareSynchronizationSettingImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawSourceShareSynchronizationSettingImpl{
+		sourceShareSynchronizationSetting: parent,
+		Type:                              value,
+		Values:                            temp,
+	}, nil
 
 }

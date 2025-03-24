@@ -10,18 +10,38 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type DataFlow interface {
+	DataFlow() BaseDataFlowImpl
 }
 
-// RawDataFlowImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ DataFlow = BaseDataFlowImpl{}
+
+type BaseDataFlowImpl struct {
+	Annotations *[]interface{}  `json:"annotations,omitempty"`
+	Description *string         `json:"description,omitempty"`
+	Folder      *DataFlowFolder `json:"folder,omitempty"`
+	Type        string          `json:"type"`
+}
+
+func (s BaseDataFlowImpl) DataFlow() BaseDataFlowImpl {
+	return s
+}
+
+var _ DataFlow = RawDataFlowImpl{}
+
+// RawDataFlowImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawDataFlowImpl struct {
-	Type   string
-	Values map[string]interface{}
+	dataFlow BaseDataFlowImpl
+	Type     string
+	Values   map[string]interface{}
 }
 
-func unmarshalDataFlowImplementation(input []byte) (DataFlow, error) {
+func (s RawDataFlowImpl) DataFlow() BaseDataFlowImpl {
+	return s.dataFlow
+}
+
+func UnmarshalDataFlowImplementation(input []byte) (DataFlow, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +51,9 @@ func unmarshalDataFlowImplementation(input []byte) (DataFlow, error) {
 		return nil, fmt.Errorf("unmarshaling DataFlow into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["type"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["type"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "Flowlet") {
@@ -60,10 +80,15 @@ func unmarshalDataFlowImplementation(input []byte) (DataFlow, error) {
 		return out, nil
 	}
 
-	out := RawDataFlowImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseDataFlowImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseDataFlowImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawDataFlowImpl{
+		dataFlow: parent,
+		Type:     value,
+		Values:   temp,
+	}, nil
 
 }

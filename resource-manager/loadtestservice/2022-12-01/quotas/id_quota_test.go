@@ -12,24 +12,24 @@ import (
 var _ resourceids.ResourceId = &QuotaId{}
 
 func TestNewQuotaID(t *testing.T) {
-	id := NewQuotaID("12345678-1234-9876-4563-123456789012", "locationValue", "quotaValue")
+	id := NewQuotaID("12345678-1234-9876-4563-123456789012", "locationName", "quotaName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.LocationName != "locationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationValue")
+	if id.LocationName != "locationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationName")
 	}
 
-	if id.QuotaName != "quotaValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'QuotaName'", id.QuotaName, "quotaValue")
+	if id.QuotaName != "quotaName" {
+		t.Fatalf("Expected %q but got %q for Segment 'QuotaName'", id.QuotaName, "quotaName")
 	}
 }
 
 func TestFormatQuotaID(t *testing.T) {
-	actual := NewQuotaID("12345678-1234-9876-4563-123456789012", "locationValue", "quotaValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas/quotaValue"
+	actual := NewQuotaID("12345678-1234-9876-4563-123456789012", "locationName", "quotaName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas/quotaName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -73,26 +73,26 @@ func TestParseQuotaID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas/quotaValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas/quotaName",
 			Expected: &QuotaId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				LocationName:   "locationValue",
-				QuotaName:      "quotaValue",
+				LocationName:   "locationName",
+				QuotaName:      "quotaName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas/quotaValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas/quotaName/extra",
 			Error: true,
 		},
 	}
@@ -189,50 +189,50 @@ func TestParseQuotaIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNvAlUe/qUoTaS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNnAmE/qUoTaS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas/quotaValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas/quotaName",
 			Expected: &QuotaId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				LocationName:   "locationValue",
-				QuotaName:      "quotaValue",
+				LocationName:   "locationName",
+				QuotaName:      "quotaName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationValue/quotas/quotaValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.LoadTestService/locations/locationName/quotas/quotaName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNvAlUe/qUoTaS/qUoTaVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNnAmE/qUoTaS/qUoTaNaMe",
 			Expected: &QuotaId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				LocationName:   "lOcAtIoNvAlUe",
-				QuotaName:      "qUoTaVaLuE",
+				LocationName:   "lOcAtIoNnAmE",
+				QuotaName:      "qUoTaNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNvAlUe/qUoTaS/qUoTaVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.lOaDtEsTsErViCe/lOcAtIoNs/lOcAtIoNnAmE/qUoTaS/qUoTaNaMe/extra",
 			Error: true,
 		},
 	}

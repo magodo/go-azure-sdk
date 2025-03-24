@@ -12,16 +12,16 @@ import (
 var _ resourceids.ResourceId = &LocationId{}
 
 func TestNewLocationID(t *testing.T) {
-	id := NewLocationID("locationValue")
+	id := NewLocationID("locationName")
 
-	if id.LocationName != "locationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationValue")
+	if id.LocationName != "locationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationName")
 	}
 }
 
 func TestFormatLocationID(t *testing.T) {
-	actual := NewLocationID("locationValue").ID()
-	expected := "/providers/Microsoft.DataShare/locations/locationValue"
+	actual := NewLocationID("locationName").ID()
+	expected := "/providers/Microsoft.DataShare/locations/locationName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -55,14 +55,14 @@ func TestParseLocationID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.DataShare/locations/locationValue",
+			Input: "/providers/Microsoft.DataShare/locations/locationName",
 			Expected: &LocationId{
-				LocationName: "locationValue",
+				LocationName: "locationName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.DataShare/locations/locationValue/extra",
+			Input: "/providers/Microsoft.DataShare/locations/locationName/extra",
 			Error: true,
 		},
 	}
@@ -131,26 +131,26 @@ func TestParseLocationIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.DataShare/locations/locationValue",
+			Input: "/providers/Microsoft.DataShare/locations/locationName",
 			Expected: &LocationId{
-				LocationName: "locationValue",
+				LocationName: "locationName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.DataShare/locations/locationValue/extra",
+			Input: "/providers/Microsoft.DataShare/locations/locationName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.dAtAsHaRe/lOcAtIoNs/lOcAtIoNvAlUe",
+			Input: "/pRoViDeRs/mIcRoSoFt.dAtAsHaRe/lOcAtIoNs/lOcAtIoNnAmE",
 			Expected: &LocationId{
-				LocationName: "lOcAtIoNvAlUe",
+				LocationName: "lOcAtIoNnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.dAtAsHaRe/lOcAtIoNs/lOcAtIoNvAlUe/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.dAtAsHaRe/lOcAtIoNs/lOcAtIoNnAmE/extra",
 			Error: true,
 		},
 	}

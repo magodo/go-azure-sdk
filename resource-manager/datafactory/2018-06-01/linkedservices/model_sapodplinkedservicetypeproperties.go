@@ -9,33 +9,50 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SapOdpLinkedServiceTypeProperties struct {
-	ClientId             *string    `json:"clientId,omitempty"`
-	EncryptedCredential  *string    `json:"encryptedCredential,omitempty"`
-	Language             *string    `json:"language,omitempty"`
-	LogonGroup           *string    `json:"logonGroup,omitempty"`
-	MessageServer        *string    `json:"messageServer,omitempty"`
-	MessageServerService *string    `json:"messageServerService,omitempty"`
-	Password             SecretBase `json:"password"`
-	Server               *string    `json:"server,omitempty"`
-	SncLibraryPath       *string    `json:"sncLibraryPath,omitempty"`
-	SncMode              *string    `json:"sncMode,omitempty"`
-	SncMyName            *string    `json:"sncMyName,omitempty"`
-	SncPartnerName       *string    `json:"sncPartnerName,omitempty"`
-	SncQop               *string    `json:"sncQop,omitempty"`
-	SubscriberName       *string    `json:"subscriberName,omitempty"`
-	SystemId             *string    `json:"systemId,omitempty"`
-	SystemNumber         *string    `json:"systemNumber,omitempty"`
-	UserName             *string    `json:"userName,omitempty"`
-	X509CertificatePath  *string    `json:"x509CertificatePath,omitempty"`
+	ClientId             *interface{} `json:"clientId,omitempty"`
+	EncryptedCredential  *string      `json:"encryptedCredential,omitempty"`
+	Language             *interface{} `json:"language,omitempty"`
+	LogonGroup           *interface{} `json:"logonGroup,omitempty"`
+	MessageServer        *interface{} `json:"messageServer,omitempty"`
+	MessageServerService *interface{} `json:"messageServerService,omitempty"`
+	Password             SecretBase   `json:"password"`
+	Server               *interface{} `json:"server,omitempty"`
+	SncLibraryPath       *interface{} `json:"sncLibraryPath,omitempty"`
+	SncMode              *bool        `json:"sncMode,omitempty"`
+	SncMyName            *interface{} `json:"sncMyName,omitempty"`
+	SncPartnerName       *interface{} `json:"sncPartnerName,omitempty"`
+	SncQop               *interface{} `json:"sncQop,omitempty"`
+	SubscriberName       *interface{} `json:"subscriberName,omitempty"`
+	SystemId             *interface{} `json:"systemId,omitempty"`
+	SystemNumber         *interface{} `json:"systemNumber,omitempty"`
+	UserName             *interface{} `json:"userName,omitempty"`
+	X509CertificatePath  *interface{} `json:"x509CertificatePath,omitempty"`
 }
 
 var _ json.Unmarshaler = &SapOdpLinkedServiceTypeProperties{}
 
 func (s *SapOdpLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SapOdpLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ClientId             *interface{} `json:"clientId,omitempty"`
+		EncryptedCredential  *string      `json:"encryptedCredential,omitempty"`
+		Language             *interface{} `json:"language,omitempty"`
+		LogonGroup           *interface{} `json:"logonGroup,omitempty"`
+		MessageServer        *interface{} `json:"messageServer,omitempty"`
+		MessageServerService *interface{} `json:"messageServerService,omitempty"`
+		Server               *interface{} `json:"server,omitempty"`
+		SncLibraryPath       *interface{} `json:"sncLibraryPath,omitempty"`
+		SncMode              *bool        `json:"sncMode,omitempty"`
+		SncMyName            *interface{} `json:"sncMyName,omitempty"`
+		SncPartnerName       *interface{} `json:"sncPartnerName,omitempty"`
+		SncQop               *interface{} `json:"sncQop,omitempty"`
+		SubscriberName       *interface{} `json:"subscriberName,omitempty"`
+		SystemId             *interface{} `json:"systemId,omitempty"`
+		SystemNumber         *interface{} `json:"systemNumber,omitempty"`
+		UserName             *interface{} `json:"userName,omitempty"`
+		X509CertificatePath  *interface{} `json:"x509CertificatePath,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SapOdpLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClientId = decoded.ClientId
@@ -62,11 +79,12 @@ func (s *SapOdpLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SapOdpLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

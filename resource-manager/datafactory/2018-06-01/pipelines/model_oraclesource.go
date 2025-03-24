@@ -12,16 +12,28 @@ var _ CopySource = OracleSource{}
 
 type OracleSource struct {
 	AdditionalColumns *interface{}             `json:"additionalColumns,omitempty"`
-	OracleReaderQuery *string                  `json:"oracleReaderQuery,omitempty"`
-	PartitionOption   *string                  `json:"partitionOption,omitempty"`
+	OracleReaderQuery *interface{}             `json:"oracleReaderQuery,omitempty"`
+	PartitionOption   *interface{}             `json:"partitionOption,omitempty"`
 	PartitionSettings *OraclePartitionSettings `json:"partitionSettings,omitempty"`
-	QueryTimeout      *string                  `json:"queryTimeout,omitempty"`
+	QueryTimeout      *interface{}             `json:"queryTimeout,omitempty"`
 
 	// Fields inherited from CopySource
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SourceRetryCount         *int64  `json:"sourceRetryCount,omitempty"`
-	SourceRetryWait          *string `json:"sourceRetryWait,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SourceRetryCount         *int64       `json:"sourceRetryCount,omitempty"`
+	SourceRetryWait          *interface{} `json:"sourceRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+}
+
+func (s OracleSource) CopySource() BaseCopySourceImpl {
+	return BaseCopySourceImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SourceRetryCount:         s.SourceRetryCount,
+		SourceRetryWait:          s.SourceRetryWait,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = OracleSource{}
@@ -35,9 +47,10 @@ func (s OracleSource) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling OracleSource: %+v", err)
 	}
+
 	decoded["type"] = "OracleSource"
 
 	encoded, err = json.Marshal(decoded)

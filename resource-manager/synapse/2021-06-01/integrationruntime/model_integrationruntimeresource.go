@@ -19,10 +19,14 @@ type IntegrationRuntimeResource struct {
 var _ json.Unmarshaler = &IntegrationRuntimeResource{}
 
 func (s *IntegrationRuntimeResource) UnmarshalJSON(bytes []byte) error {
-	type alias IntegrationRuntimeResource
-	var decoded alias
+	var decoded struct {
+		Etag *string `json:"etag,omitempty"`
+		Id   *string `json:"id,omitempty"`
+		Name *string `json:"name,omitempty"`
+		Type *string `json:"type,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into IntegrationRuntimeResource: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Etag = decoded.Etag
@@ -36,11 +40,12 @@ func (s *IntegrationRuntimeResource) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["properties"]; ok {
-		impl, err := unmarshalIntegrationRuntimeImplementation(v)
+		impl, err := UnmarshalIntegrationRuntimeImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Properties' for 'IntegrationRuntimeResource': %+v", err)
 		}
 		s.Properties = impl
 	}
+
 	return nil
 }

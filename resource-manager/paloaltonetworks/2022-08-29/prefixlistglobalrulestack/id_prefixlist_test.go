@@ -12,20 +12,20 @@ import (
 var _ resourceids.ResourceId = &PrefixListId{}
 
 func TestNewPrefixListID(t *testing.T) {
-	id := NewPrefixListID("globalRulestackValue", "prefixListValue")
+	id := NewPrefixListID("globalRulestackName", "prefixListName")
 
-	if id.GlobalRulestackName != "globalRulestackValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'GlobalRulestackName'", id.GlobalRulestackName, "globalRulestackValue")
+	if id.GlobalRulestackName != "globalRulestackName" {
+		t.Fatalf("Expected %q but got %q for Segment 'GlobalRulestackName'", id.GlobalRulestackName, "globalRulestackName")
 	}
 
-	if id.PrefixListName != "prefixListValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'PrefixListName'", id.PrefixListName, "prefixListValue")
+	if id.PrefixListName != "prefixListName" {
+		t.Fatalf("Expected %q but got %q for Segment 'PrefixListName'", id.PrefixListName, "prefixListName")
 	}
 }
 
 func TestFormatPrefixListID(t *testing.T) {
-	actual := NewPrefixListID("globalRulestackValue", "prefixListValue").ID()
-	expected := "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists/prefixListValue"
+	actual := NewPrefixListID("globalRulestackName", "prefixListName").ID()
+	expected := "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists/prefixListName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -59,25 +59,25 @@ func TestParsePrefixListID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists/prefixListValue",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists/prefixListName",
 			Expected: &PrefixListId{
-				GlobalRulestackName: "globalRulestackValue",
-				PrefixListName:      "prefixListValue",
+				GlobalRulestackName: "globalRulestackName",
+				PrefixListName:      "prefixListName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists/prefixListValue/extra",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists/prefixListName/extra",
 			Error: true,
 		},
 	}
@@ -150,48 +150,48 @@ func TestParsePrefixListIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkVaLuE",
+			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkVaLuE/pReFiXlIsTs",
+			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkNaMe/pReFiXlIsTs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists/prefixListValue",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists/prefixListName",
 			Expected: &PrefixListId{
-				GlobalRulestackName: "globalRulestackValue",
-				PrefixListName:      "prefixListValue",
+				GlobalRulestackName: "globalRulestackName",
+				PrefixListName:      "prefixListName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackValue/prefixLists/prefixListValue/extra",
+			Input: "/providers/PaloAltoNetworks.Cloudngfw/globalRulestacks/globalRulestackName/prefixLists/prefixListName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkVaLuE/pReFiXlIsTs/pReFiXlIsTvAlUe",
+			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkNaMe/pReFiXlIsTs/pReFiXlIsTnAmE",
 			Expected: &PrefixListId{
-				GlobalRulestackName: "gLoBaLrUlEsTaCkVaLuE",
-				PrefixListName:      "pReFiXlIsTvAlUe",
+				GlobalRulestackName: "gLoBaLrUlEsTaCkNaMe",
+				PrefixListName:      "pReFiXlIsTnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkVaLuE/pReFiXlIsTs/pReFiXlIsTvAlUe/extra",
+			Input: "/pRoViDeRs/pAlOaLtOnEtWoRkS.ClOuDnGfW/gLoBaLrUlEsTaCkS/gLoBaLrUlEsTaCkNaMe/pReFiXlIsTs/pReFiXlIsTnAmE/extra",
 			Error: true,
 		},
 	}

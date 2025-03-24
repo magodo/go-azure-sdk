@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type Partition interface {
+	Partition() BasePartitionImpl
 }
 
-// RawPartitionImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ Partition = BasePartitionImpl{}
+
+type BasePartitionImpl struct {
+	PartitionScheme PartitionScheme `json:"partitionScheme"`
+}
+
+func (s BasePartitionImpl) Partition() BasePartitionImpl {
+	return s
+}
+
+var _ Partition = RawPartitionImpl{}
+
+// RawPartitionImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawPartitionImpl struct {
-	Type   string
-	Values map[string]interface{}
+	partition BasePartitionImpl
+	Type      string
+	Values    map[string]interface{}
 }
 
-func unmarshalPartitionImplementation(input []byte) (Partition, error) {
+func (s RawPartitionImpl) Partition() BasePartitionImpl {
+	return s.partition
+}
+
+func UnmarshalPartitionImplementation(input []byte) (Partition, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalPartitionImplementation(input []byte) (Partition, error) {
 		return nil, fmt.Errorf("unmarshaling Partition into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["partitionScheme"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["partitionScheme"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "Named") {
@@ -60,10 +77,15 @@ func unmarshalPartitionImplementation(input []byte) (Partition, error) {
 		return out, nil
 	}
 
-	out := RawPartitionImpl{
-		Type:   value,
-		Values: temp,
+	var parent BasePartitionImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BasePartitionImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawPartitionImpl{
+		partition: parent,
+		Type:      value,
+		Values:    temp,
+	}, nil
 
 }

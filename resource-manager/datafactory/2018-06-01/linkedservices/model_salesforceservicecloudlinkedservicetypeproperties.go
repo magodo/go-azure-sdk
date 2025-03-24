@@ -9,27 +9,32 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SalesforceServiceCloudLinkedServiceTypeProperties struct {
-	ApiVersion          *string    `json:"apiVersion,omitempty"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	EnvironmentUrl      *string    `json:"environmentUrl,omitempty"`
-	ExtendedProperties  *string    `json:"extendedProperties,omitempty"`
-	Password            SecretBase `json:"password"`
-	SecurityToken       SecretBase `json:"securityToken"`
-	Username            *string    `json:"username,omitempty"`
+	ApiVersion          *interface{} `json:"apiVersion,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	EnvironmentURL      *interface{} `json:"environmentUrl,omitempty"`
+	ExtendedProperties  *interface{} `json:"extendedProperties,omitempty"`
+	Password            SecretBase   `json:"password"`
+	SecurityToken       SecretBase   `json:"securityToken"`
+	Username            *interface{} `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &SalesforceServiceCloudLinkedServiceTypeProperties{}
 
 func (s *SalesforceServiceCloudLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SalesforceServiceCloudLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ApiVersion          *interface{} `json:"apiVersion,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		EnvironmentURL      *interface{} `json:"environmentUrl,omitempty"`
+		ExtendedProperties  *interface{} `json:"extendedProperties,omitempty"`
+		Username            *interface{} `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SalesforceServiceCloudLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ApiVersion = decoded.ApiVersion
 	s.EncryptedCredential = decoded.EncryptedCredential
-	s.EnvironmentUrl = decoded.EnvironmentUrl
+	s.EnvironmentURL = decoded.EnvironmentURL
 	s.ExtendedProperties = decoded.ExtendedProperties
 	s.Username = decoded.Username
 
@@ -39,7 +44,7 @@ func (s *SalesforceServiceCloudLinkedServiceTypeProperties) UnmarshalJSON(bytes 
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SalesforceServiceCloudLinkedServiceTypeProperties': %+v", err)
 		}
@@ -47,11 +52,12 @@ func (s *SalesforceServiceCloudLinkedServiceTypeProperties) UnmarshalJSON(bytes 
 	}
 
 	if v, ok := temp["securityToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'SecurityToken' for 'SalesforceServiceCloudLinkedServiceTypeProperties': %+v", err)
 		}
 		s.SecurityToken = impl
 	}
+
 	return nil
 }

@@ -11,11 +11,20 @@ import (
 var _ WebLinkedServiceTypeProperties = WebBasicAuthentication{}
 
 type WebBasicAuthentication struct {
-	Password SecretBase `json:"password"`
-	Username string     `json:"username"`
+	Password SecretBase  `json:"password"`
+	Username interface{} `json:"username"`
 
 	// Fields inherited from WebLinkedServiceTypeProperties
-	Url string `json:"url"`
+
+	AuthenticationType WebAuthenticationType `json:"authenticationType"`
+	Url                interface{}           `json:"url"`
+}
+
+func (s WebBasicAuthentication) WebLinkedServiceTypeProperties() BaseWebLinkedServiceTypePropertiesImpl {
+	return BaseWebLinkedServiceTypePropertiesImpl{
+		AuthenticationType: s.AuthenticationType,
+		Url:                s.Url,
+	}
 }
 
 var _ json.Marshaler = WebBasicAuthentication{}
@@ -29,9 +38,10 @@ func (s WebBasicAuthentication) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling WebBasicAuthentication: %+v", err)
 	}
+
 	decoded["authenticationType"] = "Basic"
 
 	encoded, err = json.Marshal(decoded)
@@ -45,14 +55,18 @@ func (s WebBasicAuthentication) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &WebBasicAuthentication{}
 
 func (s *WebBasicAuthentication) UnmarshalJSON(bytes []byte) error {
-	type alias WebBasicAuthentication
-	var decoded alias
+	var decoded struct {
+		Username           interface{}           `json:"username"`
+		AuthenticationType WebAuthenticationType `json:"authenticationType"`
+		Url                interface{}           `json:"url"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into WebBasicAuthentication: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
-	s.Url = decoded.Url
 	s.Username = decoded.Username
+	s.AuthenticationType = decoded.AuthenticationType
+	s.Url = decoded.Url
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -60,11 +74,12 @@ func (s *WebBasicAuthentication) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'WebBasicAuthentication': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

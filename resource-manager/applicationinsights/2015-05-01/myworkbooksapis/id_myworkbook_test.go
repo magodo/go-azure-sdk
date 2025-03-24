@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &MyWorkbookId{}
 
 func TestNewMyWorkbookID(t *testing.T) {
-	id := NewMyWorkbookID("12345678-1234-9876-4563-123456789012", "example-resource-group", "myWorkbookValue")
+	id := NewMyWorkbookID("12345678-1234-9876-4563-123456789012", "example-resource-group", "myWorkbookName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,14 +22,14 @@ func TestNewMyWorkbookID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.MyWorkbookName != "myWorkbookValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'MyWorkbookName'", id.MyWorkbookName, "myWorkbookValue")
+	if id.MyWorkbookName != "myWorkbookName" {
+		t.Fatalf("Expected %q but got %q for Segment 'MyWorkbookName'", id.MyWorkbookName, "myWorkbookName")
 	}
 }
 
 func TestFormatMyWorkbookID(t *testing.T) {
-	actual := NewMyWorkbookID("12345678-1234-9876-4563-123456789012", "example-resource-group", "myWorkbookValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookValue"
+	actual := NewMyWorkbookID("12345678-1234-9876-4563-123456789012", "example-resource-group", "myWorkbookName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -83,16 +83,16 @@ func TestParseMyWorkbookID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookName",
 			Expected: &MyWorkbookId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				MyWorkbookName:    "myWorkbookValue",
+				MyWorkbookName:    "myWorkbookName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookName/extra",
 			Error: true,
 		},
 	}
@@ -209,30 +209,30 @@ func TestParseMyWorkbookIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookName",
 			Expected: &MyWorkbookId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				MyWorkbookName:    "myWorkbookValue",
+				MyWorkbookName:    "myWorkbookName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Insights/myWorkbooks/myWorkbookName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.iNsIgHtS/mYwOrKbOoKs/mYwOrKbOoKvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.iNsIgHtS/mYwOrKbOoKs/mYwOrKbOoKnAmE",
 			Expected: &MyWorkbookId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "eXaMpLe-rEsOuRcE-GrOuP",
-				MyWorkbookName:    "mYwOrKbOoKvAlUe",
+				MyWorkbookName:    "mYwOrKbOoKnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.iNsIgHtS/mYwOrKbOoKs/mYwOrKbOoKvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.iNsIgHtS/mYwOrKbOoKs/mYwOrKbOoKnAmE/extra",
 			Error: true,
 		},
 	}

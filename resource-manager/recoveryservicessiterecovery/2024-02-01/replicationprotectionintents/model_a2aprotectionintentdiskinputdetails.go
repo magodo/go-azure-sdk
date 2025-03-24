@@ -17,10 +17,11 @@ type A2AProtectionIntentDiskInputDetails struct {
 var _ json.Unmarshaler = &A2AProtectionIntentDiskInputDetails{}
 
 func (s *A2AProtectionIntentDiskInputDetails) UnmarshalJSON(bytes []byte) error {
-	type alias A2AProtectionIntentDiskInputDetails
-	var decoded alias
+	var decoded struct {
+		DiskUri string `json:"diskUri"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into A2AProtectionIntentDiskInputDetails: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.DiskUri = decoded.DiskUri
@@ -31,7 +32,7 @@ func (s *A2AProtectionIntentDiskInputDetails) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["primaryStagingStorageAccountCustomInput"]; ok {
-		impl, err := unmarshalStorageAccountCustomDetailsImplementation(v)
+		impl, err := UnmarshalStorageAccountCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrimaryStagingStorageAccountCustomInput' for 'A2AProtectionIntentDiskInputDetails': %+v", err)
 		}
@@ -39,11 +40,12 @@ func (s *A2AProtectionIntentDiskInputDetails) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["recoveryAzureStorageAccountCustomInput"]; ok {
-		impl, err := unmarshalStorageAccountCustomDetailsImplementation(v)
+		impl, err := UnmarshalStorageAccountCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryAzureStorageAccountCustomInput' for 'A2AProtectionIntentDiskInputDetails': %+v", err)
 		}
 		s.RecoveryAzureStorageAccountCustomInput = impl
 	}
+
 	return nil
 }

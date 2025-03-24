@@ -9,26 +9,31 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type HTTPDatasetTypeProperties struct {
-	AdditionalHeaders *string              `json:"additionalHeaders,omitempty"`
+	AdditionalHeaders *interface{}         `json:"additionalHeaders,omitempty"`
 	Compression       *DatasetCompression  `json:"compression,omitempty"`
 	Format            DatasetStorageFormat `json:"format"`
-	RelativeUrl       *string              `json:"relativeUrl,omitempty"`
-	RequestBody       *string              `json:"requestBody,omitempty"`
-	RequestMethod     *string              `json:"requestMethod,omitempty"`
+	RelativeURL       *interface{}         `json:"relativeUrl,omitempty"`
+	RequestBody       *interface{}         `json:"requestBody,omitempty"`
+	RequestMethod     *interface{}         `json:"requestMethod,omitempty"`
 }
 
 var _ json.Unmarshaler = &HTTPDatasetTypeProperties{}
 
 func (s *HTTPDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HTTPDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		AdditionalHeaders *interface{}        `json:"additionalHeaders,omitempty"`
+		Compression       *DatasetCompression `json:"compression,omitempty"`
+		RelativeURL       *interface{}        `json:"relativeUrl,omitempty"`
+		RequestBody       *interface{}        `json:"requestBody,omitempty"`
+		RequestMethod     *interface{}        `json:"requestMethod,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HTTPDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AdditionalHeaders = decoded.AdditionalHeaders
 	s.Compression = decoded.Compression
-	s.RelativeUrl = decoded.RelativeUrl
+	s.RelativeURL = decoded.RelativeURL
 	s.RequestBody = decoded.RequestBody
 	s.RequestMethod = decoded.RequestMethod
 
@@ -38,11 +43,12 @@ func (s *HTTPDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["format"]; ok {
-		impl, err := unmarshalDatasetStorageFormatImplementation(v)
+		impl, err := UnmarshalDatasetStorageFormatImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Format' for 'HTTPDatasetTypeProperties': %+v", err)
 		}
 		s.Format = impl
 	}
+
 	return nil
 }

@@ -11,17 +11,20 @@ import (
 type SqlAlwaysEncryptedProperties struct {
 	AlwaysEncryptedAkvAuthType SqlAlwaysEncryptedAkvAuthType `json:"alwaysEncryptedAkvAuthType"`
 	Credential                 *CredentialReference          `json:"credential,omitempty"`
-	ServicePrincipalId         *string                       `json:"servicePrincipalId,omitempty"`
+	ServicePrincipalId         *interface{}                  `json:"servicePrincipalId,omitempty"`
 	ServicePrincipalKey        SecretBase                    `json:"servicePrincipalKey"`
 }
 
 var _ json.Unmarshaler = &SqlAlwaysEncryptedProperties{}
 
 func (s *SqlAlwaysEncryptedProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SqlAlwaysEncryptedProperties
-	var decoded alias
+	var decoded struct {
+		AlwaysEncryptedAkvAuthType SqlAlwaysEncryptedAkvAuthType `json:"alwaysEncryptedAkvAuthType"`
+		Credential                 *CredentialReference          `json:"credential,omitempty"`
+		ServicePrincipalId         *interface{}                  `json:"servicePrincipalId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SqlAlwaysEncryptedProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AlwaysEncryptedAkvAuthType = decoded.AlwaysEncryptedAkvAuthType
@@ -34,11 +37,12 @@ func (s *SqlAlwaysEncryptedProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'SqlAlwaysEncryptedProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

@@ -9,28 +9,33 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SalesforceV2LinkedServiceTypeProperties struct {
-	ApiVersion          *string    `json:"apiVersion,omitempty"`
-	AuthenticationType  *string    `json:"authenticationType,omitempty"`
-	ClientId            *string    `json:"clientId,omitempty"`
-	ClientSecret        SecretBase `json:"clientSecret"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	EnvironmentUrl      *string    `json:"environmentUrl,omitempty"`
+	ApiVersion          *interface{} `json:"apiVersion,omitempty"`
+	AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+	ClientId            *interface{} `json:"clientId,omitempty"`
+	ClientSecret        SecretBase   `json:"clientSecret"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	EnvironmentURL      *interface{} `json:"environmentUrl,omitempty"`
 }
 
 var _ json.Unmarshaler = &SalesforceV2LinkedServiceTypeProperties{}
 
 func (s *SalesforceV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SalesforceV2LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ApiVersion          *interface{} `json:"apiVersion,omitempty"`
+		AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+		ClientId            *interface{} `json:"clientId,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		EnvironmentURL      *interface{} `json:"environmentUrl,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SalesforceV2LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ApiVersion = decoded.ApiVersion
 	s.AuthenticationType = decoded.AuthenticationType
 	s.ClientId = decoded.ClientId
 	s.EncryptedCredential = decoded.EncryptedCredential
-	s.EnvironmentUrl = decoded.EnvironmentUrl
+	s.EnvironmentURL = decoded.EnvironmentURL
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -38,11 +43,12 @@ func (s *SalesforceV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) er
 	}
 
 	if v, ok := temp["clientSecret"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientSecret' for 'SalesforceV2LinkedServiceTypeProperties': %+v", err)
 		}
 		s.ClientSecret = impl
 	}
+
 	return nil
 }

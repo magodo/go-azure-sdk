@@ -18,7 +18,7 @@ type DownloadInvoiceOperationResponse struct {
 	Poller       pollers.Poller
 	HttpResponse *http.Response
 	OData        *odata.OData
-	Model        *DownloadUrl
+	Model        *DownloadURL
 }
 
 type DownloadInvoiceOperationOptions struct {
@@ -37,6 +37,7 @@ func (o DownloadInvoiceOperationOptions) ToHeaders() *client.Headers {
 
 func (o DownloadInvoiceOperationOptions) ToOData() *odata.Query {
 	out := odata.Query{}
+
 	return &out
 }
 

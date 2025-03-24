@@ -11,9 +11,17 @@ import (
 var _ FormatWriteSettings = JsonWriteSettings{}
 
 type JsonWriteSettings struct {
-	FilePattern *string `json:"filePattern,omitempty"`
+	FilePattern *interface{} `json:"filePattern,omitempty"`
 
 	// Fields inherited from FormatWriteSettings
+
+	Type string `json:"type"`
+}
+
+func (s JsonWriteSettings) FormatWriteSettings() BaseFormatWriteSettingsImpl {
+	return BaseFormatWriteSettingsImpl{
+		Type: s.Type,
+	}
 }
 
 var _ json.Marshaler = JsonWriteSettings{}
@@ -27,9 +35,10 @@ func (s JsonWriteSettings) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling JsonWriteSettings: %+v", err)
 	}
+
 	decoded["type"] = "JsonWriteSettings"
 
 	encoded, err = json.Marshal(decoded)

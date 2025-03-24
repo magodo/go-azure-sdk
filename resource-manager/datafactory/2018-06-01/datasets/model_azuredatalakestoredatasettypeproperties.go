@@ -10,18 +10,21 @@ import (
 
 type AzureDataLakeStoreDatasetTypeProperties struct {
 	Compression *DatasetCompression  `json:"compression,omitempty"`
-	FileName    *string              `json:"fileName,omitempty"`
-	FolderPath  *string              `json:"folderPath,omitempty"`
+	FileName    *interface{}         `json:"fileName,omitempty"`
+	FolderPath  *interface{}         `json:"folderPath,omitempty"`
 	Format      DatasetStorageFormat `json:"format"`
 }
 
 var _ json.Unmarshaler = &AzureDataLakeStoreDatasetTypeProperties{}
 
 func (s *AzureDataLakeStoreDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureDataLakeStoreDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		Compression *DatasetCompression `json:"compression,omitempty"`
+		FileName    *interface{}        `json:"fileName,omitempty"`
+		FolderPath  *interface{}        `json:"folderPath,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureDataLakeStoreDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Compression = decoded.Compression
@@ -34,11 +37,12 @@ func (s *AzureDataLakeStoreDatasetTypeProperties) UnmarshalJSON(bytes []byte) er
 	}
 
 	if v, ok := temp["format"]; ok {
-		impl, err := unmarshalDatasetStorageFormatImplementation(v)
+		impl, err := UnmarshalDatasetStorageFormatImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Format' for 'AzureDataLakeStoreDatasetTypeProperties': %+v", err)
 		}
 		s.Format = impl
 	}
+
 	return nil
 }

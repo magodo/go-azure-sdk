@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &SyncIdentityProviderId{}
 
 func TestNewSyncIdentityProviderID(t *testing.T) {
-	id := NewSyncIdentityProviderID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterValue", "syncIdentityProviderValue")
+	id := NewSyncIdentityProviderID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterName", "syncIdentityProviderName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewSyncIdentityProviderID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.OpenShiftClusterName != "openShiftClusterValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'OpenShiftClusterName'", id.OpenShiftClusterName, "openShiftClusterValue")
+	if id.OpenShiftClusterName != "openShiftClusterName" {
+		t.Fatalf("Expected %q but got %q for Segment 'OpenShiftClusterName'", id.OpenShiftClusterName, "openShiftClusterName")
 	}
 
-	if id.SyncIdentityProviderName != "syncIdentityProviderValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'SyncIdentityProviderName'", id.SyncIdentityProviderName, "syncIdentityProviderValue")
+	if id.SyncIdentityProviderName != "syncIdentityProviderName" {
+		t.Fatalf("Expected %q but got %q for Segment 'SyncIdentityProviderName'", id.SyncIdentityProviderName, "syncIdentityProviderName")
 	}
 }
 
 func TestFormatSyncIdentityProviderID(t *testing.T) {
-	actual := NewSyncIdentityProviderID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterValue", "syncIdentityProviderValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider/syncIdentityProviderValue"
+	actual := NewSyncIdentityProviderID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterName", "syncIdentityProviderName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider/syncIdentityProviderName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseSyncIdentityProviderID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider/syncIdentityProviderValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider/syncIdentityProviderName",
 			Expected: &SyncIdentityProviderId{
 				SubscriptionId:           "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:        "example-resource-group",
-				OpenShiftClusterName:     "openShiftClusterValue",
-				SyncIdentityProviderName: "syncIdentityProviderValue",
+				OpenShiftClusterName:     "openShiftClusterName",
+				SyncIdentityProviderName: "syncIdentityProviderName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider/syncIdentityProviderValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider/syncIdentityProviderName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseSyncIdentityProviderIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCiDeNtItYpRoViDeR",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCiDeNtItYpRoViDeR",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider/syncIdentityProviderValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider/syncIdentityProviderName",
 			Expected: &SyncIdentityProviderId{
 				SubscriptionId:           "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:        "example-resource-group",
-				OpenShiftClusterName:     "openShiftClusterValue",
-				SyncIdentityProviderName: "syncIdentityProviderValue",
+				OpenShiftClusterName:     "openShiftClusterName",
+				SyncIdentityProviderName: "syncIdentityProviderName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncIdentityProvider/syncIdentityProviderValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncIdentityProvider/syncIdentityProviderName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCiDeNtItYpRoViDeR/sYnCiDeNtItYpRoViDeRvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCiDeNtItYpRoViDeR/sYnCiDeNtItYpRoViDeRnAmE",
 			Expected: &SyncIdentityProviderId{
 				SubscriptionId:           "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:        "eXaMpLe-rEsOuRcE-GrOuP",
-				OpenShiftClusterName:     "oPeNsHiFtClUsTeRvAlUe",
-				SyncIdentityProviderName: "sYnCiDeNtItYpRoViDeRvAlUe",
+				OpenShiftClusterName:     "oPeNsHiFtClUsTeRnAmE",
+				SyncIdentityProviderName: "sYnCiDeNtItYpRoViDeRnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCiDeNtItYpRoViDeR/sYnCiDeNtItYpRoViDeRvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCiDeNtItYpRoViDeR/sYnCiDeNtItYpRoViDeRnAmE/extra",
 			Error: true,
 		},
 	}

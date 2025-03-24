@@ -13,17 +13,21 @@ type TeamDeskLinkedServiceTypeProperties struct {
 	AuthenticationType  TeamDeskAuthenticationType `json:"authenticationType"`
 	EncryptedCredential *string                    `json:"encryptedCredential,omitempty"`
 	Password            SecretBase                 `json:"password"`
-	Url                 string                     `json:"url"`
-	UserName            *string                    `json:"userName,omitempty"`
+	Url                 interface{}                `json:"url"`
+	UserName            *interface{}               `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &TeamDeskLinkedServiceTypeProperties{}
 
 func (s *TeamDeskLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias TeamDeskLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  TeamDeskAuthenticationType `json:"authenticationType"`
+		EncryptedCredential *string                    `json:"encryptedCredential,omitempty"`
+		Url                 interface{}                `json:"url"`
+		UserName            *interface{}               `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into TeamDeskLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -37,7 +41,7 @@ func (s *TeamDeskLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["apiToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ApiToken' for 'TeamDeskLinkedServiceTypeProperties': %+v", err)
 		}
@@ -45,11 +49,12 @@ func (s *TeamDeskLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'TeamDeskLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

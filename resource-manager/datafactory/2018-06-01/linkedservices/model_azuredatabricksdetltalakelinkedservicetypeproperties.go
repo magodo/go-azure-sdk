@@ -10,20 +10,25 @@ import (
 
 type AzureDatabricksDetltaLakeLinkedServiceTypeProperties struct {
 	AccessToken         SecretBase           `json:"accessToken"`
-	ClusterId           *string              `json:"clusterId,omitempty"`
+	ClusterId           *interface{}         `json:"clusterId,omitempty"`
 	Credential          *CredentialReference `json:"credential,omitempty"`
-	Domain              string               `json:"domain"`
+	Domain              interface{}          `json:"domain"`
 	EncryptedCredential *string              `json:"encryptedCredential,omitempty"`
-	WorkspaceResourceId *string              `json:"workspaceResourceId,omitempty"`
+	WorkspaceResourceId *interface{}         `json:"workspaceResourceId,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureDatabricksDetltaLakeLinkedServiceTypeProperties{}
 
 func (s *AzureDatabricksDetltaLakeLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureDatabricksDetltaLakeLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ClusterId           *interface{}         `json:"clusterId,omitempty"`
+		Credential          *CredentialReference `json:"credential,omitempty"`
+		Domain              interface{}          `json:"domain"`
+		EncryptedCredential *string              `json:"encryptedCredential,omitempty"`
+		WorkspaceResourceId *interface{}         `json:"workspaceResourceId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureDatabricksDetltaLakeLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClusterId = decoded.ClusterId
@@ -38,11 +43,12 @@ func (s *AzureDatabricksDetltaLakeLinkedServiceTypeProperties) UnmarshalJSON(byt
 	}
 
 	if v, ok := temp["accessToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AccessToken' for 'AzureDatabricksDetltaLakeLinkedServiceTypeProperties': %+v", err)
 		}
 		s.AccessToken = impl
 	}
+
 	return nil
 }

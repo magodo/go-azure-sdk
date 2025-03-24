@@ -16,10 +16,11 @@ type BinaryDatasetTypeProperties struct {
 var _ json.Unmarshaler = &BinaryDatasetTypeProperties{}
 
 func (s *BinaryDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias BinaryDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		Compression *DatasetCompression `json:"compression,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into BinaryDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Compression = decoded.Compression
@@ -30,11 +31,12 @@ func (s *BinaryDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["location"]; ok {
-		impl, err := unmarshalDatasetLocationImplementation(v)
+		impl, err := UnmarshalDatasetLocationImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Location' for 'BinaryDatasetTypeProperties': %+v", err)
 		}
 		s.Location = impl
 	}
+
 	return nil
 }

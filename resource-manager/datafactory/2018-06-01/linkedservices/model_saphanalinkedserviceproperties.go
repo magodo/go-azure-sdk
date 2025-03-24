@@ -10,20 +10,25 @@ import (
 
 type SapHanaLinkedServiceProperties struct {
 	AuthenticationType  *SapHanaAuthenticationType `json:"authenticationType,omitempty"`
-	ConnectionString    *string                    `json:"connectionString,omitempty"`
+	ConnectionString    *interface{}               `json:"connectionString,omitempty"`
 	EncryptedCredential *string                    `json:"encryptedCredential,omitempty"`
 	Password            SecretBase                 `json:"password"`
-	Server              *string                    `json:"server,omitempty"`
-	UserName            *string                    `json:"userName,omitempty"`
+	Server              *interface{}               `json:"server,omitempty"`
+	UserName            *interface{}               `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &SapHanaLinkedServiceProperties{}
 
 func (s *SapHanaLinkedServiceProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SapHanaLinkedServiceProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  *SapHanaAuthenticationType `json:"authenticationType,omitempty"`
+		ConnectionString    *interface{}               `json:"connectionString,omitempty"`
+		EncryptedCredential *string                    `json:"encryptedCredential,omitempty"`
+		Server              *interface{}               `json:"server,omitempty"`
+		UserName            *interface{}               `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SapHanaLinkedServiceProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -38,11 +43,12 @@ func (s *SapHanaLinkedServiceProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SapHanaLinkedServiceProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

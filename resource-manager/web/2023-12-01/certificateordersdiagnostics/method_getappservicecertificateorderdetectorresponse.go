@@ -36,6 +36,7 @@ func (o GetAppServiceCertificateOrderDetectorResponseOperationOptions) ToHeaders
 
 func (o GetAppServiceCertificateOrderDetectorResponseOperationOptions) ToOData() *odata.Query {
 	out := odata.Query{}
+
 	return &out
 }
 
@@ -54,7 +55,7 @@ func (o GetAppServiceCertificateOrderDetectorResponseOperationOptions) ToQuery()
 }
 
 // GetAppServiceCertificateOrderDetectorResponse ...
-func (c CertificateOrdersDiagnosticsClient) GetAppServiceCertificateOrderDetectorResponse(ctx context.Context, id DetectorId, options GetAppServiceCertificateOrderDetectorResponseOperationOptions) (result GetAppServiceCertificateOrderDetectorResponseOperationResponse, err error) {
+func (c CertificateOrdersDiagnosticsClient) GetAppServiceCertificateOrderDetectorResponse(ctx context.Context, id CertificateOrderDetectorId, options GetAppServiceCertificateOrderDetectorResponseOperationOptions) (result GetAppServiceCertificateOrderDetectorResponseOperationResponse, err error) {
 	opts := client.RequestOptions{
 		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
@@ -82,7 +83,6 @@ func (c CertificateOrdersDiagnosticsClient) GetAppServiceCertificateOrderDetecto
 
 	var model DetectorResponse
 	result.Model = &model
-
 	if err = resp.Unmarshal(result.Model); err != nil {
 		return
 	}

@@ -11,10 +11,18 @@ import (
 var _ ExportSettings = AzureDatabricksDeltaLakeExportCommand{}
 
 type AzureDatabricksDeltaLakeExportCommand struct {
-	DateFormat      *string `json:"dateFormat,omitempty"`
-	TimestampFormat *string `json:"timestampFormat,omitempty"`
+	DateFormat      *interface{} `json:"dateFormat,omitempty"`
+	TimestampFormat *interface{} `json:"timestampFormat,omitempty"`
 
 	// Fields inherited from ExportSettings
+
+	Type string `json:"type"`
+}
+
+func (s AzureDatabricksDeltaLakeExportCommand) ExportSettings() BaseExportSettingsImpl {
+	return BaseExportSettingsImpl{
+		Type: s.Type,
+	}
 }
 
 var _ json.Marshaler = AzureDatabricksDeltaLakeExportCommand{}
@@ -28,9 +36,10 @@ func (s AzureDatabricksDeltaLakeExportCommand) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling AzureDatabricksDeltaLakeExportCommand: %+v", err)
 	}
+
 	decoded["type"] = "AzureDatabricksDeltaLakeExportCommand"
 
 	encoded, err = json.Marshal(decoded)

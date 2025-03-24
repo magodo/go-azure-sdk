@@ -10,18 +10,41 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type CopySink interface {
+	CopySink() BaseCopySinkImpl
 }
 
-// RawCopySinkImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ CopySink = BaseCopySinkImpl{}
+
+type BaseCopySinkImpl struct {
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SinkRetryCount           *int64       `json:"sinkRetryCount,omitempty"`
+	SinkRetryWait            *interface{} `json:"sinkRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+	WriteBatchSize           *int64       `json:"writeBatchSize,omitempty"`
+	WriteBatchTimeout        *interface{} `json:"writeBatchTimeout,omitempty"`
+}
+
+func (s BaseCopySinkImpl) CopySink() BaseCopySinkImpl {
+	return s
+}
+
+var _ CopySink = RawCopySinkImpl{}
+
+// RawCopySinkImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawCopySinkImpl struct {
-	Type   string
-	Values map[string]interface{}
+	copySink BaseCopySinkImpl
+	Type     string
+	Values   map[string]interface{}
 }
 
-func unmarshalCopySinkImplementation(input []byte) (CopySink, error) {
+func (s RawCopySinkImpl) CopySink() BaseCopySinkImpl {
+	return s.copySink
+}
+
+func UnmarshalCopySinkImplementation(input []byte) (CopySink, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +54,9 @@ func unmarshalCopySinkImplementation(input []byte) (CopySink, error) {
 		return nil, fmt.Errorf("unmarshaling CopySink into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["type"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["type"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "AvroSink") {
@@ -200,6 +223,14 @@ func unmarshalCopySinkImplementation(input []byte) (CopySink, error) {
 		var out FileSystemSink
 		if err := json.Unmarshal(input, &out); err != nil {
 			return nil, fmt.Errorf("unmarshaling into FileSystemSink: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "IcebergSink") {
+		var out IcebergSink
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into IcebergSink: %+v", err)
 		}
 		return out, nil
 	}
@@ -380,6 +411,14 @@ func unmarshalCopySinkImplementation(input []byte) (CopySink, error) {
 		return out, nil
 	}
 
+	if strings.EqualFold(value, "TeradataSink") {
+		var out TeradataSink
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into TeradataSink: %+v", err)
+		}
+		return out, nil
+	}
+
 	if strings.EqualFold(value, "WarehouseSink") {
 		var out WarehouseSink
 		if err := json.Unmarshal(input, &out); err != nil {
@@ -388,10 +427,15 @@ func unmarshalCopySinkImplementation(input []byte) (CopySink, error) {
 		return out, nil
 	}
 
-	out := RawCopySinkImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseCopySinkImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseCopySinkImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawCopySinkImpl{
+		copySink: parent,
+		Type:     value,
+		Values:   temp,
+	}, nil
 
 }

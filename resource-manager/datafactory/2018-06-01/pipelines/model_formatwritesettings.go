@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type FormatWriteSettings interface {
+	FormatWriteSettings() BaseFormatWriteSettingsImpl
 }
 
-// RawFormatWriteSettingsImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ FormatWriteSettings = BaseFormatWriteSettingsImpl{}
+
+type BaseFormatWriteSettingsImpl struct {
+	Type string `json:"type"`
+}
+
+func (s BaseFormatWriteSettingsImpl) FormatWriteSettings() BaseFormatWriteSettingsImpl {
+	return s
+}
+
+var _ FormatWriteSettings = RawFormatWriteSettingsImpl{}
+
+// RawFormatWriteSettingsImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawFormatWriteSettingsImpl struct {
-	Type   string
-	Values map[string]interface{}
+	formatWriteSettings BaseFormatWriteSettingsImpl
+	Type                string
+	Values              map[string]interface{}
 }
 
-func unmarshalFormatWriteSettingsImplementation(input []byte) (FormatWriteSettings, error) {
+func (s RawFormatWriteSettingsImpl) FormatWriteSettings() BaseFormatWriteSettingsImpl {
+	return s.formatWriteSettings
+}
+
+func UnmarshalFormatWriteSettingsImplementation(input []byte) (FormatWriteSettings, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalFormatWriteSettingsImplementation(input []byte) (FormatWriteSettin
 		return nil, fmt.Errorf("unmarshaling FormatWriteSettings into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["type"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["type"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "AvroWriteSettings") {
@@ -48,6 +65,14 @@ func unmarshalFormatWriteSettingsImplementation(input []byte) (FormatWriteSettin
 		var out DelimitedTextWriteSettings
 		if err := json.Unmarshal(input, &out); err != nil {
 			return nil, fmt.Errorf("unmarshaling into DelimitedTextWriteSettings: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "IcebergWriteSettings") {
+		var out IcebergWriteSettings
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into IcebergWriteSettings: %+v", err)
 		}
 		return out, nil
 	}
@@ -76,10 +101,15 @@ func unmarshalFormatWriteSettingsImplementation(input []byte) (FormatWriteSettin
 		return out, nil
 	}
 
-	out := RawFormatWriteSettingsImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseFormatWriteSettingsImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseFormatWriteSettingsImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawFormatWriteSettingsImpl{
+		formatWriteSettings: parent,
+		Type:                value,
+		Values:              temp,
+	}, nil
 
 }

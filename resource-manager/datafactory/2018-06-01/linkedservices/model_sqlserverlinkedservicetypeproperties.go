@@ -10,19 +10,19 @@ import (
 
 type SqlServerLinkedServiceTypeProperties struct {
 	AlwaysEncryptedSettings  *SqlAlwaysEncryptedProperties `json:"alwaysEncryptedSettings,omitempty"`
-	ApplicationIntent        *string                       `json:"applicationIntent,omitempty"`
+	ApplicationIntent        *interface{}                  `json:"applicationIntent,omitempty"`
 	AuthenticationType       *SqlServerAuthenticationType  `json:"authenticationType,omitempty"`
 	CommandTimeout           *int64                        `json:"commandTimeout,omitempty"`
 	ConnectRetryCount        *int64                        `json:"connectRetryCount,omitempty"`
 	ConnectRetryInterval     *int64                        `json:"connectRetryInterval,omitempty"`
 	ConnectTimeout           *int64                        `json:"connectTimeout,omitempty"`
-	ConnectionString         *string                       `json:"connectionString,omitempty"`
+	ConnectionString         *interface{}                  `json:"connectionString,omitempty"`
 	Credential               *CredentialReference          `json:"credential,omitempty"`
-	Database                 *string                       `json:"database,omitempty"`
-	Encrypt                  *string                       `json:"encrypt,omitempty"`
+	Database                 *interface{}                  `json:"database,omitempty"`
+	Encrypt                  *interface{}                  `json:"encrypt,omitempty"`
 	EncryptedCredential      *string                       `json:"encryptedCredential,omitempty"`
-	FailoverPartner          *string                       `json:"failoverPartner,omitempty"`
-	HostNameInCertificate    *string                       `json:"hostNameInCertificate,omitempty"`
+	FailoverPartner          *interface{}                  `json:"failoverPartner,omitempty"`
+	HostNameInCertificate    *interface{}                  `json:"hostNameInCertificate,omitempty"`
 	IntegratedSecurity       *bool                         `json:"integratedSecurity,omitempty"`
 	LoadBalanceTimeout       *int64                        `json:"loadBalanceTimeout,omitempty"`
 	MaxPoolSize              *int64                        `json:"maxPoolSize,omitempty"`
@@ -32,18 +32,43 @@ type SqlServerLinkedServiceTypeProperties struct {
 	PacketSize               *int64                        `json:"packetSize,omitempty"`
 	Password                 SecretBase                    `json:"password"`
 	Pooling                  *bool                         `json:"pooling,omitempty"`
-	Server                   *string                       `json:"server,omitempty"`
+	Server                   *interface{}                  `json:"server,omitempty"`
 	TrustServerCertificate   *bool                         `json:"trustServerCertificate,omitempty"`
-	UserName                 *string                       `json:"userName,omitempty"`
+	UserName                 *interface{}                  `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &SqlServerLinkedServiceTypeProperties{}
 
 func (s *SqlServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SqlServerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AlwaysEncryptedSettings  *SqlAlwaysEncryptedProperties `json:"alwaysEncryptedSettings,omitempty"`
+		ApplicationIntent        *interface{}                  `json:"applicationIntent,omitempty"`
+		AuthenticationType       *SqlServerAuthenticationType  `json:"authenticationType,omitempty"`
+		CommandTimeout           *int64                        `json:"commandTimeout,omitempty"`
+		ConnectRetryCount        *int64                        `json:"connectRetryCount,omitempty"`
+		ConnectRetryInterval     *int64                        `json:"connectRetryInterval,omitempty"`
+		ConnectTimeout           *int64                        `json:"connectTimeout,omitempty"`
+		ConnectionString         *interface{}                  `json:"connectionString,omitempty"`
+		Credential               *CredentialReference          `json:"credential,omitempty"`
+		Database                 *interface{}                  `json:"database,omitempty"`
+		Encrypt                  *interface{}                  `json:"encrypt,omitempty"`
+		EncryptedCredential      *string                       `json:"encryptedCredential,omitempty"`
+		FailoverPartner          *interface{}                  `json:"failoverPartner,omitempty"`
+		HostNameInCertificate    *interface{}                  `json:"hostNameInCertificate,omitempty"`
+		IntegratedSecurity       *bool                         `json:"integratedSecurity,omitempty"`
+		LoadBalanceTimeout       *int64                        `json:"loadBalanceTimeout,omitempty"`
+		MaxPoolSize              *int64                        `json:"maxPoolSize,omitempty"`
+		MinPoolSize              *int64                        `json:"minPoolSize,omitempty"`
+		MultiSubnetFailover      *bool                         `json:"multiSubnetFailover,omitempty"`
+		MultipleActiveResultSets *bool                         `json:"multipleActiveResultSets,omitempty"`
+		PacketSize               *int64                        `json:"packetSize,omitempty"`
+		Pooling                  *bool                         `json:"pooling,omitempty"`
+		Server                   *interface{}                  `json:"server,omitempty"`
+		TrustServerCertificate   *bool                         `json:"trustServerCertificate,omitempty"`
+		UserName                 *interface{}                  `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SqlServerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AlwaysEncryptedSettings = decoded.AlwaysEncryptedSettings
@@ -78,11 +103,12 @@ func (s *SqlServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SqlServerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

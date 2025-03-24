@@ -13,9 +13,17 @@ var _ ExportSettings = SnowflakeExportCopyCommand{}
 type SnowflakeExportCopyCommand struct {
 	AdditionalCopyOptions   *map[string]interface{} `json:"additionalCopyOptions,omitempty"`
 	AdditionalFormatOptions *map[string]interface{} `json:"additionalFormatOptions,omitempty"`
-	StorageIntegration      *string                 `json:"storageIntegration,omitempty"`
+	StorageIntegration      *interface{}            `json:"storageIntegration,omitempty"`
 
 	// Fields inherited from ExportSettings
+
+	Type string `json:"type"`
+}
+
+func (s SnowflakeExportCopyCommand) ExportSettings() BaseExportSettingsImpl {
+	return BaseExportSettingsImpl{
+		Type: s.Type,
+	}
 }
 
 var _ json.Marshaler = SnowflakeExportCopyCommand{}
@@ -29,9 +37,10 @@ func (s SnowflakeExportCopyCommand) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling SnowflakeExportCopyCommand: %+v", err)
 	}
+
 	decoded["type"] = "SnowflakeExportCopyCommand"
 
 	encoded, err = json.Marshal(decoded)

@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &UserProvidedFunctionAppId{}
 
 func TestNewUserProvidedFunctionAppID(t *testing.T) {
-	id := NewUserProvidedFunctionAppID("12345678-1234-9876-4563-123456789012", "example-resource-group", "staticSiteValue", "userProvidedFunctionAppValue")
+	id := NewUserProvidedFunctionAppID("12345678-1234-9876-4563-123456789012", "example-resource-group", "staticSiteName", "userProvidedFunctionAppName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewUserProvidedFunctionAppID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.StaticSiteName != "staticSiteValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'StaticSiteName'", id.StaticSiteName, "staticSiteValue")
+	if id.StaticSiteName != "staticSiteName" {
+		t.Fatalf("Expected %q but got %q for Segment 'StaticSiteName'", id.StaticSiteName, "staticSiteName")
 	}
 
-	if id.UserProvidedFunctionAppName != "userProvidedFunctionAppValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'UserProvidedFunctionAppName'", id.UserProvidedFunctionAppName, "userProvidedFunctionAppValue")
+	if id.UserProvidedFunctionAppName != "userProvidedFunctionAppName" {
+		t.Fatalf("Expected %q but got %q for Segment 'UserProvidedFunctionAppName'", id.UserProvidedFunctionAppName, "userProvidedFunctionAppName")
 	}
 }
 
 func TestFormatUserProvidedFunctionAppID(t *testing.T) {
-	actual := NewUserProvidedFunctionAppID("12345678-1234-9876-4563-123456789012", "example-resource-group", "staticSiteValue", "userProvidedFunctionAppValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps/userProvidedFunctionAppValue"
+	actual := NewUserProvidedFunctionAppID("12345678-1234-9876-4563-123456789012", "example-resource-group", "staticSiteName", "userProvidedFunctionAppName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps/userProvidedFunctionAppName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseUserProvidedFunctionAppID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps/userProvidedFunctionAppValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps/userProvidedFunctionAppName",
 			Expected: &UserProvidedFunctionAppId{
 				SubscriptionId:              "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:           "example-resource-group",
-				StaticSiteName:              "staticSiteValue",
-				UserProvidedFunctionAppName: "userProvidedFunctionAppValue",
+				StaticSiteName:              "staticSiteName",
+				UserProvidedFunctionAppName: "userProvidedFunctionAppName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps/userProvidedFunctionAppValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps/userProvidedFunctionAppName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseUserProvidedFunctionAppIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEvAlUe/uSeRpRoViDeDfUnCtIoNaPpS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEnAmE/uSeRpRoViDeDfUnCtIoNaPpS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps/userProvidedFunctionAppValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps/userProvidedFunctionAppName",
 			Expected: &UserProvidedFunctionAppId{
 				SubscriptionId:              "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:           "example-resource-group",
-				StaticSiteName:              "staticSiteValue",
-				UserProvidedFunctionAppName: "userProvidedFunctionAppValue",
+				StaticSiteName:              "staticSiteName",
+				UserProvidedFunctionAppName: "userProvidedFunctionAppName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteValue/userProvidedFunctionApps/userProvidedFunctionAppValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/staticSites/staticSiteName/userProvidedFunctionApps/userProvidedFunctionAppName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEvAlUe/uSeRpRoViDeDfUnCtIoNaPpS/uSeRpRoViDeDfUnCtIoNaPpVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEnAmE/uSeRpRoViDeDfUnCtIoNaPpS/uSeRpRoViDeDfUnCtIoNaPpNaMe",
 			Expected: &UserProvidedFunctionAppId{
 				SubscriptionId:              "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:           "eXaMpLe-rEsOuRcE-GrOuP",
-				StaticSiteName:              "sTaTiCsItEvAlUe",
-				UserProvidedFunctionAppName: "uSeRpRoViDeDfUnCtIoNaPpVaLuE",
+				StaticSiteName:              "sTaTiCsItEnAmE",
+				UserProvidedFunctionAppName: "uSeRpRoViDeDfUnCtIoNaPpNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEvAlUe/uSeRpRoViDeDfUnCtIoNaPpS/uSeRpRoViDeDfUnCtIoNaPpVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/sTaTiCsItEs/sTaTiCsItEnAmE/uSeRpRoViDeDfUnCtIoNaPpS/uSeRpRoViDeDfUnCtIoNaPpNaMe/extra",
 			Error: true,
 		},
 	}

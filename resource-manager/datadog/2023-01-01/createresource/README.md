@@ -1,7 +1,7 @@
 
 ## `github.com/hashicorp/go-azure-sdk/resource-manager/datadog/2023-01-01/createresource` Documentation
 
-The `createresource` SDK allows for interaction with the Azure Resource Manager Service `datadog` (API Version `2023-01-01`).
+The `createresource` SDK allows for interaction with Azure Resource Manager `datadog` (API Version `2023-01-01`).
 
 This readme covers example usages, but further information on [using this SDK can be found in the project root](https://github.com/hashicorp/go-azure-sdk/tree/main/docs).
 
@@ -43,11 +43,12 @@ if model := read.Model; model != nil {
 ctx := context.TODO()
 id := commonids.NewSubscriptionID("12345678-1234-9876-4563-123456789012")
 
-read, err := client.CreationSupportedList(ctx, id, createresource.DefaultCreationSupportedListOperationOptions())
+// alternatively `client.CreationSupportedList(ctx, id, createresource.DefaultCreationSupportedListOperationOptions())` can be used to do batched pagination
+items, err := client.CreationSupportedListComplete(ctx, id, createresource.DefaultCreationSupportedListOperationOptions())
 if err != nil {
 	// handle the error
 }
-if model := read.Model; model != nil {
-	// do something with the model/response object
+for _, item := range items {
+	// do something
 }
 ```

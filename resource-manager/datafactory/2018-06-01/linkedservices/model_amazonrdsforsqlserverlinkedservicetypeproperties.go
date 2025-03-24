@@ -10,18 +10,18 @@ import (
 
 type AmazonRdsForSqlServerLinkedServiceTypeProperties struct {
 	AlwaysEncryptedSettings  *SqlAlwaysEncryptedProperties      `json:"alwaysEncryptedSettings,omitempty"`
-	ApplicationIntent        *string                            `json:"applicationIntent,omitempty"`
+	ApplicationIntent        *interface{}                       `json:"applicationIntent,omitempty"`
 	AuthenticationType       *AmazonRdsForSqlAuthenticationType `json:"authenticationType,omitempty"`
 	CommandTimeout           *int64                             `json:"commandTimeout,omitempty"`
 	ConnectRetryCount        *int64                             `json:"connectRetryCount,omitempty"`
 	ConnectRetryInterval     *int64                             `json:"connectRetryInterval,omitempty"`
 	ConnectTimeout           *int64                             `json:"connectTimeout,omitempty"`
-	ConnectionString         *string                            `json:"connectionString,omitempty"`
-	Database                 *string                            `json:"database,omitempty"`
-	Encrypt                  *string                            `json:"encrypt,omitempty"`
+	ConnectionString         *interface{}                       `json:"connectionString,omitempty"`
+	Database                 *interface{}                       `json:"database,omitempty"`
+	Encrypt                  *interface{}                       `json:"encrypt,omitempty"`
 	EncryptedCredential      *string                            `json:"encryptedCredential,omitempty"`
-	FailoverPartner          *string                            `json:"failoverPartner,omitempty"`
-	HostNameInCertificate    *string                            `json:"hostNameInCertificate,omitempty"`
+	FailoverPartner          *interface{}                       `json:"failoverPartner,omitempty"`
+	HostNameInCertificate    *interface{}                       `json:"hostNameInCertificate,omitempty"`
 	IntegratedSecurity       *bool                              `json:"integratedSecurity,omitempty"`
 	LoadBalanceTimeout       *int64                             `json:"loadBalanceTimeout,omitempty"`
 	MaxPoolSize              *int64                             `json:"maxPoolSize,omitempty"`
@@ -31,18 +31,42 @@ type AmazonRdsForSqlServerLinkedServiceTypeProperties struct {
 	PacketSize               *int64                             `json:"packetSize,omitempty"`
 	Password                 SecretBase                         `json:"password"`
 	Pooling                  *bool                              `json:"pooling,omitempty"`
-	Server                   *string                            `json:"server,omitempty"`
+	Server                   *interface{}                       `json:"server,omitempty"`
 	TrustServerCertificate   *bool                              `json:"trustServerCertificate,omitempty"`
-	UserName                 *string                            `json:"userName,omitempty"`
+	UserName                 *interface{}                       `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &AmazonRdsForSqlServerLinkedServiceTypeProperties{}
 
 func (s *AmazonRdsForSqlServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AmazonRdsForSqlServerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AlwaysEncryptedSettings  *SqlAlwaysEncryptedProperties      `json:"alwaysEncryptedSettings,omitempty"`
+		ApplicationIntent        *interface{}                       `json:"applicationIntent,omitempty"`
+		AuthenticationType       *AmazonRdsForSqlAuthenticationType `json:"authenticationType,omitempty"`
+		CommandTimeout           *int64                             `json:"commandTimeout,omitempty"`
+		ConnectRetryCount        *int64                             `json:"connectRetryCount,omitempty"`
+		ConnectRetryInterval     *int64                             `json:"connectRetryInterval,omitempty"`
+		ConnectTimeout           *int64                             `json:"connectTimeout,omitempty"`
+		ConnectionString         *interface{}                       `json:"connectionString,omitempty"`
+		Database                 *interface{}                       `json:"database,omitempty"`
+		Encrypt                  *interface{}                       `json:"encrypt,omitempty"`
+		EncryptedCredential      *string                            `json:"encryptedCredential,omitempty"`
+		FailoverPartner          *interface{}                       `json:"failoverPartner,omitempty"`
+		HostNameInCertificate    *interface{}                       `json:"hostNameInCertificate,omitempty"`
+		IntegratedSecurity       *bool                              `json:"integratedSecurity,omitempty"`
+		LoadBalanceTimeout       *int64                             `json:"loadBalanceTimeout,omitempty"`
+		MaxPoolSize              *int64                             `json:"maxPoolSize,omitempty"`
+		MinPoolSize              *int64                             `json:"minPoolSize,omitempty"`
+		MultiSubnetFailover      *bool                              `json:"multiSubnetFailover,omitempty"`
+		MultipleActiveResultSets *bool                              `json:"multipleActiveResultSets,omitempty"`
+		PacketSize               *int64                             `json:"packetSize,omitempty"`
+		Pooling                  *bool                              `json:"pooling,omitempty"`
+		Server                   *interface{}                       `json:"server,omitempty"`
+		TrustServerCertificate   *bool                              `json:"trustServerCertificate,omitempty"`
+		UserName                 *interface{}                       `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AmazonRdsForSqlServerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AlwaysEncryptedSettings = decoded.AlwaysEncryptedSettings
@@ -76,11 +100,12 @@ func (s *AmazonRdsForSqlServerLinkedServiceTypeProperties) UnmarshalJSON(bytes [
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'AmazonRdsForSqlServerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

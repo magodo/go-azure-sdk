@@ -10,30 +10,42 @@ import (
 
 type GoogleAdWordsLinkedServiceTypeProperties struct {
 	AuthenticationType     *GoogleAdWordsAuthenticationType `json:"authenticationType,omitempty"`
-	ClientCustomerID       *string                          `json:"clientCustomerID,omitempty"`
-	ClientId               *string                          `json:"clientId,omitempty"`
+	ClientCustomerID       *interface{}                     `json:"clientCustomerID,omitempty"`
+	ClientId               *interface{}                     `json:"clientId,omitempty"`
 	ClientSecret           SecretBase                       `json:"clientSecret"`
 	ConnectionProperties   *interface{}                     `json:"connectionProperties,omitempty"`
 	DeveloperToken         SecretBase                       `json:"developerToken"`
-	Email                  *string                          `json:"email,omitempty"`
+	Email                  *interface{}                     `json:"email,omitempty"`
 	EncryptedCredential    *string                          `json:"encryptedCredential,omitempty"`
-	GoogleAdsApiVersion    *string                          `json:"googleAdsApiVersion,omitempty"`
-	KeyFilePath            *string                          `json:"keyFilePath,omitempty"`
-	LoginCustomerID        *string                          `json:"loginCustomerID,omitempty"`
+	GoogleAdsApiVersion    *interface{}                     `json:"googleAdsApiVersion,omitempty"`
+	KeyFilePath            *interface{}                     `json:"keyFilePath,omitempty"`
+	LoginCustomerID        *interface{}                     `json:"loginCustomerID,omitempty"`
 	PrivateKey             SecretBase                       `json:"privateKey"`
 	RefreshToken           SecretBase                       `json:"refreshToken"`
 	SupportLegacyDataTypes *bool                            `json:"supportLegacyDataTypes,omitempty"`
-	TrustedCertPath        *string                          `json:"trustedCertPath,omitempty"`
+	TrustedCertPath        *interface{}                     `json:"trustedCertPath,omitempty"`
 	UseSystemTrustStore    *bool                            `json:"useSystemTrustStore,omitempty"`
 }
 
 var _ json.Unmarshaler = &GoogleAdWordsLinkedServiceTypeProperties{}
 
 func (s *GoogleAdWordsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias GoogleAdWordsLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType     *GoogleAdWordsAuthenticationType `json:"authenticationType,omitempty"`
+		ClientCustomerID       *interface{}                     `json:"clientCustomerID,omitempty"`
+		ClientId               *interface{}                     `json:"clientId,omitempty"`
+		ConnectionProperties   *interface{}                     `json:"connectionProperties,omitempty"`
+		Email                  *interface{}                     `json:"email,omitempty"`
+		EncryptedCredential    *string                          `json:"encryptedCredential,omitempty"`
+		GoogleAdsApiVersion    *interface{}                     `json:"googleAdsApiVersion,omitempty"`
+		KeyFilePath            *interface{}                     `json:"keyFilePath,omitempty"`
+		LoginCustomerID        *interface{}                     `json:"loginCustomerID,omitempty"`
+		SupportLegacyDataTypes *bool                            `json:"supportLegacyDataTypes,omitempty"`
+		TrustedCertPath        *interface{}                     `json:"trustedCertPath,omitempty"`
+		UseSystemTrustStore    *bool                            `json:"useSystemTrustStore,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into GoogleAdWordsLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -55,7 +67,7 @@ func (s *GoogleAdWordsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["clientSecret"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientSecret' for 'GoogleAdWordsLinkedServiceTypeProperties': %+v", err)
 		}
@@ -63,7 +75,7 @@ func (s *GoogleAdWordsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["developerToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'DeveloperToken' for 'GoogleAdWordsLinkedServiceTypeProperties': %+v", err)
 		}
@@ -71,7 +83,7 @@ func (s *GoogleAdWordsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["privateKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrivateKey' for 'GoogleAdWordsLinkedServiceTypeProperties': %+v", err)
 		}
@@ -79,11 +91,12 @@ func (s *GoogleAdWordsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["refreshToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RefreshToken' for 'GoogleAdWordsLinkedServiceTypeProperties': %+v", err)
 		}
 		s.RefreshToken = impl
 	}
+
 	return nil
 }

@@ -12,24 +12,24 @@ import (
 var _ resourceids.ResourceId = &TagValueId{}
 
 func TestNewTagValueID(t *testing.T) {
-	id := NewTagValueID("12345678-1234-9876-4563-123456789012", "tagValue", "tagValueValue")
+	id := NewTagValueID("12345678-1234-9876-4563-123456789012", "tagName", "tagValueName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.TagName != "tagValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'TagName'", id.TagName, "tagValue")
+	if id.TagName != "tagName" {
+		t.Fatalf("Expected %q but got %q for Segment 'TagName'", id.TagName, "tagName")
 	}
 
-	if id.TagValueName != "tagValueValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'TagValueName'", id.TagValueName, "tagValueValue")
+	if id.TagValueName != "tagValueName" {
+		t.Fatalf("Expected %q but got %q for Segment 'TagValueName'", id.TagValueName, "tagValueName")
 	}
 }
 
 func TestFormatTagValueID(t *testing.T) {
-	actual := NewTagValueID("12345678-1234-9876-4563-123456789012", "tagValue", "tagValueValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues/tagValueValue"
+	actual := NewTagValueID("12345678-1234-9876-4563-123456789012", "tagName", "tagValueName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues/tagValueName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -63,26 +63,26 @@ func TestParseTagValueID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues/tagValueValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues/tagValueName",
 			Expected: &TagValueId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				TagName:        "tagValue",
-				TagValueName:   "tagValueValue",
+				TagName:        "tagName",
+				TagValueName:   "tagValueName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues/tagValueValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues/tagValueName/extra",
 			Error: true,
 		},
 	}
@@ -159,50 +159,50 @@ func TestParseTagValueIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgVaLuE/tAgVaLuEs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgNaMe/tAgVaLuEs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues/tagValueValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues/tagValueName",
 			Expected: &TagValueId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				TagName:        "tagValue",
-				TagValueName:   "tagValueValue",
+				TagName:        "tagName",
+				TagValueName:   "tagValueName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagValue/tagValues/tagValueValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/tagNames/tagName/tagValues/tagValueName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgVaLuE/tAgVaLuEs/tAgVaLuEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgNaMe/tAgVaLuEs/tAgVaLuEnAmE",
 			Expected: &TagValueId{
 				SubscriptionId: "12345678-1234-9876-4563-123456789012",
-				TagName:        "tAgVaLuE",
-				TagValueName:   "tAgVaLuEvAlUe",
+				TagName:        "tAgNaMe",
+				TagValueName:   "tAgVaLuEnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgVaLuE/tAgVaLuEs/tAgVaLuEvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/tAgNaMeS/tAgNaMe/tAgVaLuEs/tAgVaLuEnAmE/extra",
 			Error: true,
 		},
 	}

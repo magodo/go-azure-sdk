@@ -10,21 +10,25 @@ import (
 
 type GoogleBigQueryV2LinkedServiceTypeProperties struct {
 	AuthenticationType  GoogleBigQueryV2AuthenticationType `json:"authenticationType"`
-	ClientId            *string                            `json:"clientId,omitempty"`
+	ClientId            *interface{}                       `json:"clientId,omitempty"`
 	ClientSecret        SecretBase                         `json:"clientSecret"`
 	EncryptedCredential *string                            `json:"encryptedCredential,omitempty"`
 	KeyFileContent      SecretBase                         `json:"keyFileContent"`
-	ProjectId           string                             `json:"projectId"`
+	ProjectId           interface{}                        `json:"projectId"`
 	RefreshToken        SecretBase                         `json:"refreshToken"`
 }
 
 var _ json.Unmarshaler = &GoogleBigQueryV2LinkedServiceTypeProperties{}
 
 func (s *GoogleBigQueryV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias GoogleBigQueryV2LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  GoogleBigQueryV2AuthenticationType `json:"authenticationType"`
+		ClientId            *interface{}                       `json:"clientId,omitempty"`
+		EncryptedCredential *string                            `json:"encryptedCredential,omitempty"`
+		ProjectId           interface{}                        `json:"projectId"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into GoogleBigQueryV2LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -38,7 +42,7 @@ func (s *GoogleBigQueryV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte
 	}
 
 	if v, ok := temp["clientSecret"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientSecret' for 'GoogleBigQueryV2LinkedServiceTypeProperties': %+v", err)
 		}
@@ -46,7 +50,7 @@ func (s *GoogleBigQueryV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte
 	}
 
 	if v, ok := temp["keyFileContent"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'KeyFileContent' for 'GoogleBigQueryV2LinkedServiceTypeProperties': %+v", err)
 		}
@@ -54,11 +58,12 @@ func (s *GoogleBigQueryV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte
 	}
 
 	if v, ok := temp["refreshToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RefreshToken' for 'GoogleBigQueryV2LinkedServiceTypeProperties': %+v", err)
 		}
 		s.RefreshToken = impl
 	}
+
 	return nil
 }

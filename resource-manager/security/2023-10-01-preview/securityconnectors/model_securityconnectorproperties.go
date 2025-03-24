@@ -34,10 +34,13 @@ func (o *SecurityConnectorProperties) SetHierarchyIdentifierTrialEndDateAsTime(i
 var _ json.Unmarshaler = &SecurityConnectorProperties{}
 
 func (s *SecurityConnectorProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SecurityConnectorProperties
-	var decoded alias
+	var decoded struct {
+		EnvironmentName                 *CloudName `json:"environmentName,omitempty"`
+		HierarchyIdentifier             *string    `json:"hierarchyIdentifier,omitempty"`
+		HierarchyIdentifierTrialEndDate *string    `json:"hierarchyIdentifierTrialEndDate,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SecurityConnectorProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EnvironmentName = decoded.EnvironmentName
@@ -50,7 +53,7 @@ func (s *SecurityConnectorProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["environmentData"]; ok {
-		impl, err := unmarshalEnvironmentDataImplementation(v)
+		impl, err := UnmarshalEnvironmentDataImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'EnvironmentData' for 'SecurityConnectorProperties': %+v", err)
 		}
@@ -65,7 +68,7 @@ func (s *SecurityConnectorProperties) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]CloudOffering, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalCloudOfferingImplementation(val)
+			impl, err := UnmarshalCloudOfferingImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'Offerings' for 'SecurityConnectorProperties': %+v", i, err)
 			}
@@ -73,5 +76,6 @@ func (s *SecurityConnectorProperties) UnmarshalJSON(bytes []byte) error {
 		}
 		s.Offerings = &output
 	}
+
 	return nil
 }

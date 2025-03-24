@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &SyncSetId{}
 
 func TestNewSyncSetID(t *testing.T) {
-	id := NewSyncSetID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterValue", "syncSetValue")
+	id := NewSyncSetID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterName", "syncSetName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewSyncSetID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.OpenShiftClusterName != "openShiftClusterValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'OpenShiftClusterName'", id.OpenShiftClusterName, "openShiftClusterValue")
+	if id.OpenShiftClusterName != "openShiftClusterName" {
+		t.Fatalf("Expected %q but got %q for Segment 'OpenShiftClusterName'", id.OpenShiftClusterName, "openShiftClusterName")
 	}
 
-	if id.SyncSetName != "syncSetValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'SyncSetName'", id.SyncSetName, "syncSetValue")
+	if id.SyncSetName != "syncSetName" {
+		t.Fatalf("Expected %q but got %q for Segment 'SyncSetName'", id.SyncSetName, "syncSetName")
 	}
 }
 
 func TestFormatSyncSetID(t *testing.T) {
-	actual := NewSyncSetID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterValue", "syncSetValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet/syncSetValue"
+	actual := NewSyncSetID("12345678-1234-9876-4563-123456789012", "example-resource-group", "openShiftClusterName", "syncSetName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet/syncSetName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseSyncSetID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet/syncSetValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet/syncSetName",
 			Expected: &SyncSetId{
 				SubscriptionId:       "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:    "example-resource-group",
-				OpenShiftClusterName: "openShiftClusterValue",
-				SyncSetName:          "syncSetValue",
+				OpenShiftClusterName: "openShiftClusterName",
+				SyncSetName:          "syncSetName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet/syncSetValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet/syncSetName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseSyncSetIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCsEt",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCsEt",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet/syncSetValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet/syncSetName",
 			Expected: &SyncSetId{
 				SubscriptionId:       "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:    "example-resource-group",
-				OpenShiftClusterName: "openShiftClusterValue",
-				SyncSetName:          "syncSetValue",
+				OpenShiftClusterName: "openShiftClusterName",
+				SyncSetName:          "syncSetName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterValue/syncSet/syncSetValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.RedHatOpenShift/openShiftClusters/openShiftClusterName/syncSet/syncSetName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCsEt/sYnCsEtVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCsEt/sYnCsEtNaMe",
 			Expected: &SyncSetId{
 				SubscriptionId:       "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:    "eXaMpLe-rEsOuRcE-GrOuP",
-				OpenShiftClusterName: "oPeNsHiFtClUsTeRvAlUe",
-				SyncSetName:          "sYnCsEtVaLuE",
+				OpenShiftClusterName: "oPeNsHiFtClUsTeRnAmE",
+				SyncSetName:          "sYnCsEtNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRvAlUe/sYnCsEt/sYnCsEtVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEdHaToPeNsHiFt/oPeNsHiFtClUsTeRs/oPeNsHiFtClUsTeRnAmE/sYnCsEt/sYnCsEtNaMe/extra",
 			Error: true,
 		},
 	}

@@ -12,24 +12,24 @@ import (
 var _ resourceids.ResourceId = &DeletedAccountId{}
 
 func TestNewDeletedAccountID(t *testing.T) {
-	id := NewDeletedAccountID("12345678-1234-9876-4563-123456789012", "locationValue", "deletedAccountValue")
+	id := NewDeletedAccountID("12345678-1234-9876-4563-123456789012", "locationName", "deletedAccountName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.LocationName != "locationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationValue")
+	if id.LocationName != "locationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationName")
 	}
 
-	if id.DeletedAccountName != "deletedAccountValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DeletedAccountName'", id.DeletedAccountName, "deletedAccountValue")
+	if id.DeletedAccountName != "deletedAccountName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DeletedAccountName'", id.DeletedAccountName, "deletedAccountName")
 	}
 }
 
 func TestFormatDeletedAccountID(t *testing.T) {
-	actual := NewDeletedAccountID("12345678-1234-9876-4563-123456789012", "locationValue", "deletedAccountValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts/deletedAccountValue"
+	actual := NewDeletedAccountID("12345678-1234-9876-4563-123456789012", "locationName", "deletedAccountName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts/deletedAccountName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -73,26 +73,26 @@ func TestParseDeletedAccountID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts/deletedAccountValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts/deletedAccountName",
 			Expected: &DeletedAccountId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				LocationName:       "locationValue",
-				DeletedAccountName: "deletedAccountValue",
+				LocationName:       "locationName",
+				DeletedAccountName: "deletedAccountName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts/deletedAccountValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts/deletedAccountName/extra",
 			Error: true,
 		},
 	}
@@ -189,50 +189,50 @@ func TestParseDeletedAccountIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdAcCoUnTs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdAcCoUnTs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts/deletedAccountValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts/deletedAccountName",
 			Expected: &DeletedAccountId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				LocationName:       "locationValue",
-				DeletedAccountName: "deletedAccountValue",
+				LocationName:       "locationName",
+				DeletedAccountName: "deletedAccountName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationValue/deletedAccounts/deletedAccountValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.Storage/locations/locationName/deletedAccounts/deletedAccountName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdAcCoUnTs/dElEtEdAcCoUnTvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdAcCoUnTs/dElEtEdAcCoUnTnAmE",
 			Expected: &DeletedAccountId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				LocationName:       "lOcAtIoNvAlUe",
-				DeletedAccountName: "dElEtEdAcCoUnTvAlUe",
+				LocationName:       "lOcAtIoNnAmE",
+				DeletedAccountName: "dElEtEdAcCoUnTnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdAcCoUnTs/dElEtEdAcCoUnTvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sToRaGe/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdAcCoUnTs/dElEtEdAcCoUnTnAmE/extra",
 			Error: true,
 		},
 	}

@@ -22,11 +22,12 @@ func (s *AlertsMetaData) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["properties"]; ok {
-		impl, err := unmarshalAlertsMetaDataPropertiesImplementation(v)
+		impl, err := UnmarshalAlertsMetaDataPropertiesImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Properties' for 'AlertsMetaData': %+v", err)
 		}
 		s.Properties = impl
 	}
+
 	return nil
 }

@@ -9,20 +9,24 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type HdfsLinkedServiceTypeProperties struct {
-	AuthenticationType  *string    `json:"authenticationType,omitempty"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Password            SecretBase `json:"password"`
-	Url                 string     `json:"url"`
-	UserName            *string    `json:"userName,omitempty"`
+	AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Password            SecretBase   `json:"password"`
+	Url                 interface{}  `json:"url"`
+	UserName            *interface{} `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &HdfsLinkedServiceTypeProperties{}
 
 func (s *HdfsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HdfsLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Url                 interface{}  `json:"url"`
+		UserName            *interface{} `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HdfsLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -36,11 +40,12 @@ func (s *HdfsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'HdfsLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

@@ -9,19 +9,22 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type FileServerLinkedServiceTypeProperties struct {
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Host                string     `json:"host"`
-	Password            SecretBase `json:"password"`
-	UserId              *string    `json:"userId,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Host                interface{}  `json:"host"`
+	Password            SecretBase   `json:"password"`
+	UserId              *interface{} `json:"userId,omitempty"`
 }
 
 var _ json.Unmarshaler = &FileServerLinkedServiceTypeProperties{}
 
 func (s *FileServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias FileServerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Host                interface{}  `json:"host"`
+		UserId              *interface{} `json:"userId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into FileServerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
@@ -34,11 +37,12 @@ func (s *FileServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'FileServerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

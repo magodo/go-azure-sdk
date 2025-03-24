@@ -14,21 +14,31 @@ type HBaseLinkedServiceTypeProperties struct {
 	AuthenticationType        HBaseAuthenticationType `json:"authenticationType"`
 	EnableSsl                 *bool                   `json:"enableSsl,omitempty"`
 	EncryptedCredential       *string                 `json:"encryptedCredential,omitempty"`
-	HTTPPath                  *string                 `json:"httpPath,omitempty"`
-	Host                      string                  `json:"host"`
+	HTTPPath                  *interface{}            `json:"httpPath,omitempty"`
+	Host                      interface{}             `json:"host"`
 	Password                  SecretBase              `json:"password"`
 	Port                      *int64                  `json:"port,omitempty"`
-	TrustedCertPath           *string                 `json:"trustedCertPath,omitempty"`
-	Username                  *string                 `json:"username,omitempty"`
+	TrustedCertPath           *interface{}            `json:"trustedCertPath,omitempty"`
+	Username                  *interface{}            `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &HBaseLinkedServiceTypeProperties{}
 
 func (s *HBaseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HBaseLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AllowHostNameCNMismatch   *bool                   `json:"allowHostNameCNMismatch,omitempty"`
+		AllowSelfSignedServerCert *bool                   `json:"allowSelfSignedServerCert,omitempty"`
+		AuthenticationType        HBaseAuthenticationType `json:"authenticationType"`
+		EnableSsl                 *bool                   `json:"enableSsl,omitempty"`
+		EncryptedCredential       *string                 `json:"encryptedCredential,omitempty"`
+		HTTPPath                  *interface{}            `json:"httpPath,omitempty"`
+		Host                      interface{}             `json:"host"`
+		Port                      *int64                  `json:"port,omitempty"`
+		TrustedCertPath           *interface{}            `json:"trustedCertPath,omitempty"`
+		Username                  *interface{}            `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HBaseLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AllowHostNameCNMismatch = decoded.AllowHostNameCNMismatch
@@ -48,11 +58,12 @@ func (s *HBaseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'HBaseLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

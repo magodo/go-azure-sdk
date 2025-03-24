@@ -9,12 +9,12 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SquareLinkedServiceTypeProperties struct {
-	ClientId              *string      `json:"clientId,omitempty"`
+	ClientId              *interface{} `json:"clientId,omitempty"`
 	ClientSecret          SecretBase   `json:"clientSecret"`
 	ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
 	EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
-	Host                  *string      `json:"host,omitempty"`
-	RedirectUri           *string      `json:"redirectUri,omitempty"`
+	Host                  *interface{} `json:"host,omitempty"`
+	RedirectUri           *interface{} `json:"redirectUri,omitempty"`
 	UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
 	UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
 	UsePeerVerification   *bool        `json:"usePeerVerification,omitempty"`
@@ -23,10 +23,18 @@ type SquareLinkedServiceTypeProperties struct {
 var _ json.Unmarshaler = &SquareLinkedServiceTypeProperties{}
 
 func (s *SquareLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SquareLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ClientId              *interface{} `json:"clientId,omitempty"`
+		ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
+		EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
+		Host                  *interface{} `json:"host,omitempty"`
+		RedirectUri           *interface{} `json:"redirectUri,omitempty"`
+		UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
+		UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
+		UsePeerVerification   *bool        `json:"usePeerVerification,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SquareLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClientId = decoded.ClientId
@@ -44,11 +52,12 @@ func (s *SquareLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["clientSecret"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientSecret' for 'SquareLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ClientSecret = impl
 	}
+
 	return nil
 }

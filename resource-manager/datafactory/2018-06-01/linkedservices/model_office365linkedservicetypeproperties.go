@@ -9,20 +9,24 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type Office365LinkedServiceTypeProperties struct {
-	EncryptedCredential      *string    `json:"encryptedCredential,omitempty"`
-	Office365TenantId        string     `json:"office365TenantId"`
-	ServicePrincipalId       string     `json:"servicePrincipalId"`
-	ServicePrincipalKey      SecretBase `json:"servicePrincipalKey"`
-	ServicePrincipalTenantId string     `json:"servicePrincipalTenantId"`
+	EncryptedCredential      *string     `json:"encryptedCredential,omitempty"`
+	Office365TenantId        interface{} `json:"office365TenantId"`
+	ServicePrincipalId       interface{} `json:"servicePrincipalId"`
+	ServicePrincipalKey      SecretBase  `json:"servicePrincipalKey"`
+	ServicePrincipalTenantId interface{} `json:"servicePrincipalTenantId"`
 }
 
 var _ json.Unmarshaler = &Office365LinkedServiceTypeProperties{}
 
 func (s *Office365LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias Office365LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential      *string     `json:"encryptedCredential,omitempty"`
+		Office365TenantId        interface{} `json:"office365TenantId"`
+		ServicePrincipalId       interface{} `json:"servicePrincipalId"`
+		ServicePrincipalTenantId interface{} `json:"servicePrincipalTenantId"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into Office365LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
@@ -36,11 +40,12 @@ func (s *Office365LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'Office365LinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

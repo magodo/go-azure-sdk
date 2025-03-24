@@ -9,23 +9,30 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type HDInsightLinkedServiceTypeProperties struct {
-	ClusterUri                string                  `json:"clusterUri"`
+	ClusterUri                interface{}             `json:"clusterUri"`
 	EncryptedCredential       *string                 `json:"encryptedCredential,omitempty"`
-	FileSystem                *string                 `json:"fileSystem,omitempty"`
+	FileSystem                *interface{}            `json:"fileSystem,omitempty"`
 	HcatalogLinkedServiceName *LinkedServiceReference `json:"hcatalogLinkedServiceName,omitempty"`
 	IsEspEnabled              *bool                   `json:"isEspEnabled,omitempty"`
 	LinkedServiceName         *LinkedServiceReference `json:"linkedServiceName,omitempty"`
 	Password                  SecretBase              `json:"password"`
-	UserName                  *string                 `json:"userName,omitempty"`
+	UserName                  *interface{}            `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &HDInsightLinkedServiceTypeProperties{}
 
 func (s *HDInsightLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HDInsightLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ClusterUri                interface{}             `json:"clusterUri"`
+		EncryptedCredential       *string                 `json:"encryptedCredential,omitempty"`
+		FileSystem                *interface{}            `json:"fileSystem,omitempty"`
+		HcatalogLinkedServiceName *LinkedServiceReference `json:"hcatalogLinkedServiceName,omitempty"`
+		IsEspEnabled              *bool                   `json:"isEspEnabled,omitempty"`
+		LinkedServiceName         *LinkedServiceReference `json:"linkedServiceName,omitempty"`
+		UserName                  *interface{}            `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HDInsightLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClusterUri = decoded.ClusterUri
@@ -42,11 +49,12 @@ func (s *HDInsightLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'HDInsightLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

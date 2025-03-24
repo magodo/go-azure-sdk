@@ -16,10 +16,11 @@ type LicensedComponentSetupTypeProperties struct {
 var _ json.Unmarshaler = &LicensedComponentSetupTypeProperties{}
 
 func (s *LicensedComponentSetupTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias LicensedComponentSetupTypeProperties
-	var decoded alias
+	var decoded struct {
+		ComponentName string `json:"componentName"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into LicensedComponentSetupTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ComponentName = decoded.ComponentName
@@ -30,11 +31,12 @@ func (s *LicensedComponentSetupTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["licenseKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'LicenseKey' for 'LicensedComponentSetupTypeProperties': %+v", err)
 		}
 		s.LicenseKey = impl
 	}
+
 	return nil
 }

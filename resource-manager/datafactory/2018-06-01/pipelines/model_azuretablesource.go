@@ -13,14 +13,26 @@ var _ CopySource = AzureTableSource{}
 type AzureTableSource struct {
 	AdditionalColumns                   *interface{} `json:"additionalColumns,omitempty"`
 	AzureTableSourceIgnoreTableNotFound *bool        `json:"azureTableSourceIgnoreTableNotFound,omitempty"`
-	AzureTableSourceQuery               *string      `json:"azureTableSourceQuery,omitempty"`
-	QueryTimeout                        *string      `json:"queryTimeout,omitempty"`
+	AzureTableSourceQuery               *interface{} `json:"azureTableSourceQuery,omitempty"`
+	QueryTimeout                        *interface{} `json:"queryTimeout,omitempty"`
 
 	// Fields inherited from CopySource
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SourceRetryCount         *int64  `json:"sourceRetryCount,omitempty"`
-	SourceRetryWait          *string `json:"sourceRetryWait,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SourceRetryCount         *int64       `json:"sourceRetryCount,omitempty"`
+	SourceRetryWait          *interface{} `json:"sourceRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+}
+
+func (s AzureTableSource) CopySource() BaseCopySourceImpl {
+	return BaseCopySourceImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SourceRetryCount:         s.SourceRetryCount,
+		SourceRetryWait:          s.SourceRetryWait,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = AzureTableSource{}
@@ -34,9 +46,10 @@ func (s AzureTableSource) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling AzureTableSource: %+v", err)
 	}
+
 	decoded["type"] = "AzureTableSource"
 
 	encoded, err = json.Marshal(decoded)

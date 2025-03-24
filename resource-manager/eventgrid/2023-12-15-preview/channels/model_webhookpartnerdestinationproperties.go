@@ -10,21 +10,23 @@ import (
 
 type WebhookPartnerDestinationProperties struct {
 	ClientAuthentication PartnerClientAuthentication `json:"clientAuthentication"`
-	EndpointBaseUrl      *string                     `json:"endpointBaseUrl,omitempty"`
-	EndpointUrl          *string                     `json:"endpointUrl,omitempty"`
+	EndpointBaseURL      *string                     `json:"endpointBaseUrl,omitempty"`
+	EndpointURL          *string                     `json:"endpointUrl,omitempty"`
 }
 
 var _ json.Unmarshaler = &WebhookPartnerDestinationProperties{}
 
 func (s *WebhookPartnerDestinationProperties) UnmarshalJSON(bytes []byte) error {
-	type alias WebhookPartnerDestinationProperties
-	var decoded alias
+	var decoded struct {
+		EndpointBaseURL *string `json:"endpointBaseUrl,omitempty"`
+		EndpointURL     *string `json:"endpointUrl,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into WebhookPartnerDestinationProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
-	s.EndpointBaseUrl = decoded.EndpointBaseUrl
-	s.EndpointUrl = decoded.EndpointUrl
+	s.EndpointBaseURL = decoded.EndpointBaseURL
+	s.EndpointURL = decoded.EndpointURL
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -32,11 +34,12 @@ func (s *WebhookPartnerDestinationProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["clientAuthentication"]; ok {
-		impl, err := unmarshalPartnerClientAuthenticationImplementation(v)
+		impl, err := UnmarshalPartnerClientAuthenticationImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientAuthentication' for 'WebhookPartnerDestinationProperties': %+v", err)
 		}
 		s.ClientAuthentication = impl
 	}
+
 	return nil
 }

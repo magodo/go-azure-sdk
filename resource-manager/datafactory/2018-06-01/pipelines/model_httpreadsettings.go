@@ -12,14 +12,24 @@ var _ StoreReadSettings = HTTPReadSettings{}
 
 type HTTPReadSettings struct {
 	AdditionalColumns *interface{} `json:"additionalColumns,omitempty"`
-	AdditionalHeaders *string      `json:"additionalHeaders,omitempty"`
-	RequestBody       *string      `json:"requestBody,omitempty"`
-	RequestMethod     *string      `json:"requestMethod,omitempty"`
-	RequestTimeout    *string      `json:"requestTimeout,omitempty"`
+	AdditionalHeaders *interface{} `json:"additionalHeaders,omitempty"`
+	RequestBody       *interface{} `json:"requestBody,omitempty"`
+	RequestMethod     *interface{} `json:"requestMethod,omitempty"`
+	RequestTimeout    *interface{} `json:"requestTimeout,omitempty"`
 
 	// Fields inherited from StoreReadSettings
+
 	DisableMetricsCollection *bool  `json:"disableMetricsCollection,omitempty"`
 	MaxConcurrentConnections *int64 `json:"maxConcurrentConnections,omitempty"`
+	Type                     string `json:"type"`
+}
+
+func (s HTTPReadSettings) StoreReadSettings() BaseStoreReadSettingsImpl {
+	return BaseStoreReadSettingsImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = HTTPReadSettings{}
@@ -33,9 +43,10 @@ func (s HTTPReadSettings) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling HTTPReadSettings: %+v", err)
 	}
+
 	decoded["type"] = "HttpReadSettings"
 
 	encoded, err = json.Marshal(decoded)

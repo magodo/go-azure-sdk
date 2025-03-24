@@ -17,6 +17,14 @@ type AwsEnvironmentData struct {
 	ScanInterval       *int64                `json:"scanInterval,omitempty"`
 
 	// Fields inherited from EnvironmentData
+
+	EnvironmentType EnvironmentType `json:"environmentType"`
+}
+
+func (s AwsEnvironmentData) EnvironmentData() BaseEnvironmentDataImpl {
+	return BaseEnvironmentDataImpl{
+		EnvironmentType: s.EnvironmentType,
+	}
 }
 
 var _ json.Marshaler = AwsEnvironmentData{}
@@ -30,9 +38,10 @@ func (s AwsEnvironmentData) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling AwsEnvironmentData: %+v", err)
 	}
+
 	decoded["environmentType"] = "AwsAccount"
 
 	encoded, err = json.Marshal(decoded)
@@ -46,15 +55,20 @@ func (s AwsEnvironmentData) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &AwsEnvironmentData{}
 
 func (s *AwsEnvironmentData) UnmarshalJSON(bytes []byte) error {
-	type alias AwsEnvironmentData
-	var decoded alias
+	var decoded struct {
+		AccountName     *string         `json:"accountName,omitempty"`
+		Regions         *[]string       `json:"regions,omitempty"`
+		ScanInterval    *int64          `json:"scanInterval,omitempty"`
+		EnvironmentType EnvironmentType `json:"environmentType"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AwsEnvironmentData: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccountName = decoded.AccountName
 	s.Regions = decoded.Regions
 	s.ScanInterval = decoded.ScanInterval
+	s.EnvironmentType = decoded.EnvironmentType
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -62,11 +76,12 @@ func (s *AwsEnvironmentData) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["organizationalData"]; ok {
-		impl, err := unmarshalAwsOrganizationalDataImplementation(v)
+		impl, err := UnmarshalAwsOrganizationalDataImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'OrganizationalData' for 'AwsEnvironmentData': %+v", err)
 		}
 		s.OrganizationalData = impl
 	}
+
 	return nil
 }

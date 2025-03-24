@@ -9,21 +9,26 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AmazonRedshiftLinkedServiceTypeProperties struct {
-	Database            string     `json:"database"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Password            SecretBase `json:"password"`
-	Port                *int64     `json:"port,omitempty"`
-	Server              string     `json:"server"`
-	Username            *string    `json:"username,omitempty"`
+	Database            interface{}  `json:"database"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Password            SecretBase   `json:"password"`
+	Port                *int64       `json:"port,omitempty"`
+	Server              interface{}  `json:"server"`
+	Username            *interface{} `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &AmazonRedshiftLinkedServiceTypeProperties{}
 
 func (s *AmazonRedshiftLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AmazonRedshiftLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		Database            interface{}  `json:"database"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Port                *int64       `json:"port,omitempty"`
+		Server              interface{}  `json:"server"`
+		Username            *interface{} `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AmazonRedshiftLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Database = decoded.Database
@@ -38,11 +43,12 @@ func (s *AmazonRedshiftLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) 
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'AmazonRedshiftLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

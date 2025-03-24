@@ -1,7 +1,7 @@
 
 ## `github.com/hashicorp/go-azure-sdk/resource-manager/servicelinker/2022-05-01/servicelinker` Documentation
 
-The `servicelinker` SDK allows for interaction with the Azure Resource Manager Service `servicelinker` (API Version `2022-05-01`).
+The `servicelinker` SDK allows for interaction with Azure Resource Manager `servicelinker` (API Version `2022-05-01`).
 
 This readme covers example usages, but further information on [using this SDK can be found in the project root](https://github.com/hashicorp/go-azure-sdk/tree/main/docs).
 
@@ -16,16 +16,16 @@ import "github.com/hashicorp/go-azure-sdk/resource-manager/servicelinker/2022-05
 ### Client Initialization
 
 ```go
-client := servicelinker.NewServiceLinkerClientWithBaseURI("https://management.azure.com")
+client := servicelinker.NewServicelinkerClientWithBaseURI("https://management.azure.com")
 client.Client.Authorizer = authorizer
 ```
 
 
-### Example Usage: `ServiceLinkerClient.LinkerCreateOrUpdate`
+### Example Usage: `ServicelinkerClient.LinkerCreateOrUpdate`
 
 ```go
 ctx := context.TODO()
-id := servicelinker.NewScopedLinkerID("/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/some-resource-group", "linkerValue")
+id := servicelinker.NewScopedLinkerID("/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/some-resource-group", "linkerName")
 
 payload := servicelinker.LinkerResource{
 	// ...
@@ -38,11 +38,11 @@ if err := client.LinkerCreateOrUpdateThenPoll(ctx, id, payload); err != nil {
 ```
 
 
-### Example Usage: `ServiceLinkerClient.LinkerGet`
+### Example Usage: `ServicelinkerClient.LinkerGet`
 
 ```go
 ctx := context.TODO()
-id := servicelinker.NewScopedLinkerID("/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/some-resource-group", "linkerValue")
+id := servicelinker.NewScopedLinkerID("/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/some-resource-group", "linkerName")
 
 read, err := client.LinkerGet(ctx, id)
 if err != nil {
@@ -54,7 +54,7 @@ if model := read.Model; model != nil {
 ```
 
 
-### Example Usage: `ServiceLinkerClient.LinkerList`
+### Example Usage: `ServicelinkerClient.LinkerList`
 
 ```go
 ctx := context.TODO()

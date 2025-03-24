@@ -15,8 +15,8 @@ type CopyActivityTypeProperties struct {
 	LogSettings                     *LogSettings                     `json:"logSettings,omitempty"`
 	LogStorageSettings              *LogStorageSettings              `json:"logStorageSettings,omitempty"`
 	ParallelCopies                  *int64                           `json:"parallelCopies,omitempty"`
-	Preserve                        *[]string                        `json:"preserve,omitempty"`
-	PreserveRules                   *[]string                        `json:"preserveRules,omitempty"`
+	Preserve                        *[]interface{}                   `json:"preserve,omitempty"`
+	PreserveRules                   *[]interface{}                   `json:"preserveRules,omitempty"`
 	RedirectIncompatibleRowSettings *RedirectIncompatibleRowSettings `json:"redirectIncompatibleRowSettings,omitempty"`
 	Sink                            CopySink                         `json:"sink"`
 	SkipErrorFile                   *SkipErrorFile                   `json:"skipErrorFile,omitempty"`
@@ -29,10 +29,23 @@ type CopyActivityTypeProperties struct {
 var _ json.Unmarshaler = &CopyActivityTypeProperties{}
 
 func (s *CopyActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias CopyActivityTypeProperties
-	var decoded alias
+	var decoded struct {
+		DataIntegrationUnits            *int64                           `json:"dataIntegrationUnits,omitempty"`
+		EnableSkipIncompatibleRow       *bool                            `json:"enableSkipIncompatibleRow,omitempty"`
+		EnableStaging                   *bool                            `json:"enableStaging,omitempty"`
+		LogSettings                     *LogSettings                     `json:"logSettings,omitempty"`
+		LogStorageSettings              *LogStorageSettings              `json:"logStorageSettings,omitempty"`
+		ParallelCopies                  *int64                           `json:"parallelCopies,omitempty"`
+		Preserve                        *[]interface{}                   `json:"preserve,omitempty"`
+		PreserveRules                   *[]interface{}                   `json:"preserveRules,omitempty"`
+		RedirectIncompatibleRowSettings *RedirectIncompatibleRowSettings `json:"redirectIncompatibleRowSettings,omitempty"`
+		SkipErrorFile                   *SkipErrorFile                   `json:"skipErrorFile,omitempty"`
+		StagingSettings                 *StagingSettings                 `json:"stagingSettings,omitempty"`
+		Translator                      *interface{}                     `json:"translator,omitempty"`
+		ValidateDataConsistency         *bool                            `json:"validateDataConsistency,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into CopyActivityTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.DataIntegrationUnits = decoded.DataIntegrationUnits
@@ -55,7 +68,7 @@ func (s *CopyActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["sink"]; ok {
-		impl, err := unmarshalCopySinkImplementation(v)
+		impl, err := UnmarshalCopySinkImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Sink' for 'CopyActivityTypeProperties': %+v", err)
 		}
@@ -63,11 +76,12 @@ func (s *CopyActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["source"]; ok {
-		impl, err := unmarshalCopySourceImplementation(v)
+		impl, err := UnmarshalCopySourceImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Source' for 'CopyActivityTypeProperties': %+v", err)
 		}
 		s.Source = impl
 	}
+
 	return nil
 }

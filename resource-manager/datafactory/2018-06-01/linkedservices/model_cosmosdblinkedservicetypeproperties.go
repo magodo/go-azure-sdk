@@ -9,27 +9,37 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type CosmosDbLinkedServiceTypeProperties struct {
-	AccountEndpoint                *string                 `json:"accountEndpoint,omitempty"`
+	AccountEndpoint                *interface{}            `json:"accountEndpoint,omitempty"`
 	AccountKey                     SecretBase              `json:"accountKey"`
-	AzureCloudType                 *string                 `json:"azureCloudType,omitempty"`
+	AzureCloudType                 *interface{}            `json:"azureCloudType,omitempty"`
 	ConnectionMode                 *CosmosDbConnectionMode `json:"connectionMode,omitempty"`
-	ConnectionString               *string                 `json:"connectionString,omitempty"`
+	ConnectionString               *interface{}            `json:"connectionString,omitempty"`
 	Credential                     *CredentialReference    `json:"credential,omitempty"`
-	Database                       *string                 `json:"database,omitempty"`
+	Database                       *interface{}            `json:"database,omitempty"`
 	EncryptedCredential            *string                 `json:"encryptedCredential,omitempty"`
 	ServicePrincipalCredential     SecretBase              `json:"servicePrincipalCredential"`
-	ServicePrincipalCredentialType *string                 `json:"servicePrincipalCredentialType,omitempty"`
-	ServicePrincipalId             *string                 `json:"servicePrincipalId,omitempty"`
-	Tenant                         *string                 `json:"tenant,omitempty"`
+	ServicePrincipalCredentialType *interface{}            `json:"servicePrincipalCredentialType,omitempty"`
+	ServicePrincipalId             *interface{}            `json:"servicePrincipalId,omitempty"`
+	Tenant                         *interface{}            `json:"tenant,omitempty"`
 }
 
 var _ json.Unmarshaler = &CosmosDbLinkedServiceTypeProperties{}
 
 func (s *CosmosDbLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias CosmosDbLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AccountEndpoint                *interface{}            `json:"accountEndpoint,omitempty"`
+		AzureCloudType                 *interface{}            `json:"azureCloudType,omitempty"`
+		ConnectionMode                 *CosmosDbConnectionMode `json:"connectionMode,omitempty"`
+		ConnectionString               *interface{}            `json:"connectionString,omitempty"`
+		Credential                     *CredentialReference    `json:"credential,omitempty"`
+		Database                       *interface{}            `json:"database,omitempty"`
+		EncryptedCredential            *string                 `json:"encryptedCredential,omitempty"`
+		ServicePrincipalCredentialType *interface{}            `json:"servicePrincipalCredentialType,omitempty"`
+		ServicePrincipalId             *interface{}            `json:"servicePrincipalId,omitempty"`
+		Tenant                         *interface{}            `json:"tenant,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into CosmosDbLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccountEndpoint = decoded.AccountEndpoint
@@ -49,7 +59,7 @@ func (s *CosmosDbLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["accountKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AccountKey' for 'CosmosDbLinkedServiceTypeProperties': %+v", err)
 		}
@@ -57,11 +67,12 @@ func (s *CosmosDbLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["servicePrincipalCredential"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalCredential' for 'CosmosDbLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalCredential = impl
 	}
+
 	return nil
 }

@@ -10,23 +10,31 @@ import (
 
 type Db2LinkedServiceTypeProperties struct {
 	AuthenticationType    *Db2AuthenticationType `json:"authenticationType,omitempty"`
-	CertificateCommonName *string                `json:"certificateCommonName,omitempty"`
-	ConnectionString      *string                `json:"connectionString,omitempty"`
-	Database              *string                `json:"database,omitempty"`
+	CertificateCommonName *interface{}           `json:"certificateCommonName,omitempty"`
+	ConnectionString      *interface{}           `json:"connectionString,omitempty"`
+	Database              *interface{}           `json:"database,omitempty"`
 	EncryptedCredential   *string                `json:"encryptedCredential,omitempty"`
-	PackageCollection     *string                `json:"packageCollection,omitempty"`
+	PackageCollection     *interface{}           `json:"packageCollection,omitempty"`
 	Password              SecretBase             `json:"password"`
-	Server                *string                `json:"server,omitempty"`
-	Username              *string                `json:"username,omitempty"`
+	Server                *interface{}           `json:"server,omitempty"`
+	Username              *interface{}           `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &Db2LinkedServiceTypeProperties{}
 
 func (s *Db2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias Db2LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType    *Db2AuthenticationType `json:"authenticationType,omitempty"`
+		CertificateCommonName *interface{}           `json:"certificateCommonName,omitempty"`
+		ConnectionString      *interface{}           `json:"connectionString,omitempty"`
+		Database              *interface{}           `json:"database,omitempty"`
+		EncryptedCredential   *string                `json:"encryptedCredential,omitempty"`
+		PackageCollection     *interface{}           `json:"packageCollection,omitempty"`
+		Server                *interface{}           `json:"server,omitempty"`
+		Username              *interface{}           `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into Db2LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -44,11 +52,12 @@ func (s *Db2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'Db2LinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

@@ -16,17 +16,25 @@ type Pipeline struct {
 	Folder        *PipelineFolder                    `json:"folder,omitempty"`
 	Parameters    *map[string]ParameterSpecification `json:"parameters,omitempty"`
 	Policy        *PipelinePolicy                    `json:"policy,omitempty"`
-	RunDimensions *map[string]string                 `json:"runDimensions,omitempty"`
+	RunDimensions *map[string]interface{}            `json:"runDimensions,omitempty"`
 	Variables     *map[string]VariableSpecification  `json:"variables,omitempty"`
 }
 
 var _ json.Unmarshaler = &Pipeline{}
 
 func (s *Pipeline) UnmarshalJSON(bytes []byte) error {
-	type alias Pipeline
-	var decoded alias
+	var decoded struct {
+		Annotations   *[]interface{}                     `json:"annotations,omitempty"`
+		Concurrency   *int64                             `json:"concurrency,omitempty"`
+		Description   *string                            `json:"description,omitempty"`
+		Folder        *PipelineFolder                    `json:"folder,omitempty"`
+		Parameters    *map[string]ParameterSpecification `json:"parameters,omitempty"`
+		Policy        *PipelinePolicy                    `json:"policy,omitempty"`
+		RunDimensions *map[string]interface{}            `json:"runDimensions,omitempty"`
+		Variables     *map[string]VariableSpecification  `json:"variables,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into Pipeline: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Annotations = decoded.Annotations
@@ -51,7 +59,7 @@ func (s *Pipeline) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]Activity, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalActivityImplementation(val)
+			impl, err := UnmarshalActivityImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'Activities' for 'Pipeline': %+v", i, err)
 			}
@@ -59,5 +67,6 @@ func (s *Pipeline) UnmarshalJSON(bytes []byte) error {
 		}
 		s.Activities = &output
 	}
+
 	return nil
 }

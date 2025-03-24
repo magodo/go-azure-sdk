@@ -9,27 +9,31 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AmazonS3LinkedServiceTypeProperties struct {
-	AccessKeyId         *string    `json:"accessKeyId,omitempty"`
-	AuthenticationType  *string    `json:"authenticationType,omitempty"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	SecretAccessKey     SecretBase `json:"secretAccessKey"`
-	ServiceUrl          *string    `json:"serviceUrl,omitempty"`
-	SessionToken        SecretBase `json:"sessionToken"`
+	AccessKeyId         *interface{} `json:"accessKeyId,omitempty"`
+	AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	SecretAccessKey     SecretBase   `json:"secretAccessKey"`
+	ServiceURL          *interface{} `json:"serviceUrl,omitempty"`
+	SessionToken        SecretBase   `json:"sessionToken"`
 }
 
 var _ json.Unmarshaler = &AmazonS3LinkedServiceTypeProperties{}
 
 func (s *AmazonS3LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AmazonS3LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AccessKeyId         *interface{} `json:"accessKeyId,omitempty"`
+		AuthenticationType  *interface{} `json:"authenticationType,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		ServiceURL          *interface{} `json:"serviceUrl,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AmazonS3LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccessKeyId = decoded.AccessKeyId
 	s.AuthenticationType = decoded.AuthenticationType
 	s.EncryptedCredential = decoded.EncryptedCredential
-	s.ServiceUrl = decoded.ServiceUrl
+	s.ServiceURL = decoded.ServiceURL
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -37,7 +41,7 @@ func (s *AmazonS3LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["secretAccessKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'SecretAccessKey' for 'AmazonS3LinkedServiceTypeProperties': %+v", err)
 		}
@@ -45,11 +49,12 @@ func (s *AmazonS3LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["sessionToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'SessionToken' for 'AmazonS3LinkedServiceTypeProperties': %+v", err)
 		}
 		s.SessionToken = impl
 	}
+
 	return nil
 }

@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &HostingEnvironmentDiagnosticId{}
 
 func TestNewHostingEnvironmentDiagnosticID(t *testing.T) {
-	id := NewHostingEnvironmentDiagnosticID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentValue", "diagnosticValue")
+	id := NewHostingEnvironmentDiagnosticID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentName", "diagnosticName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewHostingEnvironmentDiagnosticID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.HostingEnvironmentName != "hostingEnvironmentValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'HostingEnvironmentName'", id.HostingEnvironmentName, "hostingEnvironmentValue")
+	if id.HostingEnvironmentName != "hostingEnvironmentName" {
+		t.Fatalf("Expected %q but got %q for Segment 'HostingEnvironmentName'", id.HostingEnvironmentName, "hostingEnvironmentName")
 	}
 
-	if id.DiagnosticName != "diagnosticValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DiagnosticName'", id.DiagnosticName, "diagnosticValue")
+	if id.DiagnosticName != "diagnosticName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DiagnosticName'", id.DiagnosticName, "diagnosticName")
 	}
 }
 
 func TestFormatHostingEnvironmentDiagnosticID(t *testing.T) {
-	actual := NewHostingEnvironmentDiagnosticID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentValue", "diagnosticValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics/diagnosticValue"
+	actual := NewHostingEnvironmentDiagnosticID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentName", "diagnosticName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics/diagnosticName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseHostingEnvironmentDiagnosticID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics/diagnosticValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics/diagnosticName",
 			Expected: &HostingEnvironmentDiagnosticId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				HostingEnvironmentName: "hostingEnvironmentValue",
-				DiagnosticName:         "diagnosticValue",
+				HostingEnvironmentName: "hostingEnvironmentName",
+				DiagnosticName:         "diagnosticName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics/diagnosticValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics/diagnosticName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseHostingEnvironmentDiagnosticIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/dIaGnOsTiCs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/dIaGnOsTiCs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics/diagnosticValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics/diagnosticName",
 			Expected: &HostingEnvironmentDiagnosticId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				HostingEnvironmentName: "hostingEnvironmentValue",
-				DiagnosticName:         "diagnosticValue",
+				HostingEnvironmentName: "hostingEnvironmentName",
+				DiagnosticName:         "diagnosticName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/diagnostics/diagnosticValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/diagnostics/diagnosticName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/dIaGnOsTiCs/dIaGnOsTiCvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/dIaGnOsTiCs/dIaGnOsTiCnAmE",
 			Expected: &HostingEnvironmentDiagnosticId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "eXaMpLe-rEsOuRcE-GrOuP",
-				HostingEnvironmentName: "hOsTiNgEnViRoNmEnTvAlUe",
-				DiagnosticName:         "dIaGnOsTiCvAlUe",
+				HostingEnvironmentName: "hOsTiNgEnViRoNmEnTnAmE",
+				DiagnosticName:         "dIaGnOsTiCnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/dIaGnOsTiCs/dIaGnOsTiCvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/dIaGnOsTiCs/dIaGnOsTiCnAmE/extra",
 			Error: true,
 		},
 	}

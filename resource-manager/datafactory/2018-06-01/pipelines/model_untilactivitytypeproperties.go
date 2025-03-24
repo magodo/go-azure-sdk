@@ -9,18 +9,20 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type UntilActivityTypeProperties struct {
-	Activities []Activity `json:"activities"`
-	Expression Expression `json:"expression"`
-	Timeout    *string    `json:"timeout,omitempty"`
+	Activities []Activity   `json:"activities"`
+	Expression Expression   `json:"expression"`
+	Timeout    *interface{} `json:"timeout,omitempty"`
 }
 
 var _ json.Unmarshaler = &UntilActivityTypeProperties{}
 
 func (s *UntilActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias UntilActivityTypeProperties
-	var decoded alias
+	var decoded struct {
+		Expression Expression   `json:"expression"`
+		Timeout    *interface{} `json:"timeout,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into UntilActivityTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Expression = decoded.Expression
@@ -39,7 +41,7 @@ func (s *UntilActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]Activity, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalActivityImplementation(val)
+			impl, err := UnmarshalActivityImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'Activities' for 'UntilActivityTypeProperties': %+v", i, err)
 			}
@@ -47,5 +49,6 @@ func (s *UntilActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 		}
 		s.Activities = output
 	}
+
 	return nil
 }

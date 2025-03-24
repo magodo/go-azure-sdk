@@ -22,10 +22,17 @@ type SharedDiskReplicationItemProperties struct {
 var _ json.Unmarshaler = &SharedDiskReplicationItemProperties{}
 
 func (s *SharedDiskReplicationItemProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SharedDiskReplicationItemProperties
-	var decoded alias
+	var decoded struct {
+		ActiveLocation    *string                 `json:"activeLocation,omitempty"`
+		AllowedOperations *[]string               `json:"allowedOperations,omitempty"`
+		CurrentScenario   *CurrentScenarioDetails `json:"currentScenario,omitempty"`
+		HealthErrors      *[]HealthError          `json:"healthErrors,omitempty"`
+		ProtectionState   *string                 `json:"protectionState,omitempty"`
+		ReplicationHealth *string                 `json:"replicationHealth,omitempty"`
+		TestFailoverState *string                 `json:"testFailoverState,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SharedDiskReplicationItemProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ActiveLocation = decoded.ActiveLocation
@@ -42,11 +49,12 @@ func (s *SharedDiskReplicationItemProperties) UnmarshalJSON(bytes []byte) error 
 	}
 
 	if v, ok := temp["sharedDiskProviderSpecificDetails"]; ok {
-		impl, err := unmarshalSharedDiskReplicationProviderSpecificSettingsImplementation(v)
+		impl, err := UnmarshalSharedDiskReplicationProviderSpecificSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'SharedDiskProviderSpecificDetails' for 'SharedDiskReplicationItemProperties': %+v", err)
 		}
 		s.SharedDiskProviderSpecificDetails = impl
 	}
+
 	return nil
 }

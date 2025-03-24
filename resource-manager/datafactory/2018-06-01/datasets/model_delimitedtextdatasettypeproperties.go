@@ -9,25 +9,34 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type DelimitedTextDatasetTypeProperties struct {
-	ColumnDelimiter  *string         `json:"columnDelimiter,omitempty"`
-	CompressionCodec *string         `json:"compressionCodec,omitempty"`
-	CompressionLevel *string         `json:"compressionLevel,omitempty"`
-	EncodingName     *string         `json:"encodingName,omitempty"`
-	EscapeChar       *string         `json:"escapeChar,omitempty"`
+	ColumnDelimiter  *interface{}    `json:"columnDelimiter,omitempty"`
+	CompressionCodec *interface{}    `json:"compressionCodec,omitempty"`
+	CompressionLevel *interface{}    `json:"compressionLevel,omitempty"`
+	EncodingName     *interface{}    `json:"encodingName,omitempty"`
+	EscapeChar       *interface{}    `json:"escapeChar,omitempty"`
 	FirstRowAsHeader *bool           `json:"firstRowAsHeader,omitempty"`
 	Location         DatasetLocation `json:"location"`
-	NullValue        *string         `json:"nullValue,omitempty"`
-	QuoteChar        *string         `json:"quoteChar,omitempty"`
-	RowDelimiter     *string         `json:"rowDelimiter,omitempty"`
+	NullValue        *interface{}    `json:"nullValue,omitempty"`
+	QuoteChar        *interface{}    `json:"quoteChar,omitempty"`
+	RowDelimiter     *interface{}    `json:"rowDelimiter,omitempty"`
 }
 
 var _ json.Unmarshaler = &DelimitedTextDatasetTypeProperties{}
 
 func (s *DelimitedTextDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias DelimitedTextDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		ColumnDelimiter  *interface{} `json:"columnDelimiter,omitempty"`
+		CompressionCodec *interface{} `json:"compressionCodec,omitempty"`
+		CompressionLevel *interface{} `json:"compressionLevel,omitempty"`
+		EncodingName     *interface{} `json:"encodingName,omitempty"`
+		EscapeChar       *interface{} `json:"escapeChar,omitempty"`
+		FirstRowAsHeader *bool        `json:"firstRowAsHeader,omitempty"`
+		NullValue        *interface{} `json:"nullValue,omitempty"`
+		QuoteChar        *interface{} `json:"quoteChar,omitempty"`
+		RowDelimiter     *interface{} `json:"rowDelimiter,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DelimitedTextDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ColumnDelimiter = decoded.ColumnDelimiter
@@ -46,11 +55,12 @@ func (s *DelimitedTextDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["location"]; ok {
-		impl, err := unmarshalDatasetLocationImplementation(v)
+		impl, err := UnmarshalDatasetLocationImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Location' for 'DelimitedTextDatasetTypeProperties': %+v", err)
 		}
 		s.Location = impl
 	}
+
 	return nil
 }

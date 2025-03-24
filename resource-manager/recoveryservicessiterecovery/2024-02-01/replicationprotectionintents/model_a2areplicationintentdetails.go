@@ -35,6 +35,14 @@ type A2AReplicationIntentDetails struct {
 	VMManagedDisks                      *[]A2AProtectionIntentManagedDiskInputDetails `json:"vmManagedDisks,omitempty"`
 
 	// Fields inherited from ReplicationProtectionIntentProviderSpecificSettings
+
+	InstanceType string `json:"instanceType"`
+}
+
+func (s A2AReplicationIntentDetails) ReplicationProtectionIntentProviderSpecificSettings() BaseReplicationProtectionIntentProviderSpecificSettingsImpl {
+	return BaseReplicationProtectionIntentProviderSpecificSettingsImpl{
+		InstanceType: s.InstanceType,
+	}
 }
 
 var _ json.Marshaler = A2AReplicationIntentDetails{}
@@ -48,9 +56,10 @@ func (s A2AReplicationIntentDetails) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling A2AReplicationIntentDetails: %+v", err)
 	}
+
 	decoded["instanceType"] = "A2A"
 
 	encoded, err = json.Marshal(decoded)
@@ -64,10 +73,27 @@ func (s A2AReplicationIntentDetails) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &A2AReplicationIntentDetails{}
 
 func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
-	type alias A2AReplicationIntentDetails
-	var decoded alias
+	var decoded struct {
+		AgentAutoUpdateStatus               *AgentAutoUpdateStatus                        `json:"agentAutoUpdateStatus,omitempty"`
+		AutoProtectionOfDataDisk            *AutoProtectionOfDataDisk                     `json:"autoProtectionOfDataDisk,omitempty"`
+		AutomationAccountArmId              *string                                       `json:"automationAccountArmId,omitempty"`
+		AutomationAccountAuthenticationType *AutomationAccountAuthenticationType          `json:"automationAccountAuthenticationType,omitempty"`
+		DiskEncryptionInfo                  *DiskEncryptionInfo                           `json:"diskEncryptionInfo,omitempty"`
+		FabricObjectId                      *string                                       `json:"fabricObjectId,omitempty"`
+		MultiVMGroupId                      *string                                       `json:"multiVmGroupId,omitempty"`
+		MultiVMGroupName                    *string                                       `json:"multiVmGroupName,omitempty"`
+		PrimaryLocation                     *string                                       `json:"primaryLocation,omitempty"`
+		RecoveryAvailabilityType            string                                        `json:"recoveryAvailabilityType"`
+		RecoveryAvailabilityZone            *string                                       `json:"recoveryAvailabilityZone,omitempty"`
+		RecoveryLocation                    *string                                       `json:"recoveryLocation,omitempty"`
+		RecoveryResourceGroupId             *string                                       `json:"recoveryResourceGroupId,omitempty"`
+		RecoverySubscriptionId              *string                                       `json:"recoverySubscriptionId,omitempty"`
+		VMDisks                             *[]A2AProtectionIntentDiskInputDetails        `json:"vmDisks,omitempty"`
+		VMManagedDisks                      *[]A2AProtectionIntentManagedDiskInputDetails `json:"vmManagedDisks,omitempty"`
+		InstanceType                        string                                        `json:"instanceType"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into A2AReplicationIntentDetails: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AgentAutoUpdateStatus = decoded.AgentAutoUpdateStatus
@@ -86,6 +112,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	s.RecoverySubscriptionId = decoded.RecoverySubscriptionId
 	s.VMDisks = decoded.VMDisks
 	s.VMManagedDisks = decoded.VMManagedDisks
+	s.InstanceType = decoded.InstanceType
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -93,7 +120,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["primaryStagingStorageAccount"]; ok {
-		impl, err := unmarshalStorageAccountCustomDetailsImplementation(v)
+		impl, err := UnmarshalStorageAccountCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrimaryStagingStorageAccount' for 'A2AReplicationIntentDetails': %+v", err)
 		}
@@ -101,7 +128,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["protectionProfile"]; ok {
-		impl, err := unmarshalProtectionProfileCustomDetailsImplementation(v)
+		impl, err := UnmarshalProtectionProfileCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ProtectionProfile' for 'A2AReplicationIntentDetails': %+v", err)
 		}
@@ -109,7 +136,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["recoveryAvailabilitySet"]; ok {
-		impl, err := unmarshalRecoveryAvailabilitySetCustomDetailsImplementation(v)
+		impl, err := UnmarshalRecoveryAvailabilitySetCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryAvailabilitySet' for 'A2AReplicationIntentDetails': %+v", err)
 		}
@@ -117,7 +144,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["recoveryBootDiagStorageAccount"]; ok {
-		impl, err := unmarshalStorageAccountCustomDetailsImplementation(v)
+		impl, err := UnmarshalStorageAccountCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryBootDiagStorageAccount' for 'A2AReplicationIntentDetails': %+v", err)
 		}
@@ -125,7 +152,7 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["recoveryProximityPlacementGroup"]; ok {
-		impl, err := unmarshalRecoveryProximityPlacementGroupCustomDetailsImplementation(v)
+		impl, err := UnmarshalRecoveryProximityPlacementGroupCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryProximityPlacementGroup' for 'A2AReplicationIntentDetails': %+v", err)
 		}
@@ -133,11 +160,12 @@ func (s *A2AReplicationIntentDetails) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["recoveryVirtualNetwork"]; ok {
-		impl, err := unmarshalRecoveryVirtualNetworkCustomDetailsImplementation(v)
+		impl, err := UnmarshalRecoveryVirtualNetworkCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryVirtualNetwork' for 'A2AReplicationIntentDetails': %+v", err)
 		}
 		s.RecoveryVirtualNetwork = impl
 	}
+
 	return nil
 }

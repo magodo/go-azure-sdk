@@ -11,22 +11,30 @@ import (
 type HTTPLinkedServiceTypeProperties struct {
 	AuthHeaders                       *map[string]string      `json:"authHeaders,omitempty"`
 	AuthenticationType                *HTTPAuthenticationType `json:"authenticationType,omitempty"`
-	CertThumbprint                    *string                 `json:"certThumbprint,omitempty"`
-	EmbeddedCertData                  *string                 `json:"embeddedCertData,omitempty"`
+	CertThumbprint                    *interface{}            `json:"certThumbprint,omitempty"`
+	EmbeddedCertData                  *interface{}            `json:"embeddedCertData,omitempty"`
 	EnableServerCertificateValidation *bool                   `json:"enableServerCertificateValidation,omitempty"`
 	EncryptedCredential               *string                 `json:"encryptedCredential,omitempty"`
 	Password                          SecretBase              `json:"password"`
-	Url                               string                  `json:"url"`
-	UserName                          *string                 `json:"userName,omitempty"`
+	Url                               interface{}             `json:"url"`
+	UserName                          *interface{}            `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &HTTPLinkedServiceTypeProperties{}
 
 func (s *HTTPLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HTTPLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthHeaders                       *map[string]string      `json:"authHeaders,omitempty"`
+		AuthenticationType                *HTTPAuthenticationType `json:"authenticationType,omitempty"`
+		CertThumbprint                    *interface{}            `json:"certThumbprint,omitempty"`
+		EmbeddedCertData                  *interface{}            `json:"embeddedCertData,omitempty"`
+		EnableServerCertificateValidation *bool                   `json:"enableServerCertificateValidation,omitempty"`
+		EncryptedCredential               *string                 `json:"encryptedCredential,omitempty"`
+		Url                               interface{}             `json:"url"`
+		UserName                          *interface{}            `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HTTPLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthHeaders = decoded.AuthHeaders
@@ -44,11 +52,12 @@ func (s *HTTPLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'HTTPLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

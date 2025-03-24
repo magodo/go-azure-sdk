@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type RecoveryVirtualNetworkCustomDetails interface {
+	RecoveryVirtualNetworkCustomDetails() BaseRecoveryVirtualNetworkCustomDetailsImpl
 }
 
-// RawRecoveryVirtualNetworkCustomDetailsImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ RecoveryVirtualNetworkCustomDetails = BaseRecoveryVirtualNetworkCustomDetailsImpl{}
+
+type BaseRecoveryVirtualNetworkCustomDetailsImpl struct {
+	ResourceType string `json:"resourceType"`
+}
+
+func (s BaseRecoveryVirtualNetworkCustomDetailsImpl) RecoveryVirtualNetworkCustomDetails() BaseRecoveryVirtualNetworkCustomDetailsImpl {
+	return s
+}
+
+var _ RecoveryVirtualNetworkCustomDetails = RawRecoveryVirtualNetworkCustomDetailsImpl{}
+
+// RawRecoveryVirtualNetworkCustomDetailsImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawRecoveryVirtualNetworkCustomDetailsImpl struct {
-	Type   string
-	Values map[string]interface{}
+	recoveryVirtualNetworkCustomDetails BaseRecoveryVirtualNetworkCustomDetailsImpl
+	Type                                string
+	Values                              map[string]interface{}
 }
 
-func unmarshalRecoveryVirtualNetworkCustomDetailsImplementation(input []byte) (RecoveryVirtualNetworkCustomDetails, error) {
+func (s RawRecoveryVirtualNetworkCustomDetailsImpl) RecoveryVirtualNetworkCustomDetails() BaseRecoveryVirtualNetworkCustomDetailsImpl {
+	return s.recoveryVirtualNetworkCustomDetails
+}
+
+func UnmarshalRecoveryVirtualNetworkCustomDetailsImplementation(input []byte) (RecoveryVirtualNetworkCustomDetails, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalRecoveryVirtualNetworkCustomDetailsImplementation(input []byte) (R
 		return nil, fmt.Errorf("unmarshaling RecoveryVirtualNetworkCustomDetails into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["resourceType"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["resourceType"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "Existing") {
@@ -52,10 +69,15 @@ func unmarshalRecoveryVirtualNetworkCustomDetailsImplementation(input []byte) (R
 		return out, nil
 	}
 
-	out := RawRecoveryVirtualNetworkCustomDetailsImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseRecoveryVirtualNetworkCustomDetailsImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseRecoveryVirtualNetworkCustomDetailsImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawRecoveryVirtualNetworkCustomDetailsImpl{
+		recoveryVirtualNetworkCustomDetails: parent,
+		Type:                                value,
+		Values:                              temp,
+	}, nil
 
 }

@@ -9,19 +9,22 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SapEccLinkedServiceTypeProperties struct {
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	Password            SecretBase `json:"password"`
-	Url                 string     `json:"url"`
-	Username            *string    `json:"username,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	Password            SecretBase   `json:"password"`
+	Url                 interface{}  `json:"url"`
+	Username            *interface{} `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &SapEccLinkedServiceTypeProperties{}
 
 func (s *SapEccLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SapEccLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		Url                 interface{}  `json:"url"`
+		Username            *interface{} `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SapEccLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
@@ -34,11 +37,12 @@ func (s *SapEccLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SapEccLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

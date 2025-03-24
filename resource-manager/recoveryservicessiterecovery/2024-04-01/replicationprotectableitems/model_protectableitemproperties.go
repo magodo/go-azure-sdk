@@ -21,10 +21,16 @@ type ProtectableItemProperties struct {
 var _ json.Unmarshaler = &ProtectableItemProperties{}
 
 func (s *ProtectableItemProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ProtectableItemProperties
-	var decoded alias
+	var decoded struct {
+		FriendlyName                  *string   `json:"friendlyName,omitempty"`
+		ProtectionReadinessErrors     *[]string `json:"protectionReadinessErrors,omitempty"`
+		ProtectionStatus              *string   `json:"protectionStatus,omitempty"`
+		RecoveryServicesProviderId    *string   `json:"recoveryServicesProviderId,omitempty"`
+		ReplicationProtectedItemId    *string   `json:"replicationProtectedItemId,omitempty"`
+		SupportedReplicationProviders *[]string `json:"supportedReplicationProviders,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ProtectableItemProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.FriendlyName = decoded.FriendlyName
@@ -40,11 +46,12 @@ func (s *ProtectableItemProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["customDetails"]; ok {
-		impl, err := unmarshalConfigurationSettingsImplementation(v)
+		impl, err := UnmarshalConfigurationSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'CustomDetails' for 'ProtectableItemProperties': %+v", err)
 		}
 		s.CustomDetails = impl
 	}
+
 	return nil
 }

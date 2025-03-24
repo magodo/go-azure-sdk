@@ -11,24 +11,32 @@ import (
 type SftpServerLinkedServiceTypeProperties struct {
 	AuthenticationType    *SftpAuthenticationType `json:"authenticationType,omitempty"`
 	EncryptedCredential   *string                 `json:"encryptedCredential,omitempty"`
-	Host                  string                  `json:"host"`
-	HostKeyFingerprint    *string                 `json:"hostKeyFingerprint,omitempty"`
+	Host                  interface{}             `json:"host"`
+	HostKeyFingerprint    *interface{}            `json:"hostKeyFingerprint,omitempty"`
 	PassPhrase            SecretBase              `json:"passPhrase"`
 	Password              SecretBase              `json:"password"`
 	Port                  *int64                  `json:"port,omitempty"`
 	PrivateKeyContent     SecretBase              `json:"privateKeyContent"`
-	PrivateKeyPath        *string                 `json:"privateKeyPath,omitempty"`
+	PrivateKeyPath        *interface{}            `json:"privateKeyPath,omitempty"`
 	SkipHostKeyValidation *bool                   `json:"skipHostKeyValidation,omitempty"`
-	UserName              *string                 `json:"userName,omitempty"`
+	UserName              *interface{}            `json:"userName,omitempty"`
 }
 
 var _ json.Unmarshaler = &SftpServerLinkedServiceTypeProperties{}
 
 func (s *SftpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SftpServerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType    *SftpAuthenticationType `json:"authenticationType,omitempty"`
+		EncryptedCredential   *string                 `json:"encryptedCredential,omitempty"`
+		Host                  interface{}             `json:"host"`
+		HostKeyFingerprint    *interface{}            `json:"hostKeyFingerprint,omitempty"`
+		Port                  *int64                  `json:"port,omitempty"`
+		PrivateKeyPath        *interface{}            `json:"privateKeyPath,omitempty"`
+		SkipHostKeyValidation *bool                   `json:"skipHostKeyValidation,omitempty"`
+		UserName              *interface{}            `json:"userName,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SftpServerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -46,7 +54,7 @@ func (s *SftpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["passPhrase"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PassPhrase' for 'SftpServerLinkedServiceTypeProperties': %+v", err)
 		}
@@ -54,7 +62,7 @@ func (s *SftpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SftpServerLinkedServiceTypeProperties': %+v", err)
 		}
@@ -62,11 +70,12 @@ func (s *SftpServerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["privateKeyContent"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrivateKeyContent' for 'SftpServerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.PrivateKeyContent = impl
 	}
+
 	return nil
 }

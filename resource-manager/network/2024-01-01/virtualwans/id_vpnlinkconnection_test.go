@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &VpnLinkConnectionId{}
 
 func TestNewVpnLinkConnectionID(t *testing.T) {
-	id := NewVpnLinkConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "vpnGatewayValue", "vpnConnectionValue", "vpnLinkConnectionValue")
+	id := NewVpnLinkConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "vpnGatewayName", "vpnConnectionName", "vpnLinkConnectionName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,22 +22,22 @@ func TestNewVpnLinkConnectionID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.VpnGatewayName != "vpnGatewayValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'VpnGatewayName'", id.VpnGatewayName, "vpnGatewayValue")
+	if id.VpnGatewayName != "vpnGatewayName" {
+		t.Fatalf("Expected %q but got %q for Segment 'VpnGatewayName'", id.VpnGatewayName, "vpnGatewayName")
 	}
 
-	if id.VpnConnectionName != "vpnConnectionValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'VpnConnectionName'", id.VpnConnectionName, "vpnConnectionValue")
+	if id.VpnConnectionName != "vpnConnectionName" {
+		t.Fatalf("Expected %q but got %q for Segment 'VpnConnectionName'", id.VpnConnectionName, "vpnConnectionName")
 	}
 
-	if id.VpnLinkConnectionName != "vpnLinkConnectionValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'VpnLinkConnectionName'", id.VpnLinkConnectionName, "vpnLinkConnectionValue")
+	if id.VpnLinkConnectionName != "vpnLinkConnectionName" {
+		t.Fatalf("Expected %q but got %q for Segment 'VpnLinkConnectionName'", id.VpnLinkConnectionName, "vpnLinkConnectionName")
 	}
 }
 
 func TestFormatVpnLinkConnectionID(t *testing.T) {
-	actual := NewVpnLinkConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "vpnGatewayValue", "vpnConnectionValue", "vpnLinkConnectionValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections/vpnLinkConnectionValue"
+	actual := NewVpnLinkConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "vpnGatewayName", "vpnConnectionName", "vpnLinkConnectionName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections/vpnLinkConnectionName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -91,38 +91,38 @@ func TestParseVpnLinkConnectionID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections/vpnLinkConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections/vpnLinkConnectionName",
 			Expected: &VpnLinkConnectionId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:     "example-resource-group",
-				VpnGatewayName:        "vpnGatewayValue",
-				VpnConnectionName:     "vpnConnectionValue",
-				VpnLinkConnectionName: "vpnLinkConnectionValue",
+				VpnGatewayName:        "vpnGatewayName",
+				VpnConnectionName:     "vpnConnectionName",
+				VpnLinkConnectionName: "vpnLinkConnectionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections/vpnLinkConnectionValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections/vpnLinkConnectionName/extra",
 			Error: true,
 		},
 	}
@@ -247,74 +247,74 @@ func TestParseVpnLinkConnectionIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe/vPnCoNnEcTiOnS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE/vPnCoNnEcTiOnS",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe/vPnCoNnEcTiOnS/vPnCoNnEcTiOnVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE/vPnCoNnEcTiOnS/vPnCoNnEcTiOnNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe/vPnCoNnEcTiOnS/vPnCoNnEcTiOnVaLuE/vPnLiNkCoNnEcTiOnS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE/vPnCoNnEcTiOnS/vPnCoNnEcTiOnNaMe/vPnLiNkCoNnEcTiOnS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections/vpnLinkConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections/vpnLinkConnectionName",
 			Expected: &VpnLinkConnectionId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:     "example-resource-group",
-				VpnGatewayName:        "vpnGatewayValue",
-				VpnConnectionName:     "vpnConnectionValue",
-				VpnLinkConnectionName: "vpnLinkConnectionValue",
+				VpnGatewayName:        "vpnGatewayName",
+				VpnConnectionName:     "vpnConnectionName",
+				VpnLinkConnectionName: "vpnLinkConnectionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayValue/vpnConnections/vpnConnectionValue/vpnLinkConnections/vpnLinkConnectionValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/vpnGateways/vpnGatewayName/vpnConnections/vpnConnectionName/vpnLinkConnections/vpnLinkConnectionName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe/vPnCoNnEcTiOnS/vPnCoNnEcTiOnVaLuE/vPnLiNkCoNnEcTiOnS/vPnLiNkCoNnEcTiOnVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE/vPnCoNnEcTiOnS/vPnCoNnEcTiOnNaMe/vPnLiNkCoNnEcTiOnS/vPnLiNkCoNnEcTiOnNaMe",
 			Expected: &VpnLinkConnectionId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:     "eXaMpLe-rEsOuRcE-GrOuP",
-				VpnGatewayName:        "vPnGaTeWaYvAlUe",
-				VpnConnectionName:     "vPnCoNnEcTiOnVaLuE",
-				VpnLinkConnectionName: "vPnLiNkCoNnEcTiOnVaLuE",
+				VpnGatewayName:        "vPnGaTeWaYnAmE",
+				VpnConnectionName:     "vPnCoNnEcTiOnNaMe",
+				VpnLinkConnectionName: "vPnLiNkCoNnEcTiOnNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYvAlUe/vPnCoNnEcTiOnS/vPnCoNnEcTiOnVaLuE/vPnLiNkCoNnEcTiOnS/vPnLiNkCoNnEcTiOnVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.nEtWoRk/vPnGaTeWaYs/vPnGaTeWaYnAmE/vPnCoNnEcTiOnS/vPnCoNnEcTiOnNaMe/vPnLiNkCoNnEcTiOnS/vPnLiNkCoNnEcTiOnNaMe/extra",
 			Error: true,
 		},
 	}

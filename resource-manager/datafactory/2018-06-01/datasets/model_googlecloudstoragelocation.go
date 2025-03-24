@@ -11,12 +11,22 @@ import (
 var _ DatasetLocation = GoogleCloudStorageLocation{}
 
 type GoogleCloudStorageLocation struct {
-	BucketName *string `json:"bucketName,omitempty"`
-	Version    *string `json:"version,omitempty"`
+	BucketName *interface{} `json:"bucketName,omitempty"`
+	Version    *interface{} `json:"version,omitempty"`
 
 	// Fields inherited from DatasetLocation
-	FileName   *string `json:"fileName,omitempty"`
-	FolderPath *string `json:"folderPath,omitempty"`
+
+	FileName   *interface{} `json:"fileName,omitempty"`
+	FolderPath *interface{} `json:"folderPath,omitempty"`
+	Type       string       `json:"type"`
+}
+
+func (s GoogleCloudStorageLocation) DatasetLocation() BaseDatasetLocationImpl {
+	return BaseDatasetLocationImpl{
+		FileName:   s.FileName,
+		FolderPath: s.FolderPath,
+		Type:       s.Type,
+	}
 }
 
 var _ json.Marshaler = GoogleCloudStorageLocation{}
@@ -30,9 +40,10 @@ func (s GoogleCloudStorageLocation) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling GoogleCloudStorageLocation: %+v", err)
 	}
+
 	decoded["type"] = "GoogleCloudStorageLocation"
 
 	encoded, err = json.Marshal(decoded)

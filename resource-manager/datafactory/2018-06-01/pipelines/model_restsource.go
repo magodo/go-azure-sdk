@@ -12,18 +12,30 @@ var _ CopySource = RestSource{}
 
 type RestSource struct {
 	AdditionalColumns  *map[string]string `json:"additionalColumns,omitempty"`
-	AdditionalHeaders  *string            `json:"additionalHeaders,omitempty"`
-	HTTPRequestTimeout *string            `json:"httpRequestTimeout,omitempty"`
-	PaginationRules    *string            `json:"paginationRules,omitempty"`
-	RequestBody        *string            `json:"requestBody,omitempty"`
+	AdditionalHeaders  *interface{}       `json:"additionalHeaders,omitempty"`
+	HTTPRequestTimeout *interface{}       `json:"httpRequestTimeout,omitempty"`
+	PaginationRules    *interface{}       `json:"paginationRules,omitempty"`
+	RequestBody        *interface{}       `json:"requestBody,omitempty"`
 	RequestInterval    *interface{}       `json:"requestInterval,omitempty"`
-	RequestMethod      *string            `json:"requestMethod,omitempty"`
+	RequestMethod      *interface{}       `json:"requestMethod,omitempty"`
 
 	// Fields inherited from CopySource
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SourceRetryCount         *int64  `json:"sourceRetryCount,omitempty"`
-	SourceRetryWait          *string `json:"sourceRetryWait,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SourceRetryCount         *int64       `json:"sourceRetryCount,omitempty"`
+	SourceRetryWait          *interface{} `json:"sourceRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+}
+
+func (s RestSource) CopySource() BaseCopySourceImpl {
+	return BaseCopySourceImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SourceRetryCount:         s.SourceRetryCount,
+		SourceRetryWait:          s.SourceRetryWait,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = RestSource{}
@@ -37,9 +49,10 @@ func (s RestSource) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling RestSource: %+v", err)
 	}
+
 	decoded["type"] = "RestSource"
 
 	encoded, err = json.Marshal(decoded)

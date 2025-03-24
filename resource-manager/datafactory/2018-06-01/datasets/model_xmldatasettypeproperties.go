@@ -10,18 +10,21 @@ import (
 
 type XmlDatasetTypeProperties struct {
 	Compression  *DatasetCompression `json:"compression,omitempty"`
-	EncodingName *string             `json:"encodingName,omitempty"`
+	EncodingName *interface{}        `json:"encodingName,omitempty"`
 	Location     DatasetLocation     `json:"location"`
-	NullValue    *string             `json:"nullValue,omitempty"`
+	NullValue    *interface{}        `json:"nullValue,omitempty"`
 }
 
 var _ json.Unmarshaler = &XmlDatasetTypeProperties{}
 
 func (s *XmlDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias XmlDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		Compression  *DatasetCompression `json:"compression,omitempty"`
+		EncodingName *interface{}        `json:"encodingName,omitempty"`
+		NullValue    *interface{}        `json:"nullValue,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into XmlDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Compression = decoded.Compression
@@ -34,11 +37,12 @@ func (s *XmlDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["location"]; ok {
-		impl, err := unmarshalDatasetLocationImplementation(v)
+		impl, err := UnmarshalDatasetLocationImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Location' for 'XmlDatasetTypeProperties': %+v", err)
 		}
 		s.Location = impl
 	}
+
 	return nil
 }

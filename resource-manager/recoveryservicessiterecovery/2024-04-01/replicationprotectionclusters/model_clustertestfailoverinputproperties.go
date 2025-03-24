@@ -18,10 +18,13 @@ type ClusterTestFailoverInputProperties struct {
 var _ json.Unmarshaler = &ClusterTestFailoverInputProperties{}
 
 func (s *ClusterTestFailoverInputProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ClusterTestFailoverInputProperties
-	var decoded alias
+	var decoded struct {
+		FailoverDirection *FailoverDirection `json:"failoverDirection,omitempty"`
+		NetworkId         *string            `json:"networkId,omitempty"`
+		NetworkType       *string            `json:"networkType,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ClusterTestFailoverInputProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.FailoverDirection = decoded.FailoverDirection
@@ -34,11 +37,12 @@ func (s *ClusterTestFailoverInputProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["providerSpecificDetails"]; ok {
-		impl, err := unmarshalClusterTestFailoverProviderSpecificInputImplementation(v)
+		impl, err := UnmarshalClusterTestFailoverProviderSpecificInputImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ProviderSpecificDetails' for 'ClusterTestFailoverInputProperties': %+v", err)
 		}
 		s.ProviderSpecificDetails = impl
 	}
+
 	return nil
 }

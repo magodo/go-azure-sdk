@@ -14,21 +14,31 @@ type ImpalaLinkedServiceTypeProperties struct {
 	AuthenticationType        ImpalaAuthenticationType `json:"authenticationType"`
 	EnableSsl                 *bool                    `json:"enableSsl,omitempty"`
 	EncryptedCredential       *string                  `json:"encryptedCredential,omitempty"`
-	Host                      string                   `json:"host"`
+	Host                      interface{}              `json:"host"`
 	Password                  SecretBase               `json:"password"`
 	Port                      *int64                   `json:"port,omitempty"`
-	TrustedCertPath           *string                  `json:"trustedCertPath,omitempty"`
+	TrustedCertPath           *interface{}             `json:"trustedCertPath,omitempty"`
 	UseSystemTrustStore       *bool                    `json:"useSystemTrustStore,omitempty"`
-	Username                  *string                  `json:"username,omitempty"`
+	Username                  *interface{}             `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &ImpalaLinkedServiceTypeProperties{}
 
 func (s *ImpalaLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ImpalaLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AllowHostNameCNMismatch   *bool                    `json:"allowHostNameCNMismatch,omitempty"`
+		AllowSelfSignedServerCert *bool                    `json:"allowSelfSignedServerCert,omitempty"`
+		AuthenticationType        ImpalaAuthenticationType `json:"authenticationType"`
+		EnableSsl                 *bool                    `json:"enableSsl,omitempty"`
+		EncryptedCredential       *string                  `json:"encryptedCredential,omitempty"`
+		Host                      interface{}              `json:"host"`
+		Port                      *int64                   `json:"port,omitempty"`
+		TrustedCertPath           *interface{}             `json:"trustedCertPath,omitempty"`
+		UseSystemTrustStore       *bool                    `json:"useSystemTrustStore,omitempty"`
+		Username                  *interface{}             `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ImpalaLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AllowHostNameCNMismatch = decoded.AllowHostNameCNMismatch
@@ -48,11 +58,12 @@ func (s *ImpalaLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'ImpalaLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

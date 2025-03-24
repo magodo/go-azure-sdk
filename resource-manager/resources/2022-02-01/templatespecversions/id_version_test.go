@@ -12,20 +12,20 @@ import (
 var _ resourceids.ResourceId = &VersionId{}
 
 func TestNewVersionID(t *testing.T) {
-	id := NewVersionID("builtInTemplateSpecValue", "versionValue")
+	id := NewVersionID("builtInTemplateSpecName", "versionName")
 
-	if id.BuiltInTemplateSpecName != "builtInTemplateSpecValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'BuiltInTemplateSpecName'", id.BuiltInTemplateSpecName, "builtInTemplateSpecValue")
+	if id.BuiltInTemplateSpecName != "builtInTemplateSpecName" {
+		t.Fatalf("Expected %q but got %q for Segment 'BuiltInTemplateSpecName'", id.BuiltInTemplateSpecName, "builtInTemplateSpecName")
 	}
 
-	if id.VersionName != "versionValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'VersionName'", id.VersionName, "versionValue")
+	if id.VersionName != "versionName" {
+		t.Fatalf("Expected %q but got %q for Segment 'VersionName'", id.VersionName, "versionName")
 	}
 }
 
 func TestFormatVersionID(t *testing.T) {
-	actual := NewVersionID("builtInTemplateSpecValue", "versionValue").ID()
-	expected := "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions/versionValue"
+	actual := NewVersionID("builtInTemplateSpecName", "versionName").ID()
+	expected := "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions/versionName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -59,25 +59,25 @@ func TestParseVersionID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions/versionValue",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions/versionName",
 			Expected: &VersionId{
-				BuiltInTemplateSpecName: "builtInTemplateSpecValue",
-				VersionName:             "versionValue",
+				BuiltInTemplateSpecName: "builtInTemplateSpecName",
+				VersionName:             "versionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions/versionValue/extra",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions/versionName/extra",
 			Error: true,
 		},
 	}
@@ -150,48 +150,48 @@ func TestParseVersionIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcVaLuE",
+			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcVaLuE/vErSiOnS",
+			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcNaMe/vErSiOnS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions/versionValue",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions/versionName",
 			Expected: &VersionId{
-				BuiltInTemplateSpecName: "builtInTemplateSpecValue",
-				VersionName:             "versionValue",
+				BuiltInTemplateSpecName: "builtInTemplateSpecName",
+				VersionName:             "versionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecValue/versions/versionValue/extra",
+			Input: "/providers/Microsoft.Resources/builtInTemplateSpecs/builtInTemplateSpecName/versions/versionName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcVaLuE/vErSiOnS/vErSiOnVaLuE",
+			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcNaMe/vErSiOnS/vErSiOnNaMe",
 			Expected: &VersionId{
-				BuiltInTemplateSpecName: "bUiLtInTeMpLaTeSpEcVaLuE",
-				VersionName:             "vErSiOnVaLuE",
+				BuiltInTemplateSpecName: "bUiLtInTeMpLaTeSpEcNaMe",
+				VersionName:             "vErSiOnNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcVaLuE/vErSiOnS/vErSiOnVaLuE/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.rEsOuRcEs/bUiLtInTeMpLaTeSpEcS/bUiLtInTeMpLaTeSpEcNaMe/vErSiOnS/vErSiOnNaMe/extra",
 			Error: true,
 		},
 	}

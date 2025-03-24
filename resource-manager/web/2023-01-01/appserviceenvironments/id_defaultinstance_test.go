@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &DefaultInstanceId{}
 
 func TestNewDefaultInstanceID(t *testing.T) {
-	id := NewDefaultInstanceID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentValue", "instanceValue")
+	id := NewDefaultInstanceID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentName", "instanceName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewDefaultInstanceID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.HostingEnvironmentName != "hostingEnvironmentValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'HostingEnvironmentName'", id.HostingEnvironmentName, "hostingEnvironmentValue")
+	if id.HostingEnvironmentName != "hostingEnvironmentName" {
+		t.Fatalf("Expected %q but got %q for Segment 'HostingEnvironmentName'", id.HostingEnvironmentName, "hostingEnvironmentName")
 	}
 
-	if id.InstanceName != "instanceValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'InstanceName'", id.InstanceName, "instanceValue")
+	if id.InstanceName != "instanceName" {
+		t.Fatalf("Expected %q but got %q for Segment 'InstanceName'", id.InstanceName, "instanceName")
 	}
 }
 
 func TestFormatDefaultInstanceID(t *testing.T) {
-	actual := NewDefaultInstanceID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentValue", "instanceValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances/instanceValue"
+	actual := NewDefaultInstanceID("12345678-1234-9876-4563-123456789012", "example-resource-group", "hostingEnvironmentName", "instanceName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances/instanceName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,37 +87,37 @@ func TestParseDefaultInstanceID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances/instanceValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances/instanceName",
 			Expected: &DefaultInstanceId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				HostingEnvironmentName: "hostingEnvironmentValue",
-				InstanceName:           "instanceValue",
+				HostingEnvironmentName: "hostingEnvironmentName",
+				InstanceName:           "instanceName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances/instanceValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances/instanceName/extra",
 			Error: true,
 		},
 	}
@@ -238,72 +238,72 @@ func TestParseDefaultInstanceIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/mUlTiRoLePoOlS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/mUlTiRoLePoOlS",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/mUlTiRoLePoOlS/dEfAuLt",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/mUlTiRoLePoOlS/dEfAuLt",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances/instanceValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances/instanceName",
 			Expected: &DefaultInstanceId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				HostingEnvironmentName: "hostingEnvironmentValue",
-				InstanceName:           "instanceValue",
+				HostingEnvironmentName: "hostingEnvironmentName",
+				InstanceName:           "instanceName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentValue/multiRolePools/default/instances/instanceValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Web/hostingEnvironments/hostingEnvironmentName/multiRolePools/default/instances/instanceName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs/iNsTaNcEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs/iNsTaNcEnAmE",
 			Expected: &DefaultInstanceId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "eXaMpLe-rEsOuRcE-GrOuP",
-				HostingEnvironmentName: "hOsTiNgEnViRoNmEnTvAlUe",
-				InstanceName:           "iNsTaNcEvAlUe",
+				HostingEnvironmentName: "hOsTiNgEnViRoNmEnTnAmE",
+				InstanceName:           "iNsTaNcEnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTvAlUe/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs/iNsTaNcEvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.wEb/hOsTiNgEnViRoNmEnTs/hOsTiNgEnViRoNmEnTnAmE/mUlTiRoLePoOlS/dEfAuLt/iNsTaNcEs/iNsTaNcEnAmE/extra",
 			Error: true,
 		},
 	}

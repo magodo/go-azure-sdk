@@ -12,24 +12,24 @@ import (
 var _ resourceids.ResourceId = &ManagedUnsupportedVMSizeId{}
 
 func TestNewManagedUnsupportedVMSizeID(t *testing.T) {
-	id := NewManagedUnsupportedVMSizeID("12345678-1234-9876-4563-123456789012", "locationValue", "managedUnsupportedVMSizeValue")
+	id := NewManagedUnsupportedVMSizeID("12345678-1234-9876-4563-123456789012", "locationName", "managedUnsupportedVMSizeName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.LocationName != "locationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationValue")
+	if id.LocationName != "locationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationName")
 	}
 
-	if id.ManagedUnsupportedVMSizeName != "managedUnsupportedVMSizeValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'ManagedUnsupportedVMSizeName'", id.ManagedUnsupportedVMSizeName, "managedUnsupportedVMSizeValue")
+	if id.ManagedUnsupportedVMSizeName != "managedUnsupportedVMSizeName" {
+		t.Fatalf("Expected %q but got %q for Segment 'ManagedUnsupportedVMSizeName'", id.ManagedUnsupportedVMSizeName, "managedUnsupportedVMSizeName")
 	}
 }
 
 func TestFormatManagedUnsupportedVMSizeID(t *testing.T) {
-	actual := NewManagedUnsupportedVMSizeID("12345678-1234-9876-4563-123456789012", "locationValue", "managedUnsupportedVMSizeValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes/managedUnsupportedVMSizeValue"
+	actual := NewManagedUnsupportedVMSizeID("12345678-1234-9876-4563-123456789012", "locationName", "managedUnsupportedVMSizeName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes/managedUnsupportedVMSizeName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -73,26 +73,26 @@ func TestParseManagedUnsupportedVMSizeID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes/managedUnsupportedVMSizeValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes/managedUnsupportedVMSizeName",
 			Expected: &ManagedUnsupportedVMSizeId{
 				SubscriptionId:               "12345678-1234-9876-4563-123456789012",
-				LocationName:                 "locationValue",
-				ManagedUnsupportedVMSizeName: "managedUnsupportedVMSizeValue",
+				LocationName:                 "locationName",
+				ManagedUnsupportedVMSizeName: "managedUnsupportedVMSizeName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes/managedUnsupportedVMSizeValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes/managedUnsupportedVMSizeName/extra",
 			Error: true,
 		},
 	}
@@ -189,50 +189,50 @@ func TestParseManagedUnsupportedVMSizeIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNvAlUe/mAnAgEdUnSuPpOrTeDvMsIzEs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNnAmE/mAnAgEdUnSuPpOrTeDvMsIzEs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes/managedUnsupportedVMSizeValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes/managedUnsupportedVMSizeName",
 			Expected: &ManagedUnsupportedVMSizeId{
 				SubscriptionId:               "12345678-1234-9876-4563-123456789012",
-				LocationName:                 "locationValue",
-				ManagedUnsupportedVMSizeName: "managedUnsupportedVMSizeValue",
+				LocationName:                 "locationName",
+				ManagedUnsupportedVMSizeName: "managedUnsupportedVMSizeName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationValue/managedUnsupportedVMSizes/managedUnsupportedVMSizeValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.ServiceFabric/locations/locationName/managedUnsupportedVMSizes/managedUnsupportedVMSizeName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNvAlUe/mAnAgEdUnSuPpOrTeDvMsIzEs/mAnAgEdUnSuPpOrTeDvMsIzEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNnAmE/mAnAgEdUnSuPpOrTeDvMsIzEs/mAnAgEdUnSuPpOrTeDvMsIzEnAmE",
 			Expected: &ManagedUnsupportedVMSizeId{
 				SubscriptionId:               "12345678-1234-9876-4563-123456789012",
-				LocationName:                 "lOcAtIoNvAlUe",
-				ManagedUnsupportedVMSizeName: "mAnAgEdUnSuPpOrTeDvMsIzEvAlUe",
+				LocationName:                 "lOcAtIoNnAmE",
+				ManagedUnsupportedVMSizeName: "mAnAgEdUnSuPpOrTeDvMsIzEnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNvAlUe/mAnAgEdUnSuPpOrTeDvMsIzEs/mAnAgEdUnSuPpOrTeDvMsIzEvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.sErViCeFaBrIc/lOcAtIoNs/lOcAtIoNnAmE/mAnAgEdUnSuPpOrTeDvMsIzEs/mAnAgEdUnSuPpOrTeDvMsIzEnAmE/extra",
 			Error: true,
 		},
 	}

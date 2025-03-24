@@ -68,10 +68,23 @@ func (o *ScriptExecutionProperties) SetSubmittedAtAsTime(input time.Time) {
 var _ json.Unmarshaler = &ScriptExecutionProperties{}
 
 func (s *ScriptExecutionProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ScriptExecutionProperties
-	var decoded alias
+	var decoded struct {
+		Errors            *[]string                         `json:"errors,omitempty"`
+		FailureReason     *string                           `json:"failureReason,omitempty"`
+		FinishedAt        *string                           `json:"finishedAt,omitempty"`
+		Information       *[]string                         `json:"information,omitempty"`
+		NamedOutputs      *map[string]interface{}           `json:"namedOutputs,omitempty"`
+		Output            *[]string                         `json:"output,omitempty"`
+		ProvisioningState *ScriptExecutionProvisioningState `json:"provisioningState,omitempty"`
+		Retention         *string                           `json:"retention,omitempty"`
+		ScriptCmdletId    *string                           `json:"scriptCmdletId,omitempty"`
+		StartedAt         *string                           `json:"startedAt,omitempty"`
+		SubmittedAt       *string                           `json:"submittedAt,omitempty"`
+		Timeout           string                            `json:"timeout"`
+		Warnings          *[]string                         `json:"warnings,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ScriptExecutionProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Errors = decoded.Errors
@@ -101,7 +114,7 @@ func (s *ScriptExecutionProperties) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]ScriptExecutionParameter, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalScriptExecutionParameterImplementation(val)
+			impl, err := UnmarshalScriptExecutionParameterImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'HiddenParameters' for 'ScriptExecutionProperties': %+v", i, err)
 			}
@@ -118,7 +131,7 @@ func (s *ScriptExecutionProperties) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]ScriptExecutionParameter, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalScriptExecutionParameterImplementation(val)
+			impl, err := UnmarshalScriptExecutionParameterImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'Parameters' for 'ScriptExecutionProperties': %+v", i, err)
 			}
@@ -126,5 +139,6 @@ func (s *ScriptExecutionProperties) UnmarshalJSON(bytes []byte) error {
 		}
 		s.Parameters = &output
 	}
+
 	return nil
 }

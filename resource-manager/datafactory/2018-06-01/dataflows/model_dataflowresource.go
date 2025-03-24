@@ -19,10 +19,14 @@ type DataFlowResource struct {
 var _ json.Unmarshaler = &DataFlowResource{}
 
 func (s *DataFlowResource) UnmarshalJSON(bytes []byte) error {
-	type alias DataFlowResource
-	var decoded alias
+	var decoded struct {
+		Etag *string `json:"etag,omitempty"`
+		Id   *string `json:"id,omitempty"`
+		Name *string `json:"name,omitempty"`
+		Type *string `json:"type,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DataFlowResource: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Etag = decoded.Etag
@@ -36,11 +40,12 @@ func (s *DataFlowResource) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["properties"]; ok {
-		impl, err := unmarshalDataFlowImplementation(v)
+		impl, err := UnmarshalDataFlowImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Properties' for 'DataFlowResource': %+v", err)
 		}
 		s.Properties = impl
 	}
+
 	return nil
 }

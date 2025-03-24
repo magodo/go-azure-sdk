@@ -9,25 +9,33 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AmazonMWSLinkedServiceTypeProperties struct {
-	AccessKeyId           string     `json:"accessKeyId"`
-	EncryptedCredential   *string    `json:"encryptedCredential,omitempty"`
-	Endpoint              string     `json:"endpoint"`
-	MarketplaceID         string     `json:"marketplaceID"`
-	MwsAuthToken          SecretBase `json:"mwsAuthToken"`
-	SecretKey             SecretBase `json:"secretKey"`
-	SellerID              string     `json:"sellerID"`
-	UseEncryptedEndpoints *bool      `json:"useEncryptedEndpoints,omitempty"`
-	UseHostVerification   *bool      `json:"useHostVerification,omitempty"`
-	UsePeerVerification   *bool      `json:"usePeerVerification,omitempty"`
+	AccessKeyId           interface{} `json:"accessKeyId"`
+	EncryptedCredential   *string     `json:"encryptedCredential,omitempty"`
+	Endpoint              interface{} `json:"endpoint"`
+	MarketplaceID         interface{} `json:"marketplaceID"`
+	MwsAuthToken          SecretBase  `json:"mwsAuthToken"`
+	SecretKey             SecretBase  `json:"secretKey"`
+	SellerID              interface{} `json:"sellerID"`
+	UseEncryptedEndpoints *bool       `json:"useEncryptedEndpoints,omitempty"`
+	UseHostVerification   *bool       `json:"useHostVerification,omitempty"`
+	UsePeerVerification   *bool       `json:"usePeerVerification,omitempty"`
 }
 
 var _ json.Unmarshaler = &AmazonMWSLinkedServiceTypeProperties{}
 
 func (s *AmazonMWSLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AmazonMWSLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AccessKeyId           interface{} `json:"accessKeyId"`
+		EncryptedCredential   *string     `json:"encryptedCredential,omitempty"`
+		Endpoint              interface{} `json:"endpoint"`
+		MarketplaceID         interface{} `json:"marketplaceID"`
+		SellerID              interface{} `json:"sellerID"`
+		UseEncryptedEndpoints *bool       `json:"useEncryptedEndpoints,omitempty"`
+		UseHostVerification   *bool       `json:"useHostVerification,omitempty"`
+		UsePeerVerification   *bool       `json:"usePeerVerification,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AmazonMWSLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccessKeyId = decoded.AccessKeyId
@@ -45,7 +53,7 @@ func (s *AmazonMWSLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["mwsAuthToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'MwsAuthToken' for 'AmazonMWSLinkedServiceTypeProperties': %+v", err)
 		}
@@ -53,11 +61,12 @@ func (s *AmazonMWSLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["secretKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'SecretKey' for 'AmazonMWSLinkedServiceTypeProperties': %+v", err)
 		}
 		s.SecretKey = impl
 	}
+
 	return nil
 }

@@ -12,20 +12,20 @@ import (
 var _ resourceids.ResourceId = &Providers2DiagnosticSettingId{}
 
 func TestNewProviders2DiagnosticSettingID(t *testing.T) {
-	id := NewProviders2DiagnosticSettingID("managementGroupIdValue", "diagnosticSettingValue")
+	id := NewProviders2DiagnosticSettingID("managementGroupId", "diagnosticSettingName")
 
-	if id.ManagementGroupId != "managementGroupIdValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'ManagementGroupId'", id.ManagementGroupId, "managementGroupIdValue")
+	if id.ManagementGroupId != "managementGroupId" {
+		t.Fatalf("Expected %q but got %q for Segment 'ManagementGroupId'", id.ManagementGroupId, "managementGroupId")
 	}
 
-	if id.DiagnosticSettingName != "diagnosticSettingValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DiagnosticSettingName'", id.DiagnosticSettingName, "diagnosticSettingValue")
+	if id.DiagnosticSettingName != "diagnosticSettingName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DiagnosticSettingName'", id.DiagnosticSettingName, "diagnosticSettingName")
 	}
 }
 
 func TestFormatProviders2DiagnosticSettingID(t *testing.T) {
-	actual := NewProviders2DiagnosticSettingID("managementGroupIdValue", "diagnosticSettingValue").ID()
-	expected := "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingValue"
+	actual := NewProviders2DiagnosticSettingID("managementGroupId", "diagnosticSettingName").ID()
+	expected := "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -59,35 +59,35 @@ func TestParseProviders2DiagnosticSettingID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingValue",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingName",
 			Expected: &Providers2DiagnosticSettingId{
-				ManagementGroupId:     "managementGroupIdValue",
-				DiagnosticSettingName: "diagnosticSettingValue",
+				ManagementGroupId:     "managementGroupId",
+				DiagnosticSettingName: "diagnosticSettingName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingValue/extra",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingName/extra",
 			Error: true,
 		},
 	}
@@ -160,68 +160,68 @@ func TestParseProviders2DiagnosticSettingIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE/pRoViDeRs",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId/pRoViDeRs",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE/pRoViDeRs/mIcRoSoFt.iNsIgHtS",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId/pRoViDeRs/mIcRoSoFt.iNsIgHtS",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingValue",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingName",
 			Expected: &Providers2DiagnosticSettingId{
-				ManagementGroupId:     "managementGroupIdValue",
-				DiagnosticSettingName: "diagnosticSettingValue",
+				ManagementGroupId:     "managementGroupId",
+				DiagnosticSettingName: "diagnosticSettingName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Management/managementGroups/managementGroupIdValue/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingValue/extra",
+			Input: "/providers/Microsoft.Management/managementGroups/managementGroupId/providers/Microsoft.Insights/diagnosticSettings/diagnosticSettingName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS/dIaGnOsTiCsEtTiNgVaLuE",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS/dIaGnOsTiCsEtTiNgNaMe",
 			Expected: &Providers2DiagnosticSettingId{
-				ManagementGroupId:     "mAnAgEmEnTgRoUpIdVaLuE",
-				DiagnosticSettingName: "dIaGnOsTiCsEtTiNgVaLuE",
+				ManagementGroupId:     "mAnAgEmEnTgRoUpId",
+				DiagnosticSettingName: "dIaGnOsTiCsEtTiNgNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpIdVaLuE/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS/dIaGnOsTiCsEtTiNgVaLuE/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.mAnAgEmEnT/mAnAgEmEnTgRoUpS/mAnAgEmEnTgRoUpId/pRoViDeRs/mIcRoSoFt.iNsIgHtS/dIaGnOsTiCsEtTiNgS/dIaGnOsTiCsEtTiNgNaMe/extra",
 			Error: true,
 		},
 	}

@@ -21,10 +21,15 @@ type A2AProtectionIntentManagedDiskInputDetails struct {
 var _ json.Unmarshaler = &A2AProtectionIntentManagedDiskInputDetails{}
 
 func (s *A2AProtectionIntentManagedDiskInputDetails) UnmarshalJSON(bytes []byte) error {
-	type alias A2AProtectionIntentManagedDiskInputDetails
-	var decoded alias
+	var decoded struct {
+		DiskEncryptionInfo             *DiskEncryptionInfo `json:"diskEncryptionInfo,omitempty"`
+		DiskId                         string              `json:"diskId"`
+		RecoveryDiskEncryptionSetId    *string             `json:"recoveryDiskEncryptionSetId,omitempty"`
+		RecoveryReplicaDiskAccountType *string             `json:"recoveryReplicaDiskAccountType,omitempty"`
+		RecoveryTargetDiskAccountType  *string             `json:"recoveryTargetDiskAccountType,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into A2AProtectionIntentManagedDiskInputDetails: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.DiskEncryptionInfo = decoded.DiskEncryptionInfo
@@ -39,7 +44,7 @@ func (s *A2AProtectionIntentManagedDiskInputDetails) UnmarshalJSON(bytes []byte)
 	}
 
 	if v, ok := temp["primaryStagingStorageAccountCustomInput"]; ok {
-		impl, err := unmarshalStorageAccountCustomDetailsImplementation(v)
+		impl, err := UnmarshalStorageAccountCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrimaryStagingStorageAccountCustomInput' for 'A2AProtectionIntentManagedDiskInputDetails': %+v", err)
 		}
@@ -47,11 +52,12 @@ func (s *A2AProtectionIntentManagedDiskInputDetails) UnmarshalJSON(bytes []byte)
 	}
 
 	if v, ok := temp["recoveryResourceGroupCustomInput"]; ok {
-		impl, err := unmarshalRecoveryResourceGroupCustomDetailsImplementation(v)
+		impl, err := UnmarshalRecoveryResourceGroupCustomDetailsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RecoveryResourceGroupCustomInput' for 'A2AProtectionIntentManagedDiskInputDetails': %+v", err)
 		}
 		s.RecoveryResourceGroupCustomInput = impl
 	}
+
 	return nil
 }

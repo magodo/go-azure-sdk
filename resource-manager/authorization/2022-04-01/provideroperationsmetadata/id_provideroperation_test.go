@@ -12,16 +12,16 @@ import (
 var _ resourceids.ResourceId = &ProviderOperationId{}
 
 func TestNewProviderOperationID(t *testing.T) {
-	id := NewProviderOperationID("providerOperationValue")
+	id := NewProviderOperationID("providerOperationName")
 
-	if id.ProviderOperationName != "providerOperationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'ProviderOperationName'", id.ProviderOperationName, "providerOperationValue")
+	if id.ProviderOperationName != "providerOperationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'ProviderOperationName'", id.ProviderOperationName, "providerOperationName")
 	}
 }
 
 func TestFormatProviderOperationID(t *testing.T) {
-	actual := NewProviderOperationID("providerOperationValue").ID()
-	expected := "/providers/Microsoft.Authorization/providerOperations/providerOperationValue"
+	actual := NewProviderOperationID("providerOperationName").ID()
+	expected := "/providers/Microsoft.Authorization/providerOperations/providerOperationName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -55,14 +55,14 @@ func TestParseProviderOperationID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationValue",
+			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationName",
 			Expected: &ProviderOperationId{
-				ProviderOperationName: "providerOperationValue",
+				ProviderOperationName: "providerOperationName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationValue/extra",
+			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationName/extra",
 			Error: true,
 		},
 	}
@@ -131,26 +131,26 @@ func TestParseProviderOperationIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationValue",
+			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationName",
 			Expected: &ProviderOperationId{
-				ProviderOperationName: "providerOperationValue",
+				ProviderOperationName: "providerOperationName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationValue/extra",
+			Input: "/providers/Microsoft.Authorization/providerOperations/providerOperationName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.aUtHoRiZaTiOn/pRoViDeRoPeRaTiOnS/pRoViDeRoPeRaTiOnVaLuE",
+			Input: "/pRoViDeRs/mIcRoSoFt.aUtHoRiZaTiOn/pRoViDeRoPeRaTiOnS/pRoViDeRoPeRaTiOnNaMe",
 			Expected: &ProviderOperationId{
-				ProviderOperationName: "pRoViDeRoPeRaTiOnVaLuE",
+				ProviderOperationName: "pRoViDeRoPeRaTiOnNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.aUtHoRiZaTiOn/pRoViDeRoPeRaTiOnS/pRoViDeRoPeRaTiOnVaLuE/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.aUtHoRiZaTiOn/pRoViDeRoPeRaTiOnS/pRoViDeRoPeRaTiOnNaMe/extra",
 			Error: true,
 		},
 	}

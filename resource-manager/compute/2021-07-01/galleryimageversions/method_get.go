@@ -34,6 +34,7 @@ func (o GetOperationOptions) ToHeaders() *client.Headers {
 
 func (o GetOperationOptions) ToOData() *odata.Query {
 	out := odata.Query{}
+
 	return &out
 }
 
@@ -46,7 +47,7 @@ func (o GetOperationOptions) ToQuery() *client.QueryParams {
 }
 
 // Get ...
-func (c GalleryImageVersionsClient) Get(ctx context.Context, id ImageVersionId, options GetOperationOptions) (result GetOperationResponse, err error) {
+func (c GalleryImageVersionsClient) Get(ctx context.Context, id GalleryImageVersionId, options GetOperationOptions) (result GetOperationResponse, err error) {
 	opts := client.RequestOptions{
 		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
@@ -74,7 +75,6 @@ func (c GalleryImageVersionsClient) Get(ctx context.Context, id ImageVersionId, 
 
 	var model GalleryImageVersion
 	result.Model = &model
-
 	if err = resp.Unmarshal(result.Model); err != nil {
 		return
 	}

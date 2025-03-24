@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &DaprComponentResiliencyPolicyId{}
 
 func TestNewDaprComponentResiliencyPolicyID(t *testing.T) {
-	id := NewDaprComponentResiliencyPolicyID("12345678-1234-9876-4563-123456789012", "example-resource-group", "managedEnvironmentValue", "daprComponentValue", "resiliencyPolicyValue")
+	id := NewDaprComponentResiliencyPolicyID("12345678-1234-9876-4563-123456789012", "example-resource-group", "managedEnvironmentName", "daprComponentName", "resiliencyPolicyName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,22 +22,22 @@ func TestNewDaprComponentResiliencyPolicyID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.ManagedEnvironmentName != "managedEnvironmentValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'ManagedEnvironmentName'", id.ManagedEnvironmentName, "managedEnvironmentValue")
+	if id.ManagedEnvironmentName != "managedEnvironmentName" {
+		t.Fatalf("Expected %q but got %q for Segment 'ManagedEnvironmentName'", id.ManagedEnvironmentName, "managedEnvironmentName")
 	}
 
-	if id.DaprComponentName != "daprComponentValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DaprComponentName'", id.DaprComponentName, "daprComponentValue")
+	if id.DaprComponentName != "daprComponentName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DaprComponentName'", id.DaprComponentName, "daprComponentName")
 	}
 
-	if id.ResiliencyPolicyName != "resiliencyPolicyValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'ResiliencyPolicyName'", id.ResiliencyPolicyName, "resiliencyPolicyValue")
+	if id.ResiliencyPolicyName != "resiliencyPolicyName" {
+		t.Fatalf("Expected %q but got %q for Segment 'ResiliencyPolicyName'", id.ResiliencyPolicyName, "resiliencyPolicyName")
 	}
 }
 
 func TestFormatDaprComponentResiliencyPolicyID(t *testing.T) {
-	actual := NewDaprComponentResiliencyPolicyID("12345678-1234-9876-4563-123456789012", "example-resource-group", "managedEnvironmentValue", "daprComponentValue", "resiliencyPolicyValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies/resiliencyPolicyValue"
+	actual := NewDaprComponentResiliencyPolicyID("12345678-1234-9876-4563-123456789012", "example-resource-group", "managedEnvironmentName", "daprComponentName", "resiliencyPolicyName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies/resiliencyPolicyName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -91,38 +91,38 @@ func TestParseDaprComponentResiliencyPolicyID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies/resiliencyPolicyValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies/resiliencyPolicyName",
 			Expected: &DaprComponentResiliencyPolicyId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				ManagedEnvironmentName: "managedEnvironmentValue",
-				DaprComponentName:      "daprComponentValue",
-				ResiliencyPolicyName:   "resiliencyPolicyValue",
+				ManagedEnvironmentName: "managedEnvironmentName",
+				DaprComponentName:      "daprComponentName",
+				ResiliencyPolicyName:   "resiliencyPolicyName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies/resiliencyPolicyValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies/resiliencyPolicyName/extra",
 			Error: true,
 		},
 	}
@@ -247,74 +247,74 @@ func TestParseDaprComponentResiliencyPolicyIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe/dApRcOmPoNeNtS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE/dApRcOmPoNeNtS",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe/dApRcOmPoNeNtS/dApRcOmPoNeNtVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE/dApRcOmPoNeNtS/dApRcOmPoNeNtNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe/dApRcOmPoNeNtS/dApRcOmPoNeNtVaLuE/rEsIlIeNcYpOlIcIeS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE/dApRcOmPoNeNtS/dApRcOmPoNeNtNaMe/rEsIlIeNcYpOlIcIeS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies/resiliencyPolicyValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies/resiliencyPolicyName",
 			Expected: &DaprComponentResiliencyPolicyId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "example-resource-group",
-				ManagedEnvironmentName: "managedEnvironmentValue",
-				DaprComponentName:      "daprComponentValue",
-				ResiliencyPolicyName:   "resiliencyPolicyValue",
+				ManagedEnvironmentName: "managedEnvironmentName",
+				DaprComponentName:      "daprComponentName",
+				ResiliencyPolicyName:   "resiliencyPolicyName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentValue/daprComponents/daprComponentValue/resiliencyPolicies/resiliencyPolicyValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.App/managedEnvironments/managedEnvironmentName/daprComponents/daprComponentName/resiliencyPolicies/resiliencyPolicyName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe/dApRcOmPoNeNtS/dApRcOmPoNeNtVaLuE/rEsIlIeNcYpOlIcIeS/rEsIlIeNcYpOlIcYvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE/dApRcOmPoNeNtS/dApRcOmPoNeNtNaMe/rEsIlIeNcYpOlIcIeS/rEsIlIeNcYpOlIcYnAmE",
 			Expected: &DaprComponentResiliencyPolicyId{
 				SubscriptionId:         "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:      "eXaMpLe-rEsOuRcE-GrOuP",
-				ManagedEnvironmentName: "mAnAgEdEnViRoNmEnTvAlUe",
-				DaprComponentName:      "dApRcOmPoNeNtVaLuE",
-				ResiliencyPolicyName:   "rEsIlIeNcYpOlIcYvAlUe",
+				ManagedEnvironmentName: "mAnAgEdEnViRoNmEnTnAmE",
+				DaprComponentName:      "dApRcOmPoNeNtNaMe",
+				ResiliencyPolicyName:   "rEsIlIeNcYpOlIcYnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTvAlUe/dApRcOmPoNeNtS/dApRcOmPoNeNtVaLuE/rEsIlIeNcYpOlIcIeS/rEsIlIeNcYpOlIcYvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.aPp/mAnAgEdEnViRoNmEnTs/mAnAgEdEnViRoNmEnTnAmE/dApRcOmPoNeNtS/dApRcOmPoNeNtNaMe/rEsIlIeNcYpOlIcIeS/rEsIlIeNcYpOlIcYnAmE/extra",
 			Error: true,
 		},
 	}

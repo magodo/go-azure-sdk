@@ -18,7 +18,7 @@ type GetOperationResponse struct {
 }
 
 // Get ...
-func (c SharedGalleryImageVersionsClient) Get(ctx context.Context, id VersionId) (result GetOperationResponse, err error) {
+func (c SharedGalleryImageVersionsClient) Get(ctx context.Context, id ImageVersionId) (result GetOperationResponse, err error) {
 	opts := client.RequestOptions{
 		ContentType: "application/json; charset=utf-8",
 		ExpectedStatusCodes: []int{
@@ -45,7 +45,6 @@ func (c SharedGalleryImageVersionsClient) Get(ctx context.Context, id VersionId)
 
 	var model SharedGalleryImageVersion
 	result.Model = &model
-
 	if err = resp.Unmarshal(result.Model); err != nil {
 		return
 	}

@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type RestoreRequest interface {
+	RestoreRequest() BaseRestoreRequestImpl
 }
 
-// RawRestoreRequestImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ RestoreRequest = BaseRestoreRequestImpl{}
+
+type BaseRestoreRequestImpl struct {
+	ObjectType string `json:"objectType"`
+}
+
+func (s BaseRestoreRequestImpl) RestoreRequest() BaseRestoreRequestImpl {
+	return s
+}
+
+var _ RestoreRequest = RawRestoreRequestImpl{}
+
+// RawRestoreRequestImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawRestoreRequestImpl struct {
-	Type   string
-	Values map[string]interface{}
+	restoreRequest BaseRestoreRequestImpl
+	Type           string
+	Values         map[string]interface{}
 }
 
-func unmarshalRestoreRequestImplementation(input []byte) (RestoreRequest, error) {
+func (s RawRestoreRequestImpl) RestoreRequest() BaseRestoreRequestImpl {
+	return s.restoreRequest
+}
+
+func UnmarshalRestoreRequestImplementation(input []byte) (RestoreRequest, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalRestoreRequestImplementation(input []byte) (RestoreRequest, error)
 		return nil, fmt.Errorf("unmarshaling RestoreRequest into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["objectType"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["objectType"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "AzureFileShareRestoreRequest") {
@@ -140,10 +157,15 @@ func unmarshalRestoreRequestImplementation(input []byte) (RestoreRequest, error)
 		return out, nil
 	}
 
-	out := RawRestoreRequestImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseRestoreRequestImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseRestoreRequestImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawRestoreRequestImpl{
+		restoreRequest: parent,
+		Type:           value,
+		Values:         temp,
+	}, nil
 
 }

@@ -15,9 +15,17 @@ type XmlReadSettings struct {
 	DetectDataType        *bool                   `json:"detectDataType,omitempty"`
 	NamespacePrefixes     *map[string]string      `json:"namespacePrefixes,omitempty"`
 	Namespaces            *bool                   `json:"namespaces,omitempty"`
-	ValidationMode        *string                 `json:"validationMode,omitempty"`
+	ValidationMode        *interface{}            `json:"validationMode,omitempty"`
 
 	// Fields inherited from FormatReadSettings
+
+	Type string `json:"type"`
+}
+
+func (s XmlReadSettings) FormatReadSettings() BaseFormatReadSettingsImpl {
+	return BaseFormatReadSettingsImpl{
+		Type: s.Type,
+	}
 }
 
 var _ json.Marshaler = XmlReadSettings{}
@@ -31,9 +39,10 @@ func (s XmlReadSettings) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling XmlReadSettings: %+v", err)
 	}
+
 	decoded["type"] = "XmlReadSettings"
 
 	encoded, err = json.Marshal(decoded)
@@ -47,16 +56,22 @@ func (s XmlReadSettings) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &XmlReadSettings{}
 
 func (s *XmlReadSettings) UnmarshalJSON(bytes []byte) error {
-	type alias XmlReadSettings
-	var decoded alias
+	var decoded struct {
+		DetectDataType    *bool              `json:"detectDataType,omitempty"`
+		NamespacePrefixes *map[string]string `json:"namespacePrefixes,omitempty"`
+		Namespaces        *bool              `json:"namespaces,omitempty"`
+		ValidationMode    *interface{}       `json:"validationMode,omitempty"`
+		Type              string             `json:"type"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into XmlReadSettings: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.DetectDataType = decoded.DetectDataType
 	s.NamespacePrefixes = decoded.NamespacePrefixes
 	s.Namespaces = decoded.Namespaces
 	s.ValidationMode = decoded.ValidationMode
+	s.Type = decoded.Type
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -64,11 +79,12 @@ func (s *XmlReadSettings) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["compressionProperties"]; ok {
-		impl, err := unmarshalCompressionReadSettingsImplementation(v)
+		impl, err := UnmarshalCompressionReadSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'CompressionProperties' for 'XmlReadSettings': %+v", err)
 		}
 		s.CompressionProperties = impl
 	}
+
 	return nil
 }

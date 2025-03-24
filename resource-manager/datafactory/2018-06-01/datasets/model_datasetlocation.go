@@ -10,18 +10,37 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type DatasetLocation interface {
+	DatasetLocation() BaseDatasetLocationImpl
 }
 
-// RawDatasetLocationImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ DatasetLocation = BaseDatasetLocationImpl{}
+
+type BaseDatasetLocationImpl struct {
+	FileName   *interface{} `json:"fileName,omitempty"`
+	FolderPath *interface{} `json:"folderPath,omitempty"`
+	Type       string       `json:"type"`
+}
+
+func (s BaseDatasetLocationImpl) DatasetLocation() BaseDatasetLocationImpl {
+	return s
+}
+
+var _ DatasetLocation = RawDatasetLocationImpl{}
+
+// RawDatasetLocationImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawDatasetLocationImpl struct {
-	Type   string
-	Values map[string]interface{}
+	datasetLocation BaseDatasetLocationImpl
+	Type            string
+	Values          map[string]interface{}
 }
 
-func unmarshalDatasetLocationImplementation(input []byte) (DatasetLocation, error) {
+func (s RawDatasetLocationImpl) DatasetLocation() BaseDatasetLocationImpl {
+	return s.datasetLocation
+}
+
+func UnmarshalDatasetLocationImplementation(input []byte) (DatasetLocation, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +50,9 @@ func unmarshalDatasetLocationImplementation(input []byte) (DatasetLocation, erro
 		return nil, fmt.Errorf("unmarshaling DatasetLocation into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["type"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["type"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "AmazonS3CompatibleLocation") {
@@ -148,10 +167,15 @@ func unmarshalDatasetLocationImplementation(input []byte) (DatasetLocation, erro
 		return out, nil
 	}
 
-	out := RawDatasetLocationImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseDatasetLocationImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseDatasetLocationImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawDatasetLocationImpl{
+		datasetLocation: parent,
+		Type:            value,
+		Values:          temp,
+	}, nil
 
 }

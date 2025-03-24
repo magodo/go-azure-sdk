@@ -16,10 +16,22 @@ type DelimitedTextSource struct {
 	StoreSettings     StoreReadSettings          `json:"storeSettings"`
 
 	// Fields inherited from CopySource
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SourceRetryCount         *int64  `json:"sourceRetryCount,omitempty"`
-	SourceRetryWait          *string `json:"sourceRetryWait,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SourceRetryCount         *int64       `json:"sourceRetryCount,omitempty"`
+	SourceRetryWait          *interface{} `json:"sourceRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+}
+
+func (s DelimitedTextSource) CopySource() BaseCopySourceImpl {
+	return BaseCopySourceImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SourceRetryCount:         s.SourceRetryCount,
+		SourceRetryWait:          s.SourceRetryWait,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = DelimitedTextSource{}
@@ -33,9 +45,10 @@ func (s DelimitedTextSource) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling DelimitedTextSource: %+v", err)
 	}
+
 	decoded["type"] = "DelimitedTextSource"
 
 	encoded, err = json.Marshal(decoded)
@@ -49,18 +62,26 @@ func (s DelimitedTextSource) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &DelimitedTextSource{}
 
 func (s *DelimitedTextSource) UnmarshalJSON(bytes []byte) error {
-	type alias DelimitedTextSource
-	var decoded alias
+	var decoded struct {
+		AdditionalColumns        *interface{}               `json:"additionalColumns,omitempty"`
+		FormatSettings           *DelimitedTextReadSettings `json:"formatSettings,omitempty"`
+		DisableMetricsCollection *bool                      `json:"disableMetricsCollection,omitempty"`
+		MaxConcurrentConnections *int64                     `json:"maxConcurrentConnections,omitempty"`
+		SourceRetryCount         *int64                     `json:"sourceRetryCount,omitempty"`
+		SourceRetryWait          *interface{}               `json:"sourceRetryWait,omitempty"`
+		Type                     string                     `json:"type"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DelimitedTextSource: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AdditionalColumns = decoded.AdditionalColumns
-	s.DisableMetricsCollection = decoded.DisableMetricsCollection
 	s.FormatSettings = decoded.FormatSettings
+	s.DisableMetricsCollection = decoded.DisableMetricsCollection
 	s.MaxConcurrentConnections = decoded.MaxConcurrentConnections
 	s.SourceRetryCount = decoded.SourceRetryCount
 	s.SourceRetryWait = decoded.SourceRetryWait
+	s.Type = decoded.Type
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -68,11 +89,12 @@ func (s *DelimitedTextSource) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["storeSettings"]; ok {
-		impl, err := unmarshalStoreReadSettingsImplementation(v)
+		impl, err := UnmarshalStoreReadSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'StoreSettings' for 'DelimitedTextSource': %+v", err)
 		}
 		s.StoreSettings = impl
 	}
+
 	return nil
 }

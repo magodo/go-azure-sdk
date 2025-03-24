@@ -11,11 +11,21 @@ import (
 var _ DatasetLocation = AzureBlobFSLocation{}
 
 type AzureBlobFSLocation struct {
-	FileSystem *string `json:"fileSystem,omitempty"`
+	FileSystem *interface{} `json:"fileSystem,omitempty"`
 
 	// Fields inherited from DatasetLocation
-	FileName   *string `json:"fileName,omitempty"`
-	FolderPath *string `json:"folderPath,omitempty"`
+
+	FileName   *interface{} `json:"fileName,omitempty"`
+	FolderPath *interface{} `json:"folderPath,omitempty"`
+	Type       string       `json:"type"`
+}
+
+func (s AzureBlobFSLocation) DatasetLocation() BaseDatasetLocationImpl {
+	return BaseDatasetLocationImpl{
+		FileName:   s.FileName,
+		FolderPath: s.FolderPath,
+		Type:       s.Type,
+	}
 }
 
 var _ json.Marshaler = AzureBlobFSLocation{}
@@ -29,9 +39,10 @@ func (s AzureBlobFSLocation) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling AzureBlobFSLocation: %+v", err)
 	}
+
 	decoded["type"] = "AzureBlobFSLocation"
 
 	encoded, err = json.Marshal(decoded)

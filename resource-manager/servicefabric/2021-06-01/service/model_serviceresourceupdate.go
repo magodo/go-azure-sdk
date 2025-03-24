@@ -22,10 +22,17 @@ type ServiceResourceUpdate struct {
 var _ json.Unmarshaler = &ServiceResourceUpdate{}
 
 func (s *ServiceResourceUpdate) UnmarshalJSON(bytes []byte) error {
-	type alias ServiceResourceUpdate
-	var decoded alias
+	var decoded struct {
+		Etag       *string            `json:"etag,omitempty"`
+		Id         *string            `json:"id,omitempty"`
+		Location   *string            `json:"location,omitempty"`
+		Name       *string            `json:"name,omitempty"`
+		SystemData *SystemData        `json:"systemData,omitempty"`
+		Tags       *map[string]string `json:"tags,omitempty"`
+		Type       *string            `json:"type,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ServiceResourceUpdate: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Etag = decoded.Etag
@@ -42,11 +49,12 @@ func (s *ServiceResourceUpdate) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["properties"]; ok {
-		impl, err := unmarshalServiceResourceUpdatePropertiesImplementation(v)
+		impl, err := UnmarshalServiceResourceUpdatePropertiesImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Properties' for 'ServiceResourceUpdate': %+v", err)
 		}
 		s.Properties = impl
 	}
+
 	return nil
 }

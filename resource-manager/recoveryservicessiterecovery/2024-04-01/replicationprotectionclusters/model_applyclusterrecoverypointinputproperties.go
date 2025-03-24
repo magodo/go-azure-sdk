@@ -17,10 +17,12 @@ type ApplyClusterRecoveryPointInputProperties struct {
 var _ json.Unmarshaler = &ApplyClusterRecoveryPointInputProperties{}
 
 func (s *ApplyClusterRecoveryPointInputProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ApplyClusterRecoveryPointInputProperties
-	var decoded alias
+	var decoded struct {
+		ClusterRecoveryPointId       *string   `json:"clusterRecoveryPointId,omitempty"`
+		IndividualNodeRecoveryPoints *[]string `json:"individualNodeRecoveryPoints,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ApplyClusterRecoveryPointInputProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClusterRecoveryPointId = decoded.ClusterRecoveryPointId
@@ -32,11 +34,12 @@ func (s *ApplyClusterRecoveryPointInputProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["providerSpecificDetails"]; ok {
-		impl, err := unmarshalApplyClusterRecoveryPointProviderSpecificInputImplementation(v)
+		impl, err := UnmarshalApplyClusterRecoveryPointProviderSpecificInputImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ProviderSpecificDetails' for 'ApplyClusterRecoveryPointInputProperties': %+v", err)
 		}
 		s.ProviderSpecificDetails = impl
 	}
+
 	return nil
 }

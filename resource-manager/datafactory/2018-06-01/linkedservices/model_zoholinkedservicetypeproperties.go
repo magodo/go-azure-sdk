@@ -12,7 +12,7 @@ type ZohoLinkedServiceTypeProperties struct {
 	AccessToken           SecretBase   `json:"accessToken"`
 	ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
 	EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
-	Endpoint              *string      `json:"endpoint,omitempty"`
+	Endpoint              *interface{} `json:"endpoint,omitempty"`
 	UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
 	UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
 	UsePeerVerification   *bool        `json:"usePeerVerification,omitempty"`
@@ -21,10 +21,16 @@ type ZohoLinkedServiceTypeProperties struct {
 var _ json.Unmarshaler = &ZohoLinkedServiceTypeProperties{}
 
 func (s *ZohoLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ZohoLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
+		EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
+		Endpoint              *interface{} `json:"endpoint,omitempty"`
+		UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
+		UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
+		UsePeerVerification   *bool        `json:"usePeerVerification,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ZohoLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ConnectionProperties = decoded.ConnectionProperties
@@ -40,11 +46,12 @@ func (s *ZohoLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["accessToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AccessToken' for 'ZohoLinkedServiceTypeProperties': %+v", err)
 		}
 		s.AccessToken = impl
 	}
+
 	return nil
 }

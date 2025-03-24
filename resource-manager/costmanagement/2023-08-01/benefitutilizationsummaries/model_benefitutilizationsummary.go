@@ -10,18 +10,38 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type BenefitUtilizationSummary interface {
+	BenefitUtilizationSummary() BaseBenefitUtilizationSummaryImpl
 }
 
-// RawBenefitUtilizationSummaryImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ BenefitUtilizationSummary = BaseBenefitUtilizationSummaryImpl{}
+
+type BaseBenefitUtilizationSummaryImpl struct {
+	Id   *string     `json:"id,omitempty"`
+	Kind BenefitKind `json:"kind"`
+	Name *string     `json:"name,omitempty"`
+	Type *string     `json:"type,omitempty"`
+}
+
+func (s BaseBenefitUtilizationSummaryImpl) BenefitUtilizationSummary() BaseBenefitUtilizationSummaryImpl {
+	return s
+}
+
+var _ BenefitUtilizationSummary = RawBenefitUtilizationSummaryImpl{}
+
+// RawBenefitUtilizationSummaryImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawBenefitUtilizationSummaryImpl struct {
-	Type   string
-	Values map[string]interface{}
+	benefitUtilizationSummary BaseBenefitUtilizationSummaryImpl
+	Type                      string
+	Values                    map[string]interface{}
 }
 
-func unmarshalBenefitUtilizationSummaryImplementation(input []byte) (BenefitUtilizationSummary, error) {
+func (s RawBenefitUtilizationSummaryImpl) BenefitUtilizationSummary() BaseBenefitUtilizationSummaryImpl {
+	return s.benefitUtilizationSummary
+}
+
+func UnmarshalBenefitUtilizationSummaryImplementation(input []byte) (BenefitUtilizationSummary, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +51,9 @@ func unmarshalBenefitUtilizationSummaryImplementation(input []byte) (BenefitUtil
 		return nil, fmt.Errorf("unmarshaling BenefitUtilizationSummary into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["kind"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["kind"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "IncludedQuantity") {
@@ -52,10 +72,15 @@ func unmarshalBenefitUtilizationSummaryImplementation(input []byte) (BenefitUtil
 		return out, nil
 	}
 
-	out := RawBenefitUtilizationSummaryImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseBenefitUtilizationSummaryImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseBenefitUtilizationSummaryImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawBenefitUtilizationSummaryImpl{
+		benefitUtilizationSummary: parent,
+		Type:                      value,
+		Values:                    temp,
+	}, nil
 
 }

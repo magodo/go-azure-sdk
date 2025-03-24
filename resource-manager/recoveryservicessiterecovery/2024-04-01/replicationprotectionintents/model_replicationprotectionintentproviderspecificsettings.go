@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type ReplicationProtectionIntentProviderSpecificSettings interface {
+	ReplicationProtectionIntentProviderSpecificSettings() BaseReplicationProtectionIntentProviderSpecificSettingsImpl
 }
 
-// RawReplicationProtectionIntentProviderSpecificSettingsImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ ReplicationProtectionIntentProviderSpecificSettings = BaseReplicationProtectionIntentProviderSpecificSettingsImpl{}
+
+type BaseReplicationProtectionIntentProviderSpecificSettingsImpl struct {
+	InstanceType string `json:"instanceType"`
+}
+
+func (s BaseReplicationProtectionIntentProviderSpecificSettingsImpl) ReplicationProtectionIntentProviderSpecificSettings() BaseReplicationProtectionIntentProviderSpecificSettingsImpl {
+	return s
+}
+
+var _ ReplicationProtectionIntentProviderSpecificSettings = RawReplicationProtectionIntentProviderSpecificSettingsImpl{}
+
+// RawReplicationProtectionIntentProviderSpecificSettingsImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawReplicationProtectionIntentProviderSpecificSettingsImpl struct {
-	Type   string
-	Values map[string]interface{}
+	replicationProtectionIntentProviderSpecificSettings BaseReplicationProtectionIntentProviderSpecificSettingsImpl
+	Type                                                string
+	Values                                              map[string]interface{}
 }
 
-func unmarshalReplicationProtectionIntentProviderSpecificSettingsImplementation(input []byte) (ReplicationProtectionIntentProviderSpecificSettings, error) {
+func (s RawReplicationProtectionIntentProviderSpecificSettingsImpl) ReplicationProtectionIntentProviderSpecificSettings() BaseReplicationProtectionIntentProviderSpecificSettingsImpl {
+	return s.replicationProtectionIntentProviderSpecificSettings
+}
+
+func UnmarshalReplicationProtectionIntentProviderSpecificSettingsImplementation(input []byte) (ReplicationProtectionIntentProviderSpecificSettings, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalReplicationProtectionIntentProviderSpecificSettingsImplementation(
 		return nil, fmt.Errorf("unmarshaling ReplicationProtectionIntentProviderSpecificSettings into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["instanceType"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["instanceType"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "A2A") {
@@ -44,10 +61,15 @@ func unmarshalReplicationProtectionIntentProviderSpecificSettingsImplementation(
 		return out, nil
 	}
 
-	out := RawReplicationProtectionIntentProviderSpecificSettingsImpl{
+	var parent BaseReplicationProtectionIntentProviderSpecificSettingsImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseReplicationProtectionIntentProviderSpecificSettingsImpl: %+v", err)
+	}
+
+	return RawReplicationProtectionIntentProviderSpecificSettingsImpl{
+		replicationProtectionIntentProviderSpecificSettings: parent,
 		Type:   value,
 		Values: temp,
-	}
-	return out, nil
+	}, nil
 
 }

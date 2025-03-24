@@ -12,20 +12,20 @@ import (
 var _ resourceids.ResourceId = &TopLevelDomainId{}
 
 func TestNewTopLevelDomainID(t *testing.T) {
-	id := NewTopLevelDomainID("12345678-1234-9876-4563-123456789012", "topLevelDomainValue")
+	id := NewTopLevelDomainID("12345678-1234-9876-4563-123456789012", "topLevelDomainName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.TopLevelDomainName != "topLevelDomainValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'TopLevelDomainName'", id.TopLevelDomainName, "topLevelDomainValue")
+	if id.TopLevelDomainName != "topLevelDomainName" {
+		t.Fatalf("Expected %q but got %q for Segment 'TopLevelDomainName'", id.TopLevelDomainName, "topLevelDomainName")
 	}
 }
 
 func TestFormatTopLevelDomainID(t *testing.T) {
-	actual := NewTopLevelDomainID("12345678-1234-9876-4563-123456789012", "topLevelDomainValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainValue"
+	actual := NewTopLevelDomainID("12345678-1234-9876-4563-123456789012", "topLevelDomainName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -69,15 +69,15 @@ func TestParseTopLevelDomainID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainName",
 			Expected: &TopLevelDomainId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				TopLevelDomainName: "topLevelDomainValue",
+				TopLevelDomainName: "topLevelDomainName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainName/extra",
 			Error: true,
 		},
 	}
@@ -170,28 +170,28 @@ func TestParseTopLevelDomainIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainName",
 			Expected: &TopLevelDomainId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				TopLevelDomainName: "topLevelDomainValue",
+				TopLevelDomainName: "topLevelDomainName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.DomainRegistration/topLevelDomains/topLevelDomainName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.dOmAiNrEgIsTrAtIoN/tOpLeVeLdOmAiNs/tOpLeVeLdOmAiNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.dOmAiNrEgIsTrAtIoN/tOpLeVeLdOmAiNs/tOpLeVeLdOmAiNnAmE",
 			Expected: &TopLevelDomainId{
 				SubscriptionId:     "12345678-1234-9876-4563-123456789012",
-				TopLevelDomainName: "tOpLeVeLdOmAiNvAlUe",
+				TopLevelDomainName: "tOpLeVeLdOmAiNnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.dOmAiNrEgIsTrAtIoN/tOpLeVeLdOmAiNs/tOpLeVeLdOmAiNvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.dOmAiNrEgIsTrAtIoN/tOpLeVeLdOmAiNs/tOpLeVeLdOmAiNnAmE/extra",
 			Error: true,
 		},
 	}

@@ -12,16 +12,16 @@ import (
 var _ resourceids.ResourceId = &OsTypeId{}
 
 func TestNewOsTypeID(t *testing.T) {
-	id := NewOsTypeID("osTypeValue")
+	id := NewOsTypeID("osTypeName")
 
-	if id.OsTypeName != "osTypeValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'OsTypeName'", id.OsTypeName, "osTypeValue")
+	if id.OsTypeName != "osTypeName" {
+		t.Fatalf("Expected %q but got %q for Segment 'OsTypeName'", id.OsTypeName, "osTypeName")
 	}
 }
 
 func TestFormatOsTypeID(t *testing.T) {
-	actual := NewOsTypeID("osTypeValue").ID()
-	expected := "/providers/Microsoft.HybridCompute/osType/osTypeValue"
+	actual := NewOsTypeID("osTypeName").ID()
+	expected := "/providers/Microsoft.HybridCompute/osType/osTypeName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -55,14 +55,14 @@ func TestParseOsTypeID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName",
 			Expected: &OsTypeId{
-				OsTypeName: "osTypeValue",
+				OsTypeName: "osTypeName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/extra",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/extra",
 			Error: true,
 		},
 	}
@@ -131,26 +131,26 @@ func TestParseOsTypeIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName",
 			Expected: &OsTypeId{
-				OsTypeName: "osTypeValue",
+				OsTypeName: "osTypeName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/extra",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE",
 			Expected: &OsTypeId{
-				OsTypeName: "oStYpEvAlUe",
+				OsTypeName: "oStYpEnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE/extra",
 			Error: true,
 		},
 	}

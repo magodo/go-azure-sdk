@@ -11,12 +11,20 @@ import (
 var _ FormatWriteSettings = AvroWriteSettings{}
 
 type AvroWriteSettings struct {
-	FileNamePrefix  *string `json:"fileNamePrefix,omitempty"`
-	MaxRowsPerFile  *int64  `json:"maxRowsPerFile,omitempty"`
-	RecordName      *string `json:"recordName,omitempty"`
-	RecordNamespace *string `json:"recordNamespace,omitempty"`
+	FileNamePrefix  *interface{} `json:"fileNamePrefix,omitempty"`
+	MaxRowsPerFile  *int64       `json:"maxRowsPerFile,omitempty"`
+	RecordName      *string      `json:"recordName,omitempty"`
+	RecordNamespace *string      `json:"recordNamespace,omitempty"`
 
 	// Fields inherited from FormatWriteSettings
+
+	Type string `json:"type"`
+}
+
+func (s AvroWriteSettings) FormatWriteSettings() BaseFormatWriteSettingsImpl {
+	return BaseFormatWriteSettingsImpl{
+		Type: s.Type,
+	}
 }
 
 var _ json.Marshaler = AvroWriteSettings{}
@@ -30,9 +38,10 @@ func (s AvroWriteSettings) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling AvroWriteSettings: %+v", err)
 	}
+
 	decoded["type"] = "AvroWriteSettings"
 
 	encoded, err = json.Marshal(decoded)

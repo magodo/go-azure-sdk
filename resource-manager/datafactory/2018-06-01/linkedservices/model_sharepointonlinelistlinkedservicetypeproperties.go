@@ -9,29 +9,34 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type SharePointOnlineListLinkedServiceTypeProperties struct {
-	EncryptedCredential                  *string    `json:"encryptedCredential,omitempty"`
-	ServicePrincipalCredentialType       *string    `json:"servicePrincipalCredentialType,omitempty"`
-	ServicePrincipalEmbeddedCert         SecretBase `json:"servicePrincipalEmbeddedCert"`
-	ServicePrincipalEmbeddedCertPassword SecretBase `json:"servicePrincipalEmbeddedCertPassword"`
-	ServicePrincipalId                   string     `json:"servicePrincipalId"`
-	ServicePrincipalKey                  SecretBase `json:"servicePrincipalKey"`
-	SiteUrl                              string     `json:"siteUrl"`
-	TenantId                             string     `json:"tenantId"`
+	EncryptedCredential                  *string      `json:"encryptedCredential,omitempty"`
+	ServicePrincipalCredentialType       *interface{} `json:"servicePrincipalCredentialType,omitempty"`
+	ServicePrincipalEmbeddedCert         SecretBase   `json:"servicePrincipalEmbeddedCert"`
+	ServicePrincipalEmbeddedCertPassword SecretBase   `json:"servicePrincipalEmbeddedCertPassword"`
+	ServicePrincipalId                   interface{}  `json:"servicePrincipalId"`
+	ServicePrincipalKey                  SecretBase   `json:"servicePrincipalKey"`
+	SiteURL                              interface{}  `json:"siteUrl"`
+	TenantId                             interface{}  `json:"tenantId"`
 }
 
 var _ json.Unmarshaler = &SharePointOnlineListLinkedServiceTypeProperties{}
 
 func (s *SharePointOnlineListLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SharePointOnlineListLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential            *string      `json:"encryptedCredential,omitempty"`
+		ServicePrincipalCredentialType *interface{} `json:"servicePrincipalCredentialType,omitempty"`
+		ServicePrincipalId             interface{}  `json:"servicePrincipalId"`
+		SiteURL                        interface{}  `json:"siteUrl"`
+		TenantId                       interface{}  `json:"tenantId"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SharePointOnlineListLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
 	s.ServicePrincipalCredentialType = decoded.ServicePrincipalCredentialType
 	s.ServicePrincipalId = decoded.ServicePrincipalId
-	s.SiteUrl = decoded.SiteUrl
+	s.SiteURL = decoded.SiteURL
 	s.TenantId = decoded.TenantId
 
 	var temp map[string]json.RawMessage
@@ -40,7 +45,7 @@ func (s *SharePointOnlineListLinkedServiceTypeProperties) UnmarshalJSON(bytes []
 	}
 
 	if v, ok := temp["servicePrincipalEmbeddedCert"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalEmbeddedCert' for 'SharePointOnlineListLinkedServiceTypeProperties': %+v", err)
 		}
@@ -48,7 +53,7 @@ func (s *SharePointOnlineListLinkedServiceTypeProperties) UnmarshalJSON(bytes []
 	}
 
 	if v, ok := temp["servicePrincipalEmbeddedCertPassword"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalEmbeddedCertPassword' for 'SharePointOnlineListLinkedServiceTypeProperties': %+v", err)
 		}
@@ -56,11 +61,12 @@ func (s *SharePointOnlineListLinkedServiceTypeProperties) UnmarshalJSON(bytes []
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'SharePointOnlineListLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

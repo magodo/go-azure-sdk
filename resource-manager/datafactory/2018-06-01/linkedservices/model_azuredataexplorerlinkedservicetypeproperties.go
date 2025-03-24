@@ -10,20 +10,25 @@ import (
 
 type AzureDataExplorerLinkedServiceTypeProperties struct {
 	Credential          *CredentialReference `json:"credential,omitempty"`
-	Database            string               `json:"database"`
-	Endpoint            string               `json:"endpoint"`
-	ServicePrincipalId  *string              `json:"servicePrincipalId,omitempty"`
+	Database            interface{}          `json:"database"`
+	Endpoint            interface{}          `json:"endpoint"`
+	ServicePrincipalId  *interface{}         `json:"servicePrincipalId,omitempty"`
 	ServicePrincipalKey SecretBase           `json:"servicePrincipalKey"`
-	Tenant              *string              `json:"tenant,omitempty"`
+	Tenant              *interface{}         `json:"tenant,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureDataExplorerLinkedServiceTypeProperties{}
 
 func (s *AzureDataExplorerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureDataExplorerLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		Credential         *CredentialReference `json:"credential,omitempty"`
+		Database           interface{}          `json:"database"`
+		Endpoint           interface{}          `json:"endpoint"`
+		ServicePrincipalId *interface{}         `json:"servicePrincipalId,omitempty"`
+		Tenant             *interface{}         `json:"tenant,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureDataExplorerLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Credential = decoded.Credential
@@ -38,11 +43,12 @@ func (s *AzureDataExplorerLinkedServiceTypeProperties) UnmarshalJSON(bytes []byt
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'AzureDataExplorerLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

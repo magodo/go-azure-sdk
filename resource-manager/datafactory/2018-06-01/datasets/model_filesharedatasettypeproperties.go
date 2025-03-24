@@ -10,21 +10,27 @@ import (
 
 type FileShareDatasetTypeProperties struct {
 	Compression           *DatasetCompression  `json:"compression,omitempty"`
-	FileFilter            *string              `json:"fileFilter,omitempty"`
-	FileName              *string              `json:"fileName,omitempty"`
-	FolderPath            *string              `json:"folderPath,omitempty"`
+	FileFilter            *interface{}         `json:"fileFilter,omitempty"`
+	FileName              *interface{}         `json:"fileName,omitempty"`
+	FolderPath            *interface{}         `json:"folderPath,omitempty"`
 	Format                DatasetStorageFormat `json:"format"`
-	ModifiedDatetimeEnd   *string              `json:"modifiedDatetimeEnd,omitempty"`
-	ModifiedDatetimeStart *string              `json:"modifiedDatetimeStart,omitempty"`
+	ModifiedDatetimeEnd   *interface{}         `json:"modifiedDatetimeEnd,omitempty"`
+	ModifiedDatetimeStart *interface{}         `json:"modifiedDatetimeStart,omitempty"`
 }
 
 var _ json.Unmarshaler = &FileShareDatasetTypeProperties{}
 
 func (s *FileShareDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias FileShareDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		Compression           *DatasetCompression `json:"compression,omitempty"`
+		FileFilter            *interface{}        `json:"fileFilter,omitempty"`
+		FileName              *interface{}        `json:"fileName,omitempty"`
+		FolderPath            *interface{}        `json:"folderPath,omitempty"`
+		ModifiedDatetimeEnd   *interface{}        `json:"modifiedDatetimeEnd,omitempty"`
+		ModifiedDatetimeStart *interface{}        `json:"modifiedDatetimeStart,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into FileShareDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Compression = decoded.Compression
@@ -40,11 +46,12 @@ func (s *FileShareDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["format"]; ok {
-		impl, err := unmarshalDatasetStorageFormatImplementation(v)
+		impl, err := UnmarshalDatasetStorageFormatImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Format' for 'FileShareDatasetTypeProperties': %+v", err)
 		}
 		s.Format = impl
 	}
+
 	return nil
 }

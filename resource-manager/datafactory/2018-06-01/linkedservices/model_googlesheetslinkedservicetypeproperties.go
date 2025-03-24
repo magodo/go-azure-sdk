@@ -16,10 +16,11 @@ type GoogleSheetsLinkedServiceTypeProperties struct {
 var _ json.Unmarshaler = &GoogleSheetsLinkedServiceTypeProperties{}
 
 func (s *GoogleSheetsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias GoogleSheetsLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential *string `json:"encryptedCredential,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into GoogleSheetsLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
@@ -30,11 +31,12 @@ func (s *GoogleSheetsLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) er
 	}
 
 	if v, ok := temp["apiToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ApiToken' for 'GoogleSheetsLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ApiToken = impl
 	}
+
 	return nil
 }

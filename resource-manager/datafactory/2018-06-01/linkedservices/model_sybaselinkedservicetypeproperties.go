@@ -10,21 +10,27 @@ import (
 
 type SybaseLinkedServiceTypeProperties struct {
 	AuthenticationType  *SybaseAuthenticationType `json:"authenticationType,omitempty"`
-	Database            string                    `json:"database"`
+	Database            interface{}               `json:"database"`
 	EncryptedCredential *string                   `json:"encryptedCredential,omitempty"`
 	Password            SecretBase                `json:"password"`
-	Schema              *string                   `json:"schema,omitempty"`
-	Server              string                    `json:"server"`
-	Username            *string                   `json:"username,omitempty"`
+	Schema              *interface{}              `json:"schema,omitempty"`
+	Server              interface{}               `json:"server"`
+	Username            *interface{}              `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &SybaseLinkedServiceTypeProperties{}
 
 func (s *SybaseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias SybaseLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  *SybaseAuthenticationType `json:"authenticationType,omitempty"`
+		Database            interface{}               `json:"database"`
+		EncryptedCredential *string                   `json:"encryptedCredential,omitempty"`
+		Schema              *interface{}              `json:"schema,omitempty"`
+		Server              interface{}               `json:"server"`
+		Username            *interface{}              `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into SybaseLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -40,11 +46,12 @@ func (s *SybaseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'SybaseLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

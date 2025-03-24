@@ -10,18 +10,35 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type ResyncProviderSpecificInput interface {
+	ResyncProviderSpecificInput() BaseResyncProviderSpecificInputImpl
 }
 
-// RawResyncProviderSpecificInputImpl is returned when the Discriminated Value
-// doesn't match any of the defined types
+var _ ResyncProviderSpecificInput = BaseResyncProviderSpecificInputImpl{}
+
+type BaseResyncProviderSpecificInputImpl struct {
+	InstanceType string `json:"instanceType"`
+}
+
+func (s BaseResyncProviderSpecificInputImpl) ResyncProviderSpecificInput() BaseResyncProviderSpecificInputImpl {
+	return s
+}
+
+var _ ResyncProviderSpecificInput = RawResyncProviderSpecificInputImpl{}
+
+// RawResyncProviderSpecificInputImpl is returned when the Discriminated Value doesn't match any of the defined types
 // NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
 // and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
 type RawResyncProviderSpecificInputImpl struct {
-	Type   string
-	Values map[string]interface{}
+	resyncProviderSpecificInput BaseResyncProviderSpecificInputImpl
+	Type                        string
+	Values                      map[string]interface{}
 }
 
-func unmarshalResyncProviderSpecificInputImplementation(input []byte) (ResyncProviderSpecificInput, error) {
+func (s RawResyncProviderSpecificInputImpl) ResyncProviderSpecificInput() BaseResyncProviderSpecificInputImpl {
+	return s.resyncProviderSpecificInput
+}
+
+func UnmarshalResyncProviderSpecificInputImplementation(input []byte) (ResyncProviderSpecificInput, error) {
 	if input == nil {
 		return nil, nil
 	}
@@ -31,9 +48,9 @@ func unmarshalResyncProviderSpecificInputImplementation(input []byte) (ResyncPro
 		return nil, fmt.Errorf("unmarshaling ResyncProviderSpecificInput into map[string]interface: %+v", err)
 	}
 
-	value, ok := temp["instanceType"].(string)
-	if !ok {
-		return nil, nil
+	var value string
+	if v, ok := temp["instanceType"]; ok {
+		value = fmt.Sprintf("%v", v)
 	}
 
 	if strings.EqualFold(value, "VMwareCbt") {
@@ -44,10 +61,15 @@ func unmarshalResyncProviderSpecificInputImplementation(input []byte) (ResyncPro
 		return out, nil
 	}
 
-	out := RawResyncProviderSpecificInputImpl{
-		Type:   value,
-		Values: temp,
+	var parent BaseResyncProviderSpecificInputImpl
+	if err := json.Unmarshal(input, &parent); err != nil {
+		return nil, fmt.Errorf("unmarshaling into BaseResyncProviderSpecificInputImpl: %+v", err)
 	}
-	return out, nil
+
+	return RawResyncProviderSpecificInputImpl{
+		resyncProviderSpecificInput: parent,
+		Type:                        value,
+		Values:                      temp,
+	}, nil
 
 }

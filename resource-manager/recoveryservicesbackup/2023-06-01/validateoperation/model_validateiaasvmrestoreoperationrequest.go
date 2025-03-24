@@ -14,6 +14,14 @@ type ValidateIaasVMRestoreOperationRequest struct {
 	RestoreRequest RestoreRequest `json:"restoreRequest"`
 
 	// Fields inherited from ValidateOperationRequest
+
+	ObjectType string `json:"objectType"`
+}
+
+func (s ValidateIaasVMRestoreOperationRequest) ValidateOperationRequest() BaseValidateOperationRequestImpl {
+	return BaseValidateOperationRequestImpl{
+		ObjectType: s.ObjectType,
+	}
 }
 
 var _ json.Marshaler = ValidateIaasVMRestoreOperationRequest{}
@@ -27,9 +35,10 @@ func (s ValidateIaasVMRestoreOperationRequest) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling ValidateIaasVMRestoreOperationRequest: %+v", err)
 	}
+
 	decoded["objectType"] = "ValidateIaasVMRestoreOperationRequest"
 
 	encoded, err = json.Marshal(decoded)
@@ -43,6 +52,14 @@ func (s ValidateIaasVMRestoreOperationRequest) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &ValidateIaasVMRestoreOperationRequest{}
 
 func (s *ValidateIaasVMRestoreOperationRequest) UnmarshalJSON(bytes []byte) error {
+	var decoded struct {
+		ObjectType string `json:"objectType"`
+	}
+	if err := json.Unmarshal(bytes, &decoded); err != nil {
+		return fmt.Errorf("unmarshaling: %+v", err)
+	}
+
+	s.ObjectType = decoded.ObjectType
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -50,11 +67,12 @@ func (s *ValidateIaasVMRestoreOperationRequest) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["restoreRequest"]; ok {
-		impl, err := unmarshalRestoreRequestImplementation(v)
+		impl, err := UnmarshalRestoreRequestImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'RestoreRequest' for 'ValidateIaasVMRestoreOperationRequest': %+v", err)
 		}
 		s.RestoreRequest = impl
 	}
+
 	return nil
 }

@@ -12,7 +12,7 @@ type XeroLinkedServiceTypeProperties struct {
 	ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
 	ConsumerKey           SecretBase   `json:"consumerKey"`
 	EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
-	Host                  *string      `json:"host,omitempty"`
+	Host                  *interface{} `json:"host,omitempty"`
 	PrivateKey            SecretBase   `json:"privateKey"`
 	UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
 	UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
@@ -22,10 +22,16 @@ type XeroLinkedServiceTypeProperties struct {
 var _ json.Unmarshaler = &XeroLinkedServiceTypeProperties{}
 
 func (s *XeroLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias XeroLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ConnectionProperties  *interface{} `json:"connectionProperties,omitempty"`
+		EncryptedCredential   *string      `json:"encryptedCredential,omitempty"`
+		Host                  *interface{} `json:"host,omitempty"`
+		UseEncryptedEndpoints *bool        `json:"useEncryptedEndpoints,omitempty"`
+		UseHostVerification   *bool        `json:"useHostVerification,omitempty"`
+		UsePeerVerification   *bool        `json:"usePeerVerification,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into XeroLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ConnectionProperties = decoded.ConnectionProperties
@@ -41,7 +47,7 @@ func (s *XeroLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["consumerKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ConsumerKey' for 'XeroLinkedServiceTypeProperties': %+v", err)
 		}
@@ -49,11 +55,12 @@ func (s *XeroLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["privateKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'PrivateKey' for 'XeroLinkedServiceTypeProperties': %+v", err)
 		}
 		s.PrivateKey = impl
 	}
+
 	return nil
 }

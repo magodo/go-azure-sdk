@@ -9,23 +9,30 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AzureMLServiceLinkedServiceTypeProperties struct {
-	Authentication      *string    `json:"authentication,omitempty"`
-	EncryptedCredential *string    `json:"encryptedCredential,omitempty"`
-	MlWorkspaceName     string     `json:"mlWorkspaceName"`
-	ResourceGroupName   string     `json:"resourceGroupName"`
-	ServicePrincipalId  *string    `json:"servicePrincipalId,omitempty"`
-	ServicePrincipalKey SecretBase `json:"servicePrincipalKey"`
-	SubscriptionId      string     `json:"subscriptionId"`
-	Tenant              *string    `json:"tenant,omitempty"`
+	Authentication      *interface{} `json:"authentication,omitempty"`
+	EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+	MlWorkspaceName     interface{}  `json:"mlWorkspaceName"`
+	ResourceGroupName   interface{}  `json:"resourceGroupName"`
+	ServicePrincipalId  *interface{} `json:"servicePrincipalId,omitempty"`
+	ServicePrincipalKey SecretBase   `json:"servicePrincipalKey"`
+	SubscriptionId      interface{}  `json:"subscriptionId"`
+	Tenant              *interface{} `json:"tenant,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureMLServiceLinkedServiceTypeProperties{}
 
 func (s *AzureMLServiceLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureMLServiceLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		Authentication      *interface{} `json:"authentication,omitempty"`
+		EncryptedCredential *string      `json:"encryptedCredential,omitempty"`
+		MlWorkspaceName     interface{}  `json:"mlWorkspaceName"`
+		ResourceGroupName   interface{}  `json:"resourceGroupName"`
+		ServicePrincipalId  *interface{} `json:"servicePrincipalId,omitempty"`
+		SubscriptionId      interface{}  `json:"subscriptionId"`
+		Tenant              *interface{} `json:"tenant,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureMLServiceLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Authentication = decoded.Authentication
@@ -42,11 +49,12 @@ func (s *AzureMLServiceLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) 
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'AzureMLServiceLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

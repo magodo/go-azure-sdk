@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &HealthBotId{}
 
 func TestNewHealthBotID(t *testing.T) {
-	id := NewHealthBotID("12345678-1234-9876-4563-123456789012", "example-resource-group", "healthBotValue")
+	id := NewHealthBotID("12345678-1234-9876-4563-123456789012", "example-resource-group", "healthBotName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,14 +22,14 @@ func TestNewHealthBotID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.HealthBotName != "healthBotValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'HealthBotName'", id.HealthBotName, "healthBotValue")
+	if id.HealthBotName != "healthBotName" {
+		t.Fatalf("Expected %q but got %q for Segment 'HealthBotName'", id.HealthBotName, "healthBotName")
 	}
 }
 
 func TestFormatHealthBotID(t *testing.T) {
-	actual := NewHealthBotID("12345678-1234-9876-4563-123456789012", "example-resource-group", "healthBotValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotValue"
+	actual := NewHealthBotID("12345678-1234-9876-4563-123456789012", "example-resource-group", "healthBotName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -83,16 +83,16 @@ func TestParseHealthBotID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotName",
 			Expected: &HealthBotId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				HealthBotName:     "healthBotValue",
+				HealthBotName:     "healthBotName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotName/extra",
 			Error: true,
 		},
 	}
@@ -209,30 +209,30 @@ func TestParseHealthBotIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotName",
 			Expected: &HealthBotId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				HealthBotName:     "healthBotValue",
+				HealthBotName:     "healthBotName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.HealthBot/healthBots/healthBotName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.hEaLtHbOt/hEaLtHbOtS/hEaLtHbOtVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.hEaLtHbOt/hEaLtHbOtS/hEaLtHbOtNaMe",
 			Expected: &HealthBotId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "eXaMpLe-rEsOuRcE-GrOuP",
-				HealthBotName:     "hEaLtHbOtVaLuE",
+				HealthBotName:     "hEaLtHbOtNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.hEaLtHbOt/hEaLtHbOtS/hEaLtHbOtVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.hEaLtHbOt/hEaLtHbOtS/hEaLtHbOtNaMe/extra",
 			Error: true,
 		},
 	}

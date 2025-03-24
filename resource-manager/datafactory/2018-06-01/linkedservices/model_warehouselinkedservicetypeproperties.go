@@ -9,24 +9,31 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type WarehouseLinkedServiceTypeProperties struct {
-	ArtifactId                     string     `json:"artifactId"`
-	EncryptedCredential            *string    `json:"encryptedCredential,omitempty"`
-	Endpoint                       string     `json:"endpoint"`
-	ServicePrincipalCredential     SecretBase `json:"servicePrincipalCredential"`
-	ServicePrincipalCredentialType *string    `json:"servicePrincipalCredentialType,omitempty"`
-	ServicePrincipalId             *string    `json:"servicePrincipalId,omitempty"`
-	ServicePrincipalKey            SecretBase `json:"servicePrincipalKey"`
-	Tenant                         *string    `json:"tenant,omitempty"`
-	WorkspaceId                    *string    `json:"workspaceId,omitempty"`
+	ArtifactId                     interface{}  `json:"artifactId"`
+	EncryptedCredential            *string      `json:"encryptedCredential,omitempty"`
+	Endpoint                       interface{}  `json:"endpoint"`
+	ServicePrincipalCredential     SecretBase   `json:"servicePrincipalCredential"`
+	ServicePrincipalCredentialType *interface{} `json:"servicePrincipalCredentialType,omitempty"`
+	ServicePrincipalId             *interface{} `json:"servicePrincipalId,omitempty"`
+	ServicePrincipalKey            SecretBase   `json:"servicePrincipalKey"`
+	Tenant                         *interface{} `json:"tenant,omitempty"`
+	WorkspaceId                    *interface{} `json:"workspaceId,omitempty"`
 }
 
 var _ json.Unmarshaler = &WarehouseLinkedServiceTypeProperties{}
 
 func (s *WarehouseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias WarehouseLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		ArtifactId                     interface{}  `json:"artifactId"`
+		EncryptedCredential            *string      `json:"encryptedCredential,omitempty"`
+		Endpoint                       interface{}  `json:"endpoint"`
+		ServicePrincipalCredentialType *interface{} `json:"servicePrincipalCredentialType,omitempty"`
+		ServicePrincipalId             *interface{} `json:"servicePrincipalId,omitempty"`
+		Tenant                         *interface{} `json:"tenant,omitempty"`
+		WorkspaceId                    *interface{} `json:"workspaceId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into WarehouseLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ArtifactId = decoded.ArtifactId
@@ -43,7 +50,7 @@ func (s *WarehouseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["servicePrincipalCredential"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalCredential' for 'WarehouseLinkedServiceTypeProperties': %+v", err)
 		}
@@ -51,11 +58,12 @@ func (s *WarehouseLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["servicePrincipalKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ServicePrincipalKey' for 'WarehouseLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ServicePrincipalKey = impl
 	}
+
 	return nil
 }

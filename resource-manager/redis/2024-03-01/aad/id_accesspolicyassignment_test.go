@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &AccessPolicyAssignmentId{}
 
 func TestNewAccessPolicyAssignmentID(t *testing.T) {
-	id := NewAccessPolicyAssignmentID("12345678-1234-9876-4563-123456789012", "example-resource-group", "redisValue", "accessPolicyAssignmentValue")
+	id := NewAccessPolicyAssignmentID("12345678-1234-9876-4563-123456789012", "example-resource-group", "redisName", "accessPolicyAssignmentName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewAccessPolicyAssignmentID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.RedisName != "redisValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'RedisName'", id.RedisName, "redisValue")
+	if id.RedisName != "redisName" {
+		t.Fatalf("Expected %q but got %q for Segment 'RedisName'", id.RedisName, "redisName")
 	}
 
-	if id.AccessPolicyAssignmentName != "accessPolicyAssignmentValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'AccessPolicyAssignmentName'", id.AccessPolicyAssignmentName, "accessPolicyAssignmentValue")
+	if id.AccessPolicyAssignmentName != "accessPolicyAssignmentName" {
+		t.Fatalf("Expected %q but got %q for Segment 'AccessPolicyAssignmentName'", id.AccessPolicyAssignmentName, "accessPolicyAssignmentName")
 	}
 }
 
 func TestFormatAccessPolicyAssignmentID(t *testing.T) {
-	actual := NewAccessPolicyAssignmentID("12345678-1234-9876-4563-123456789012", "example-resource-group", "redisValue", "accessPolicyAssignmentValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments/accessPolicyAssignmentValue"
+	actual := NewAccessPolicyAssignmentID("12345678-1234-9876-4563-123456789012", "example-resource-group", "redisName", "accessPolicyAssignmentName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments/accessPolicyAssignmentName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseAccessPolicyAssignmentID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments/accessPolicyAssignmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments/accessPolicyAssignmentName",
 			Expected: &AccessPolicyAssignmentId{
 				SubscriptionId:             "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:          "example-resource-group",
-				RedisName:                  "redisValue",
-				AccessPolicyAssignmentName: "accessPolicyAssignmentValue",
+				RedisName:                  "redisName",
+				AccessPolicyAssignmentName: "accessPolicyAssignmentName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments/accessPolicyAssignmentValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments/accessPolicyAssignmentName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseAccessPolicyAssignmentIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsNaMe",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsVaLuE/aCcEsSpOlIcYaSsIgNmEnTs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsNaMe/aCcEsSpOlIcYaSsIgNmEnTs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments/accessPolicyAssignmentValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments/accessPolicyAssignmentName",
 			Expected: &AccessPolicyAssignmentId{
 				SubscriptionId:             "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:          "example-resource-group",
-				RedisName:                  "redisValue",
-				AccessPolicyAssignmentName: "accessPolicyAssignmentValue",
+				RedisName:                  "redisName",
+				AccessPolicyAssignmentName: "accessPolicyAssignmentName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisValue/accessPolicyAssignments/accessPolicyAssignmentValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Cache/redis/redisName/accessPolicyAssignments/accessPolicyAssignmentName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsVaLuE/aCcEsSpOlIcYaSsIgNmEnTs/aCcEsSpOlIcYaSsIgNmEnTvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsNaMe/aCcEsSpOlIcYaSsIgNmEnTs/aCcEsSpOlIcYaSsIgNmEnTnAmE",
 			Expected: &AccessPolicyAssignmentId{
 				SubscriptionId:             "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:          "eXaMpLe-rEsOuRcE-GrOuP",
-				RedisName:                  "rEdIsVaLuE",
-				AccessPolicyAssignmentName: "aCcEsSpOlIcYaSsIgNmEnTvAlUe",
+				RedisName:                  "rEdIsNaMe",
+				AccessPolicyAssignmentName: "aCcEsSpOlIcYaSsIgNmEnTnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsVaLuE/aCcEsSpOlIcYaSsIgNmEnTs/aCcEsSpOlIcYaSsIgNmEnTvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.cAcHe/rEdIs/rEdIsNaMe/aCcEsSpOlIcYaSsIgNmEnTs/aCcEsSpOlIcYaSsIgNmEnTnAmE/extra",
 			Error: true,
 		},
 	}

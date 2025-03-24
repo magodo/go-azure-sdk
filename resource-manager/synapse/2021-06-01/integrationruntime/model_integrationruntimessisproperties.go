@@ -20,10 +20,15 @@ type IntegrationRuntimeSsisProperties struct {
 var _ json.Unmarshaler = &IntegrationRuntimeSsisProperties{}
 
 func (s *IntegrationRuntimeSsisProperties) UnmarshalJSON(bytes []byte) error {
-	type alias IntegrationRuntimeSsisProperties
-	var decoded alias
+	var decoded struct {
+		CatalogInfo                 *IntegrationRuntimeSsisCatalogInfo             `json:"catalogInfo,omitempty"`
+		CustomSetupScriptProperties *IntegrationRuntimeCustomSetupScriptProperties `json:"customSetupScriptProperties,omitempty"`
+		DataProxyProperties         *IntegrationRuntimeDataProxyProperties         `json:"dataProxyProperties,omitempty"`
+		Edition                     *IntegrationRuntimeEdition                     `json:"edition,omitempty"`
+		LicenseType                 *IntegrationRuntimeLicenseType                 `json:"licenseType,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into IntegrationRuntimeSsisProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.CatalogInfo = decoded.CatalogInfo
@@ -45,7 +50,7 @@ func (s *IntegrationRuntimeSsisProperties) UnmarshalJSON(bytes []byte) error {
 
 		output := make([]CustomSetupBase, 0)
 		for i, val := range listTemp {
-			impl, err := unmarshalCustomSetupBaseImplementation(val)
+			impl, err := UnmarshalCustomSetupBaseImplementation(val)
 			if err != nil {
 				return fmt.Errorf("unmarshaling index %d field 'ExpressCustomSetupProperties' for 'IntegrationRuntimeSsisProperties': %+v", i, err)
 			}
@@ -53,5 +58,6 @@ func (s *IntegrationRuntimeSsisProperties) UnmarshalJSON(bytes []byte) error {
 		}
 		s.ExpressCustomSetupProperties = &output
 	}
+
 	return nil
 }

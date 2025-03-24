@@ -9,34 +9,52 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AzureDatabricksLinkedServiceTypeProperties struct {
-	AccessToken                 SecretBase           `json:"accessToken"`
-	Authentication              *string              `json:"authentication,omitempty"`
-	Credential                  *CredentialReference `json:"credential,omitempty"`
-	Domain                      string               `json:"domain"`
-	EncryptedCredential         *string              `json:"encryptedCredential,omitempty"`
-	ExistingClusterId           *string              `json:"existingClusterId,omitempty"`
-	InstancePoolId              *string              `json:"instancePoolId,omitempty"`
-	NewClusterCustomTags        *map[string]string   `json:"newClusterCustomTags,omitempty"`
-	NewClusterDriverNodeType    *string              `json:"newClusterDriverNodeType,omitempty"`
-	NewClusterEnableElasticDisk *bool                `json:"newClusterEnableElasticDisk,omitempty"`
-	NewClusterInitScripts       *[]string            `json:"newClusterInitScripts,omitempty"`
-	NewClusterLogDestination    *string              `json:"newClusterLogDestination,omitempty"`
-	NewClusterNodeType          *string              `json:"newClusterNodeType,omitempty"`
-	NewClusterNumOfWorker       *string              `json:"newClusterNumOfWorker,omitempty"`
-	NewClusterSparkConf         *map[string]string   `json:"newClusterSparkConf,omitempty"`
-	NewClusterSparkEnvVars      *map[string]string   `json:"newClusterSparkEnvVars,omitempty"`
-	NewClusterVersion           *string              `json:"newClusterVersion,omitempty"`
-	PolicyId                    *string              `json:"policyId,omitempty"`
-	WorkspaceResourceId         *string              `json:"workspaceResourceId,omitempty"`
+	AccessToken                 SecretBase              `json:"accessToken"`
+	Authentication              *interface{}            `json:"authentication,omitempty"`
+	Credential                  *CredentialReference    `json:"credential,omitempty"`
+	Domain                      interface{}             `json:"domain"`
+	EncryptedCredential         *string                 `json:"encryptedCredential,omitempty"`
+	ExistingClusterId           *interface{}            `json:"existingClusterId,omitempty"`
+	InstancePoolId              *interface{}            `json:"instancePoolId,omitempty"`
+	NewClusterCustomTags        *map[string]interface{} `json:"newClusterCustomTags,omitempty"`
+	NewClusterDriverNodeType    *interface{}            `json:"newClusterDriverNodeType,omitempty"`
+	NewClusterEnableElasticDisk *bool                   `json:"newClusterEnableElasticDisk,omitempty"`
+	NewClusterInitScripts       *[]string               `json:"newClusterInitScripts,omitempty"`
+	NewClusterLogDestination    *interface{}            `json:"newClusterLogDestination,omitempty"`
+	NewClusterNodeType          *interface{}            `json:"newClusterNodeType,omitempty"`
+	NewClusterNumOfWorker       *interface{}            `json:"newClusterNumOfWorker,omitempty"`
+	NewClusterSparkConf         *map[string]interface{} `json:"newClusterSparkConf,omitempty"`
+	NewClusterSparkEnvVars      *map[string]interface{} `json:"newClusterSparkEnvVars,omitempty"`
+	NewClusterVersion           *interface{}            `json:"newClusterVersion,omitempty"`
+	PolicyId                    *interface{}            `json:"policyId,omitempty"`
+	WorkspaceResourceId         *interface{}            `json:"workspaceResourceId,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureDatabricksLinkedServiceTypeProperties{}
 
 func (s *AzureDatabricksLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureDatabricksLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		Authentication              *interface{}            `json:"authentication,omitempty"`
+		Credential                  *CredentialReference    `json:"credential,omitempty"`
+		Domain                      interface{}             `json:"domain"`
+		EncryptedCredential         *string                 `json:"encryptedCredential,omitempty"`
+		ExistingClusterId           *interface{}            `json:"existingClusterId,omitempty"`
+		InstancePoolId              *interface{}            `json:"instancePoolId,omitempty"`
+		NewClusterCustomTags        *map[string]interface{} `json:"newClusterCustomTags,omitempty"`
+		NewClusterDriverNodeType    *interface{}            `json:"newClusterDriverNodeType,omitempty"`
+		NewClusterEnableElasticDisk *bool                   `json:"newClusterEnableElasticDisk,omitempty"`
+		NewClusterInitScripts       *[]string               `json:"newClusterInitScripts,omitempty"`
+		NewClusterLogDestination    *interface{}            `json:"newClusterLogDestination,omitempty"`
+		NewClusterNodeType          *interface{}            `json:"newClusterNodeType,omitempty"`
+		NewClusterNumOfWorker       *interface{}            `json:"newClusterNumOfWorker,omitempty"`
+		NewClusterSparkConf         *map[string]interface{} `json:"newClusterSparkConf,omitempty"`
+		NewClusterSparkEnvVars      *map[string]interface{} `json:"newClusterSparkEnvVars,omitempty"`
+		NewClusterVersion           *interface{}            `json:"newClusterVersion,omitempty"`
+		PolicyId                    *interface{}            `json:"policyId,omitempty"`
+		WorkspaceResourceId         *interface{}            `json:"workspaceResourceId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureDatabricksLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Authentication = decoded.Authentication
@@ -64,11 +82,12 @@ func (s *AzureDatabricksLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte)
 	}
 
 	if v, ok := temp["accessToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AccessToken' for 'AzureDatabricksLinkedServiceTypeProperties': %+v", err)
 		}
 		s.AccessToken = impl
 	}
+
 	return nil
 }

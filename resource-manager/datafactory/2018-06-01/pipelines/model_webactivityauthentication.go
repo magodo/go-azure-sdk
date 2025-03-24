@@ -12,19 +12,24 @@ type WebActivityAuthentication struct {
 	Credential *CredentialReference `json:"credential,omitempty"`
 	Password   SecretBase           `json:"password"`
 	Pfx        SecretBase           `json:"pfx"`
-	Resource   *string              `json:"resource,omitempty"`
+	Resource   *interface{}         `json:"resource,omitempty"`
 	Type       *string              `json:"type,omitempty"`
-	UserTenant *string              `json:"userTenant,omitempty"`
-	Username   *string              `json:"username,omitempty"`
+	UserTenant *interface{}         `json:"userTenant,omitempty"`
+	Username   *interface{}         `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &WebActivityAuthentication{}
 
 func (s *WebActivityAuthentication) UnmarshalJSON(bytes []byte) error {
-	type alias WebActivityAuthentication
-	var decoded alias
+	var decoded struct {
+		Credential *CredentialReference `json:"credential,omitempty"`
+		Resource   *interface{}         `json:"resource,omitempty"`
+		Type       *string              `json:"type,omitempty"`
+		UserTenant *interface{}         `json:"userTenant,omitempty"`
+		Username   *interface{}         `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into WebActivityAuthentication: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Credential = decoded.Credential
@@ -39,7 +44,7 @@ func (s *WebActivityAuthentication) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'WebActivityAuthentication': %+v", err)
 		}
@@ -47,11 +52,12 @@ func (s *WebActivityAuthentication) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["pfx"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Pfx' for 'WebActivityAuthentication': %+v", err)
 		}
 		s.Pfx = impl
 	}
+
 	return nil
 }

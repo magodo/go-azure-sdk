@@ -9,17 +9,18 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type TwilioLinkedServiceTypeProperties struct {
-	Password SecretBase `json:"password"`
-	UserName string     `json:"userName"`
+	Password SecretBase  `json:"password"`
+	UserName interface{} `json:"userName"`
 }
 
 var _ json.Unmarshaler = &TwilioLinkedServiceTypeProperties{}
 
 func (s *TwilioLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias TwilioLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		UserName interface{} `json:"userName"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into TwilioLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.UserName = decoded.UserName
@@ -30,11 +31,12 @@ func (s *TwilioLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'TwilioLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

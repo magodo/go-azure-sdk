@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &TimeSeriesDatabaseConnectionId{}
 
 func TestNewTimeSeriesDatabaseConnectionID(t *testing.T) {
-	id := NewTimeSeriesDatabaseConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "digitalTwinsInstanceValue", "timeSeriesDatabaseConnectionValue")
+	id := NewTimeSeriesDatabaseConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "digitalTwinsInstanceName", "timeSeriesDatabaseConnectionName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewTimeSeriesDatabaseConnectionID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.DigitalTwinsInstanceName != "digitalTwinsInstanceValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DigitalTwinsInstanceName'", id.DigitalTwinsInstanceName, "digitalTwinsInstanceValue")
+	if id.DigitalTwinsInstanceName != "digitalTwinsInstanceName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DigitalTwinsInstanceName'", id.DigitalTwinsInstanceName, "digitalTwinsInstanceName")
 	}
 
-	if id.TimeSeriesDatabaseConnectionName != "timeSeriesDatabaseConnectionValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'TimeSeriesDatabaseConnectionName'", id.TimeSeriesDatabaseConnectionName, "timeSeriesDatabaseConnectionValue")
+	if id.TimeSeriesDatabaseConnectionName != "timeSeriesDatabaseConnectionName" {
+		t.Fatalf("Expected %q but got %q for Segment 'TimeSeriesDatabaseConnectionName'", id.TimeSeriesDatabaseConnectionName, "timeSeriesDatabaseConnectionName")
 	}
 }
 
 func TestFormatTimeSeriesDatabaseConnectionID(t *testing.T) {
-	actual := NewTimeSeriesDatabaseConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "digitalTwinsInstanceValue", "timeSeriesDatabaseConnectionValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionValue"
+	actual := NewTimeSeriesDatabaseConnectionID("12345678-1234-9876-4563-123456789012", "example-resource-group", "digitalTwinsInstanceName", "timeSeriesDatabaseConnectionName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseTimeSeriesDatabaseConnectionID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionName",
 			Expected: &TimeSeriesDatabaseConnectionId{
 				SubscriptionId:                   "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:                "example-resource-group",
-				DigitalTwinsInstanceName:         "digitalTwinsInstanceValue",
-				TimeSeriesDatabaseConnectionName: "timeSeriesDatabaseConnectionValue",
+				DigitalTwinsInstanceName:         "digitalTwinsInstanceName",
+				TimeSeriesDatabaseConnectionName: "timeSeriesDatabaseConnectionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseTimeSeriesDatabaseConnectionIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEvAlUe/tImEsErIeSdAtAbAsEcOnNeCtIoNs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEnAmE/tImEsErIeSdAtAbAsEcOnNeCtIoNs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionName",
 			Expected: &TimeSeriesDatabaseConnectionId{
 				SubscriptionId:                   "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:                "example-resource-group",
-				DigitalTwinsInstanceName:         "digitalTwinsInstanceValue",
-				TimeSeriesDatabaseConnectionName: "timeSeriesDatabaseConnectionValue",
+				DigitalTwinsInstanceName:         "digitalTwinsInstanceName",
+				TimeSeriesDatabaseConnectionName: "timeSeriesDatabaseConnectionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceValue/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.DigitalTwins/digitalTwinsInstances/digitalTwinsInstanceName/timeSeriesDatabaseConnections/timeSeriesDatabaseConnectionName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEvAlUe/tImEsErIeSdAtAbAsEcOnNeCtIoNs/tImEsErIeSdAtAbAsEcOnNeCtIoNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEnAmE/tImEsErIeSdAtAbAsEcOnNeCtIoNs/tImEsErIeSdAtAbAsEcOnNeCtIoNnAmE",
 			Expected: &TimeSeriesDatabaseConnectionId{
 				SubscriptionId:                   "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:                "eXaMpLe-rEsOuRcE-GrOuP",
-				DigitalTwinsInstanceName:         "dIgItAlTwInSiNsTaNcEvAlUe",
-				TimeSeriesDatabaseConnectionName: "tImEsErIeSdAtAbAsEcOnNeCtIoNvAlUe",
+				DigitalTwinsInstanceName:         "dIgItAlTwInSiNsTaNcEnAmE",
+				TimeSeriesDatabaseConnectionName: "tImEsErIeSdAtAbAsEcOnNeCtIoNnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEvAlUe/tImEsErIeSdAtAbAsEcOnNeCtIoNs/tImEsErIeSdAtAbAsEcOnNeCtIoNvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.dIgItAlTwInS/dIgItAlTwInSiNsTaNcEs/dIgItAlTwInSiNsTaNcEnAmE/tImEsErIeSdAtAbAsEcOnNeCtIoNs/tImEsErIeSdAtAbAsEcOnNeCtIoNnAmE/extra",
 			Error: true,
 		},
 	}

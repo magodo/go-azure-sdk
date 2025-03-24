@@ -10,21 +10,27 @@ import (
 
 type AzureBlobDatasetTypeProperties struct {
 	Compression           *DatasetCompression  `json:"compression,omitempty"`
-	FileName              *string              `json:"fileName,omitempty"`
-	FolderPath            *string              `json:"folderPath,omitempty"`
+	FileName              *interface{}         `json:"fileName,omitempty"`
+	FolderPath            *interface{}         `json:"folderPath,omitempty"`
 	Format                DatasetStorageFormat `json:"format"`
-	ModifiedDatetimeEnd   *string              `json:"modifiedDatetimeEnd,omitempty"`
-	ModifiedDatetimeStart *string              `json:"modifiedDatetimeStart,omitempty"`
-	TableRootLocation     *string              `json:"tableRootLocation,omitempty"`
+	ModifiedDatetimeEnd   *interface{}         `json:"modifiedDatetimeEnd,omitempty"`
+	ModifiedDatetimeStart *interface{}         `json:"modifiedDatetimeStart,omitempty"`
+	TableRootLocation     *interface{}         `json:"tableRootLocation,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureBlobDatasetTypeProperties{}
 
 func (s *AzureBlobDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureBlobDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		Compression           *DatasetCompression `json:"compression,omitempty"`
+		FileName              *interface{}        `json:"fileName,omitempty"`
+		FolderPath            *interface{}        `json:"folderPath,omitempty"`
+		ModifiedDatetimeEnd   *interface{}        `json:"modifiedDatetimeEnd,omitempty"`
+		ModifiedDatetimeStart *interface{}        `json:"modifiedDatetimeStart,omitempty"`
+		TableRootLocation     *interface{}        `json:"tableRootLocation,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureBlobDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Compression = decoded.Compression
@@ -40,11 +46,12 @@ func (s *AzureBlobDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["format"]; ok {
-		impl, err := unmarshalDatasetStorageFormatImplementation(v)
+		impl, err := UnmarshalDatasetStorageFormatImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Format' for 'AzureBlobDatasetTypeProperties': %+v", err)
 		}
 		s.Format = impl
 	}
+
 	return nil
 }

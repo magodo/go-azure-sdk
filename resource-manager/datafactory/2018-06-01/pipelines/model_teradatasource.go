@@ -12,16 +12,28 @@ var _ CopySource = TeradataSource{}
 
 type TeradataSource struct {
 	AdditionalColumns *interface{}               `json:"additionalColumns,omitempty"`
-	PartitionOption   *string                    `json:"partitionOption,omitempty"`
+	PartitionOption   *interface{}               `json:"partitionOption,omitempty"`
 	PartitionSettings *TeradataPartitionSettings `json:"partitionSettings,omitempty"`
-	Query             *string                    `json:"query,omitempty"`
-	QueryTimeout      *string                    `json:"queryTimeout,omitempty"`
+	Query             *interface{}               `json:"query,omitempty"`
+	QueryTimeout      *interface{}               `json:"queryTimeout,omitempty"`
 
 	// Fields inherited from CopySource
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SourceRetryCount         *int64  `json:"sourceRetryCount,omitempty"`
-	SourceRetryWait          *string `json:"sourceRetryWait,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SourceRetryCount         *int64       `json:"sourceRetryCount,omitempty"`
+	SourceRetryWait          *interface{} `json:"sourceRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+}
+
+func (s TeradataSource) CopySource() BaseCopySourceImpl {
+	return BaseCopySourceImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SourceRetryCount:         s.SourceRetryCount,
+		SourceRetryWait:          s.SourceRetryWait,
+		Type:                     s.Type,
+	}
 }
 
 var _ json.Marshaler = TeradataSource{}
@@ -35,9 +47,10 @@ func (s TeradataSource) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling TeradataSource: %+v", err)
 	}
+
 	decoded["type"] = "TeradataSource"
 
 	encoded, err = json.Marshal(decoded)

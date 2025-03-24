@@ -9,27 +9,32 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AzureFunctionLinkedServiceTypeProperties struct {
-	Authentication      *string              `json:"authentication,omitempty"`
+	Authentication      *interface{}         `json:"authentication,omitempty"`
 	Credential          *CredentialReference `json:"credential,omitempty"`
 	EncryptedCredential *string              `json:"encryptedCredential,omitempty"`
-	FunctionAppUrl      string               `json:"functionAppUrl"`
+	FunctionAppURL      interface{}          `json:"functionAppUrl"`
 	FunctionKey         SecretBase           `json:"functionKey"`
-	ResourceId          *string              `json:"resourceId,omitempty"`
+	ResourceId          *interface{}         `json:"resourceId,omitempty"`
 }
 
 var _ json.Unmarshaler = &AzureFunctionLinkedServiceTypeProperties{}
 
 func (s *AzureFunctionLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureFunctionLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		Authentication      *interface{}         `json:"authentication,omitempty"`
+		Credential          *CredentialReference `json:"credential,omitempty"`
+		EncryptedCredential *string              `json:"encryptedCredential,omitempty"`
+		FunctionAppURL      interface{}          `json:"functionAppUrl"`
+		ResourceId          *interface{}         `json:"resourceId,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureFunctionLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Authentication = decoded.Authentication
 	s.Credential = decoded.Credential
 	s.EncryptedCredential = decoded.EncryptedCredential
-	s.FunctionAppUrl = decoded.FunctionAppUrl
+	s.FunctionAppURL = decoded.FunctionAppURL
 	s.ResourceId = decoded.ResourceId
 
 	var temp map[string]json.RawMessage
@@ -38,11 +43,12 @@ func (s *AzureFunctionLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) e
 	}
 
 	if v, ok := temp["functionKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'FunctionKey' for 'AzureFunctionLinkedServiceTypeProperties': %+v", err)
 		}
 		s.FunctionKey = impl
 	}
+
 	return nil
 }

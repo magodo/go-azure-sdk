@@ -10,22 +10,28 @@ import (
 
 type ServiceNowV2LinkedServiceTypeProperties struct {
 	AuthenticationType  ServiceNowV2AuthenticationType `json:"authenticationType"`
-	ClientId            *string                        `json:"clientId,omitempty"`
+	ClientId            *interface{}                   `json:"clientId,omitempty"`
 	ClientSecret        SecretBase                     `json:"clientSecret"`
 	EncryptedCredential *string                        `json:"encryptedCredential,omitempty"`
-	Endpoint            string                         `json:"endpoint"`
-	GrantType           *string                        `json:"grantType,omitempty"`
+	Endpoint            interface{}                    `json:"endpoint"`
+	GrantType           *interface{}                   `json:"grantType,omitempty"`
 	Password            SecretBase                     `json:"password"`
-	Username            *string                        `json:"username,omitempty"`
+	Username            *interface{}                   `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &ServiceNowV2LinkedServiceTypeProperties{}
 
 func (s *ServiceNowV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ServiceNowV2LinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AuthenticationType  ServiceNowV2AuthenticationType `json:"authenticationType"`
+		ClientId            *interface{}                   `json:"clientId,omitempty"`
+		EncryptedCredential *string                        `json:"encryptedCredential,omitempty"`
+		Endpoint            interface{}                    `json:"endpoint"`
+		GrantType           *interface{}                   `json:"grantType,omitempty"`
+		Username            *interface{}                   `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ServiceNowV2LinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AuthenticationType = decoded.AuthenticationType
@@ -41,7 +47,7 @@ func (s *ServiceNowV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) er
 	}
 
 	if v, ok := temp["clientSecret"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ClientSecret' for 'ServiceNowV2LinkedServiceTypeProperties': %+v", err)
 		}
@@ -49,11 +55,12 @@ func (s *ServiceNowV2LinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) er
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'ServiceNowV2LinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

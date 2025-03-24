@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &QueryId{}
 
 func TestNewQueryID(t *testing.T) {
-	id := NewQueryID("12345678-1234-9876-4563-123456789012", "example-resource-group", "queryValue")
+	id := NewQueryID("12345678-1234-9876-4563-123456789012", "example-resource-group", "queryName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,14 +22,14 @@ func TestNewQueryID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.QueryName != "queryValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'QueryName'", id.QueryName, "queryValue")
+	if id.QueryName != "queryName" {
+		t.Fatalf("Expected %q but got %q for Segment 'QueryName'", id.QueryName, "queryName")
 	}
 }
 
 func TestFormatQueryID(t *testing.T) {
-	actual := NewQueryID("12345678-1234-9876-4563-123456789012", "example-resource-group", "queryValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryValue"
+	actual := NewQueryID("12345678-1234-9876-4563-123456789012", "example-resource-group", "queryName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -83,16 +83,16 @@ func TestParseQueryID(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryName",
 			Expected: &QueryId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				QueryName:         "queryValue",
+				QueryName:         "queryName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryName/extra",
 			Error: true,
 		},
 	}
@@ -209,30 +209,30 @@ func TestParseQueryIDInsensitively(t *testing.T) {
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryName",
 			Expected: &QueryId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "example-resource-group",
-				QueryName:         "queryValue",
+				QueryName:         "queryName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.ResourceGraph/queries/queryName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEsOuRcEgRaPh/qUeRiEs/qUeRyVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEsOuRcEgRaPh/qUeRiEs/qUeRyNaMe",
 			Expected: &QueryId{
 				SubscriptionId:    "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName: "eXaMpLe-rEsOuRcE-GrOuP",
-				QueryName:         "qUeRyVaLuE",
+				QueryName:         "qUeRyNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEsOuRcEgRaPh/qUeRiEs/qUeRyVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/mIcRoSoFt.rEsOuRcEgRaPh/qUeRiEs/qUeRyNaMe/extra",
 			Error: true,
 		},
 	}

@@ -14,27 +14,43 @@ type HiveLinkedServiceTypeProperties struct {
 	AuthenticationType        HiveAuthenticationType       `json:"authenticationType"`
 	EnableSsl                 *bool                        `json:"enableSsl,omitempty"`
 	EncryptedCredential       *string                      `json:"encryptedCredential,omitempty"`
-	HTTPPath                  *string                      `json:"httpPath,omitempty"`
-	Host                      string                       `json:"host"`
+	HTTPPath                  *interface{}                 `json:"httpPath,omitempty"`
+	Host                      interface{}                  `json:"host"`
 	Password                  SecretBase                   `json:"password"`
 	Port                      *int64                       `json:"port,omitempty"`
 	ServerType                *HiveServerType              `json:"serverType,omitempty"`
 	ServiceDiscoveryMode      *bool                        `json:"serviceDiscoveryMode,omitempty"`
 	ThriftTransportProtocol   *HiveThriftTransportProtocol `json:"thriftTransportProtocol,omitempty"`
-	TrustedCertPath           *string                      `json:"trustedCertPath,omitempty"`
+	TrustedCertPath           *interface{}                 `json:"trustedCertPath,omitempty"`
 	UseNativeQuery            *bool                        `json:"useNativeQuery,omitempty"`
 	UseSystemTrustStore       *bool                        `json:"useSystemTrustStore,omitempty"`
-	Username                  *string                      `json:"username,omitempty"`
-	ZooKeeperNameSpace        *string                      `json:"zooKeeperNameSpace,omitempty"`
+	Username                  *interface{}                 `json:"username,omitempty"`
+	ZooKeeperNameSpace        *interface{}                 `json:"zooKeeperNameSpace,omitempty"`
 }
 
 var _ json.Unmarshaler = &HiveLinkedServiceTypeProperties{}
 
 func (s *HiveLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias HiveLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AllowHostNameCNMismatch   *bool                        `json:"allowHostNameCNMismatch,omitempty"`
+		AllowSelfSignedServerCert *bool                        `json:"allowSelfSignedServerCert,omitempty"`
+		AuthenticationType        HiveAuthenticationType       `json:"authenticationType"`
+		EnableSsl                 *bool                        `json:"enableSsl,omitempty"`
+		EncryptedCredential       *string                      `json:"encryptedCredential,omitempty"`
+		HTTPPath                  *interface{}                 `json:"httpPath,omitempty"`
+		Host                      interface{}                  `json:"host"`
+		Port                      *int64                       `json:"port,omitempty"`
+		ServerType                *HiveServerType              `json:"serverType,omitempty"`
+		ServiceDiscoveryMode      *bool                        `json:"serviceDiscoveryMode,omitempty"`
+		ThriftTransportProtocol   *HiveThriftTransportProtocol `json:"thriftTransportProtocol,omitempty"`
+		TrustedCertPath           *interface{}                 `json:"trustedCertPath,omitempty"`
+		UseNativeQuery            *bool                        `json:"useNativeQuery,omitempty"`
+		UseSystemTrustStore       *bool                        `json:"useSystemTrustStore,omitempty"`
+		Username                  *interface{}                 `json:"username,omitempty"`
+		ZooKeeperNameSpace        *interface{}                 `json:"zooKeeperNameSpace,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into HiveLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AllowHostNameCNMismatch = decoded.AllowHostNameCNMismatch
@@ -60,11 +76,12 @@ func (s *HiveLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'HiveLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

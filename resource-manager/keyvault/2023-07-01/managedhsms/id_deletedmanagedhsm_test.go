@@ -12,24 +12,24 @@ import (
 var _ resourceids.ResourceId = &DeletedManagedHSMId{}
 
 func TestNewDeletedManagedHSMID(t *testing.T) {
-	id := NewDeletedManagedHSMID("12345678-1234-9876-4563-123456789012", "locationValue", "deletedManagedHSMValue")
+	id := NewDeletedManagedHSMID("12345678-1234-9876-4563-123456789012", "locationName", "deletedManagedHSMName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
 	}
 
-	if id.LocationName != "locationValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationValue")
+	if id.LocationName != "locationName" {
+		t.Fatalf("Expected %q but got %q for Segment 'LocationName'", id.LocationName, "locationName")
 	}
 
-	if id.DeletedManagedHSMName != "deletedManagedHSMValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DeletedManagedHSMName'", id.DeletedManagedHSMName, "deletedManagedHSMValue")
+	if id.DeletedManagedHSMName != "deletedManagedHSMName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DeletedManagedHSMName'", id.DeletedManagedHSMName, "deletedManagedHSMName")
 	}
 }
 
 func TestFormatDeletedManagedHSMID(t *testing.T) {
-	actual := NewDeletedManagedHSMID("12345678-1234-9876-4563-123456789012", "locationValue", "deletedManagedHSMValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs/deletedManagedHSMValue"
+	actual := NewDeletedManagedHSMID("12345678-1234-9876-4563-123456789012", "locationName", "deletedManagedHSMName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs/deletedManagedHSMName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -73,26 +73,26 @@ func TestParseDeletedManagedHSMID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs/deletedManagedHSMValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs/deletedManagedHSMName",
 			Expected: &DeletedManagedHSMId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
-				LocationName:          "locationValue",
-				DeletedManagedHSMName: "deletedManagedHSMValue",
+				LocationName:          "locationName",
+				DeletedManagedHSMName: "deletedManagedHSMName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs/deletedManagedHSMValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs/deletedManagedHSMName/extra",
 			Error: true,
 		},
 	}
@@ -189,50 +189,50 @@ func TestParseDeletedManagedHSMIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdMaNaGeDhSmS",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdMaNaGeDhSmS",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs/deletedManagedHSMValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs/deletedManagedHSMName",
 			Expected: &DeletedManagedHSMId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
-				LocationName:          "locationValue",
-				DeletedManagedHSMName: "deletedManagedHSMValue",
+				LocationName:          "locationName",
+				DeletedManagedHSMName: "deletedManagedHSMName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationValue/deletedManagedHSMs/deletedManagedHSMValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/providers/Microsoft.KeyVault/locations/locationName/deletedManagedHSMs/deletedManagedHSMName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdMaNaGeDhSmS/dElEtEdMaNaGeDhSmVaLuE",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdMaNaGeDhSmS/dElEtEdMaNaGeDhSmNaMe",
 			Expected: &DeletedManagedHSMId{
 				SubscriptionId:        "12345678-1234-9876-4563-123456789012",
-				LocationName:          "lOcAtIoNvAlUe",
-				DeletedManagedHSMName: "dElEtEdMaNaGeDhSmVaLuE",
+				LocationName:          "lOcAtIoNnAmE",
+				DeletedManagedHSMName: "dElEtEdMaNaGeDhSmNaMe",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNvAlUe/dElEtEdMaNaGeDhSmS/dElEtEdMaNaGeDhSmVaLuE/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/pRoViDeRs/mIcRoSoFt.kEyVaUlT/lOcAtIoNs/lOcAtIoNnAmE/dElEtEdMaNaGeDhSmS/dElEtEdMaNaGeDhSmNaMe/extra",
 			Error: true,
 		},
 	}

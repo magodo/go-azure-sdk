@@ -10,7 +10,7 @@ import (
 
 type GetMetadataActivityTypeProperties struct {
 	Dataset        DatasetReference   `json:"dataset"`
-	FieldList      *[]string          `json:"fieldList,omitempty"`
+	FieldList      *[]interface{}     `json:"fieldList,omitempty"`
 	FormatSettings FormatReadSettings `json:"formatSettings"`
 	StoreSettings  StoreReadSettings  `json:"storeSettings"`
 }
@@ -18,10 +18,12 @@ type GetMetadataActivityTypeProperties struct {
 var _ json.Unmarshaler = &GetMetadataActivityTypeProperties{}
 
 func (s *GetMetadataActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias GetMetadataActivityTypeProperties
-	var decoded alias
+	var decoded struct {
+		Dataset   DatasetReference `json:"dataset"`
+		FieldList *[]interface{}   `json:"fieldList,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into GetMetadataActivityTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.Dataset = decoded.Dataset
@@ -33,7 +35,7 @@ func (s *GetMetadataActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["formatSettings"]; ok {
-		impl, err := unmarshalFormatReadSettingsImplementation(v)
+		impl, err := UnmarshalFormatReadSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'FormatSettings' for 'GetMetadataActivityTypeProperties': %+v", err)
 		}
@@ -41,11 +43,12 @@ func (s *GetMetadataActivityTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["storeSettings"]; ok {
-		impl, err := unmarshalStoreReadSettingsImplementation(v)
+		impl, err := UnmarshalStoreReadSettingsImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'StoreSettings' for 'GetMetadataActivityTypeProperties': %+v", err)
 		}
 		s.StoreSettings = impl
 	}
+
 	return nil
 }

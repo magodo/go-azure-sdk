@@ -9,17 +9,18 @@ import (
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type ParquetDatasetTypeProperties struct {
-	CompressionCodec *string         `json:"compressionCodec,omitempty"`
+	CompressionCodec *interface{}    `json:"compressionCodec,omitempty"`
 	Location         DatasetLocation `json:"location"`
 }
 
 var _ json.Unmarshaler = &ParquetDatasetTypeProperties{}
 
 func (s *ParquetDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias ParquetDatasetTypeProperties
-	var decoded alias
+	var decoded struct {
+		CompressionCodec *interface{} `json:"compressionCodec,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into ParquetDatasetTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.CompressionCodec = decoded.CompressionCodec
@@ -30,11 +31,12 @@ func (s *ParquetDatasetTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["location"]; ok {
-		impl, err := unmarshalDatasetLocationImplementation(v)
+		impl, err := UnmarshalDatasetLocationImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Location' for 'ParquetDatasetTypeProperties': %+v", err)
 		}
 		s.Location = impl
 	}
+
 	return nil
 }

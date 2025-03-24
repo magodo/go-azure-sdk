@@ -12,7 +12,7 @@ import (
 var _ resourceids.ResourceId = &DbServerId{}
 
 func TestNewDbServerID(t *testing.T) {
-	id := NewDbServerID("12345678-1234-9876-4563-123456789012", "example-resource-group", "cloudExadataInfrastructureValue", "dbServerValue")
+	id := NewDbServerID("12345678-1234-9876-4563-123456789012", "example-resource-group", "cloudExadataInfrastructureName", "dbServerName")
 
 	if id.SubscriptionId != "12345678-1234-9876-4563-123456789012" {
 		t.Fatalf("Expected %q but got %q for Segment 'SubscriptionId'", id.SubscriptionId, "12345678-1234-9876-4563-123456789012")
@@ -22,18 +22,18 @@ func TestNewDbServerID(t *testing.T) {
 		t.Fatalf("Expected %q but got %q for Segment 'ResourceGroupName'", id.ResourceGroupName, "example-resource-group")
 	}
 
-	if id.CloudExadataInfrastructureName != "cloudExadataInfrastructureValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'CloudExadataInfrastructureName'", id.CloudExadataInfrastructureName, "cloudExadataInfrastructureValue")
+	if id.CloudExadataInfrastructureName != "cloudExadataInfrastructureName" {
+		t.Fatalf("Expected %q but got %q for Segment 'CloudExadataInfrastructureName'", id.CloudExadataInfrastructureName, "cloudExadataInfrastructureName")
 	}
 
-	if id.DbServerName != "dbServerValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'DbServerName'", id.DbServerName, "dbServerValue")
+	if id.DbServerName != "dbServerName" {
+		t.Fatalf("Expected %q but got %q for Segment 'DbServerName'", id.DbServerName, "dbServerName")
 	}
 }
 
 func TestFormatDbServerID(t *testing.T) {
-	actual := NewDbServerID("12345678-1234-9876-4563-123456789012", "example-resource-group", "cloudExadataInfrastructureValue", "dbServerValue").ID()
-	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers/dbServerValue"
+	actual := NewDbServerID("12345678-1234-9876-4563-123456789012", "example-resource-group", "cloudExadataInfrastructureName", "dbServerName").ID()
+	expected := "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers/dbServerName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -87,27 +87,27 @@ func TestParseDbServerID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers/dbServerValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers/dbServerName",
 			Expected: &DbServerId{
 				SubscriptionId:                 "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:              "example-resource-group",
-				CloudExadataInfrastructureName: "cloudExadataInfrastructureValue",
-				DbServerName:                   "dbServerValue",
+				CloudExadataInfrastructureName: "cloudExadataInfrastructureName",
+				DbServerName:                   "dbServerName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers/dbServerValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers/dbServerName/extra",
 			Error: true,
 		},
 	}
@@ -228,52 +228,52 @@ func TestParseDbServerIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEvAlUe/dBsErVeRs",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEnAmE/dBsErVeRs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers/dbServerValue",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers/dbServerName",
 			Expected: &DbServerId{
 				SubscriptionId:                 "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:              "example-resource-group",
-				CloudExadataInfrastructureName: "cloudExadataInfrastructureValue",
-				DbServerName:                   "dbServerValue",
+				CloudExadataInfrastructureName: "cloudExadataInfrastructureName",
+				DbServerName:                   "dbServerName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureValue/dbServers/dbServerValue/extra",
+			Input: "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Oracle.Database/cloudExadataInfrastructures/cloudExadataInfrastructureName/dbServers/dbServerName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEvAlUe/dBsErVeRs/dBsErVeRvAlUe",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEnAmE/dBsErVeRs/dBsErVeRnAmE",
 			Expected: &DbServerId{
 				SubscriptionId:                 "12345678-1234-9876-4563-123456789012",
 				ResourceGroupName:              "eXaMpLe-rEsOuRcE-GrOuP",
-				CloudExadataInfrastructureName: "cLoUdExAdAtAiNfRaStRuCtUrEvAlUe",
-				DbServerName:                   "dBsErVeRvAlUe",
+				CloudExadataInfrastructureName: "cLoUdExAdAtAiNfRaStRuCtUrEnAmE",
+				DbServerName:                   "dBsErVeRnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEvAlUe/dBsErVeRs/dBsErVeRvAlUe/extra",
+			Input: "/sUbScRiPtIoNs/12345678-1234-9876-4563-123456789012/rEsOuRcEgRoUpS/eXaMpLe-rEsOuRcE-GrOuP/pRoViDeRs/oRaClE.DaTaBaSe/cLoUdExAdAtAiNfRaStRuCtUrEs/cLoUdExAdAtAiNfRaStRuCtUrEnAmE/dBsErVeRs/dBsErVeRnAmE/extra",
 			Error: true,
 		},
 	}

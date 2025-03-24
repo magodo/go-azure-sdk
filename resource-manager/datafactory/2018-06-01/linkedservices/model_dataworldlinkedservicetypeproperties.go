@@ -16,10 +16,11 @@ type DataworldLinkedServiceTypeProperties struct {
 var _ json.Unmarshaler = &DataworldLinkedServiceTypeProperties{}
 
 func (s *DataworldLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias DataworldLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		EncryptedCredential *string `json:"encryptedCredential,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into DataworldLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.EncryptedCredential = decoded.EncryptedCredential
@@ -30,11 +31,12 @@ func (s *DataworldLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error
 	}
 
 	if v, ok := temp["apiToken"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'ApiToken' for 'DataworldLinkedServiceTypeProperties': %+v", err)
 		}
 		s.ApiToken = impl
 	}
+
 	return nil
 }

@@ -12,20 +12,20 @@ import (
 var _ resourceids.ResourceId = &AgentVersionId{}
 
 func TestNewAgentVersionID(t *testing.T) {
-	id := NewAgentVersionID("osTypeValue", "agentVersionValue")
+	id := NewAgentVersionID("osTypeName", "agentVersionName")
 
-	if id.OsTypeName != "osTypeValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'OsTypeName'", id.OsTypeName, "osTypeValue")
+	if id.OsTypeName != "osTypeName" {
+		t.Fatalf("Expected %q but got %q for Segment 'OsTypeName'", id.OsTypeName, "osTypeName")
 	}
 
-	if id.AgentVersionName != "agentVersionValue" {
-		t.Fatalf("Expected %q but got %q for Segment 'AgentVersionName'", id.AgentVersionName, "agentVersionValue")
+	if id.AgentVersionName != "agentVersionName" {
+		t.Fatalf("Expected %q but got %q for Segment 'AgentVersionName'", id.AgentVersionName, "agentVersionName")
 	}
 }
 
 func TestFormatAgentVersionID(t *testing.T) {
-	actual := NewAgentVersionID("osTypeValue", "agentVersionValue").ID()
-	expected := "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions/agentVersionValue"
+	actual := NewAgentVersionID("osTypeName", "agentVersionName").ID()
+	expected := "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions/agentVersionName"
 	if actual != expected {
 		t.Fatalf("Expected the Formatted ID to be %q but got %q", expected, actual)
 	}
@@ -59,25 +59,25 @@ func TestParseAgentVersionID(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions/agentVersionValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions/agentVersionName",
 			Expected: &AgentVersionId{
-				OsTypeName:       "osTypeValue",
-				AgentVersionName: "agentVersionValue",
+				OsTypeName:       "osTypeName",
+				AgentVersionName: "agentVersionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions/agentVersionValue/extra",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions/agentVersionName/extra",
 			Error: true,
 		},
 	}
@@ -150,48 +150,48 @@ func TestParseAgentVersionIDInsensitively(t *testing.T) {
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE",
 			Error: true,
 		},
 		{
 			// Incomplete URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions",
 			Error: true,
 		},
 		{
 			// Incomplete URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe/aGeNtVeRsIoNs",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE/aGeNtVeRsIoNs",
 			Error: true,
 		},
 		{
 			// Valid URI
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions/agentVersionValue",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions/agentVersionName",
 			Expected: &AgentVersionId{
-				OsTypeName:       "osTypeValue",
-				AgentVersionName: "agentVersionValue",
+				OsTypeName:       "osTypeName",
+				AgentVersionName: "agentVersionName",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment)
-			Input: "/providers/Microsoft.HybridCompute/osType/osTypeValue/agentVersions/agentVersionValue/extra",
+			Input: "/providers/Microsoft.HybridCompute/osType/osTypeName/agentVersions/agentVersionName/extra",
 			Error: true,
 		},
 		{
 			// Valid URI (mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe/aGeNtVeRsIoNs/aGeNtVeRsIoNvAlUe",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE/aGeNtVeRsIoNs/aGeNtVeRsIoNnAmE",
 			Expected: &AgentVersionId{
-				OsTypeName:       "oStYpEvAlUe",
-				AgentVersionName: "aGeNtVeRsIoNvAlUe",
+				OsTypeName:       "oStYpEnAmE",
+				AgentVersionName: "aGeNtVeRsIoNnAmE",
 			},
 		},
 		{
 			// Invalid (Valid Uri with Extra segment - mIxEd CaSe since this is insensitive)
-			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEvAlUe/aGeNtVeRsIoNs/aGeNtVeRsIoNvAlUe/extra",
+			Input: "/pRoViDeRs/mIcRoSoFt.hYbRiDcOmPuTe/oStYpE/oStYpEnAmE/aGeNtVeRsIoNs/aGeNtVeRsIoNnAmE/extra",
 			Error: true,
 		},
 	}

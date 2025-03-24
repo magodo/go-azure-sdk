@@ -22,6 +22,14 @@ type CreateOrUpdateDryrunParameters struct {
 	VNetSolution          *VNetSolution          `json:"vNetSolution,omitempty"`
 
 	// Fields inherited from DryrunParameters
+
+	ActionName DryrunActionName `json:"actionName"`
+}
+
+func (s CreateOrUpdateDryrunParameters) DryrunParameters() BaseDryrunParametersImpl {
+	return BaseDryrunParametersImpl{
+		ActionName: s.ActionName,
+	}
 }
 
 var _ json.Marshaler = CreateOrUpdateDryrunParameters{}
@@ -35,9 +43,10 @@ func (s CreateOrUpdateDryrunParameters) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling CreateOrUpdateDryrunParameters: %+v", err)
 	}
+
 	decoded["actionName"] = "createOrUpdate"
 
 	encoded, err = json.Marshal(decoded)
@@ -51,10 +60,18 @@ func (s CreateOrUpdateDryrunParameters) MarshalJSON() ([]byte, error) {
 var _ json.Unmarshaler = &CreateOrUpdateDryrunParameters{}
 
 func (s *CreateOrUpdateDryrunParameters) UnmarshalJSON(bytes []byte) error {
-	type alias CreateOrUpdateDryrunParameters
-	var decoded alias
+	var decoded struct {
+		ClientType            *ClientType            `json:"clientType,omitempty"`
+		ConfigurationInfo     *ConfigurationInfo     `json:"configurationInfo,omitempty"`
+		ProvisioningState     *string                `json:"provisioningState,omitempty"`
+		PublicNetworkSolution *PublicNetworkSolution `json:"publicNetworkSolution,omitempty"`
+		Scope                 *string                `json:"scope,omitempty"`
+		SecretStore           *SecretStore           `json:"secretStore,omitempty"`
+		VNetSolution          *VNetSolution          `json:"vNetSolution,omitempty"`
+		ActionName            DryrunActionName       `json:"actionName"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into CreateOrUpdateDryrunParameters: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.ClientType = decoded.ClientType
@@ -64,6 +81,7 @@ func (s *CreateOrUpdateDryrunParameters) UnmarshalJSON(bytes []byte) error {
 	s.Scope = decoded.Scope
 	s.SecretStore = decoded.SecretStore
 	s.VNetSolution = decoded.VNetSolution
+	s.ActionName = decoded.ActionName
 
 	var temp map[string]json.RawMessage
 	if err := json.Unmarshal(bytes, &temp); err != nil {
@@ -71,7 +89,7 @@ func (s *CreateOrUpdateDryrunParameters) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["authInfo"]; ok {
-		impl, err := unmarshalAuthInfoBaseImplementation(v)
+		impl, err := UnmarshalAuthInfoBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AuthInfo' for 'CreateOrUpdateDryrunParameters': %+v", err)
 		}
@@ -79,11 +97,12 @@ func (s *CreateOrUpdateDryrunParameters) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["targetService"]; ok {
-		impl, err := unmarshalTargetServiceBaseImplementation(v)
+		impl, err := UnmarshalTargetServiceBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'TargetService' for 'CreateOrUpdateDryrunParameters': %+v", err)
 		}
 		s.TargetService = impl
 	}
+
 	return nil
 }

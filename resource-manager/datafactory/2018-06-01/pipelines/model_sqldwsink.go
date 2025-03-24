@@ -15,19 +15,33 @@ type SqlDWSink struct {
 	AllowPolyBase         *bool                  `json:"allowPolyBase,omitempty"`
 	CopyCommandSettings   *DWCopyCommandSettings `json:"copyCommandSettings,omitempty"`
 	PolyBaseSettings      *PolybaseSettings      `json:"polyBaseSettings,omitempty"`
-	PreCopyScript         *string                `json:"preCopyScript,omitempty"`
+	PreCopyScript         *interface{}           `json:"preCopyScript,omitempty"`
 	SqlWriterUseTableLock *bool                  `json:"sqlWriterUseTableLock,omitempty"`
-	TableOption           *string                `json:"tableOption,omitempty"`
+	TableOption           *interface{}           `json:"tableOption,omitempty"`
 	UpsertSettings        *SqlDWUpsertSettings   `json:"upsertSettings,omitempty"`
-	WriteBehavior         *string                `json:"writeBehavior,omitempty"`
+	WriteBehavior         *interface{}           `json:"writeBehavior,omitempty"`
 
 	// Fields inherited from CopySink
-	DisableMetricsCollection *bool   `json:"disableMetricsCollection,omitempty"`
-	MaxConcurrentConnections *int64  `json:"maxConcurrentConnections,omitempty"`
-	SinkRetryCount           *int64  `json:"sinkRetryCount,omitempty"`
-	SinkRetryWait            *string `json:"sinkRetryWait,omitempty"`
-	WriteBatchSize           *int64  `json:"writeBatchSize,omitempty"`
-	WriteBatchTimeout        *string `json:"writeBatchTimeout,omitempty"`
+
+	DisableMetricsCollection *bool        `json:"disableMetricsCollection,omitempty"`
+	MaxConcurrentConnections *int64       `json:"maxConcurrentConnections,omitempty"`
+	SinkRetryCount           *int64       `json:"sinkRetryCount,omitempty"`
+	SinkRetryWait            *interface{} `json:"sinkRetryWait,omitempty"`
+	Type                     string       `json:"type"`
+	WriteBatchSize           *int64       `json:"writeBatchSize,omitempty"`
+	WriteBatchTimeout        *interface{} `json:"writeBatchTimeout,omitempty"`
+}
+
+func (s SqlDWSink) CopySink() BaseCopySinkImpl {
+	return BaseCopySinkImpl{
+		DisableMetricsCollection: s.DisableMetricsCollection,
+		MaxConcurrentConnections: s.MaxConcurrentConnections,
+		SinkRetryCount:           s.SinkRetryCount,
+		SinkRetryWait:            s.SinkRetryWait,
+		Type:                     s.Type,
+		WriteBatchSize:           s.WriteBatchSize,
+		WriteBatchTimeout:        s.WriteBatchTimeout,
+	}
 }
 
 var _ json.Marshaler = SqlDWSink{}
@@ -41,9 +55,10 @@ func (s SqlDWSink) MarshalJSON() ([]byte, error) {
 	}
 
 	var decoded map[string]interface{}
-	if err := json.Unmarshal(encoded, &decoded); err != nil {
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
 		return nil, fmt.Errorf("unmarshaling SqlDWSink: %+v", err)
 	}
+
 	decoded["type"] = "SqlDWSink"
 
 	encoded, err = json.Marshal(decoded)

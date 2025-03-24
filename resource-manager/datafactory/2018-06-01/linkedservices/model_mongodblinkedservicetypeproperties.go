@@ -10,24 +10,33 @@ import (
 
 type MongoDbLinkedServiceTypeProperties struct {
 	AllowSelfSignedServerCert *bool                      `json:"allowSelfSignedServerCert,omitempty"`
-	AuthSource                *string                    `json:"authSource,omitempty"`
+	AuthSource                *interface{}               `json:"authSource,omitempty"`
 	AuthenticationType        *MongoDbAuthenticationType `json:"authenticationType,omitempty"`
-	DatabaseName              string                     `json:"databaseName"`
+	DatabaseName              interface{}                `json:"databaseName"`
 	EnableSsl                 *bool                      `json:"enableSsl,omitempty"`
 	EncryptedCredential       *string                    `json:"encryptedCredential,omitempty"`
 	Password                  SecretBase                 `json:"password"`
 	Port                      *int64                     `json:"port,omitempty"`
-	Server                    string                     `json:"server"`
-	Username                  *string                    `json:"username,omitempty"`
+	Server                    interface{}                `json:"server"`
+	Username                  *interface{}               `json:"username,omitempty"`
 }
 
 var _ json.Unmarshaler = &MongoDbLinkedServiceTypeProperties{}
 
 func (s *MongoDbLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias MongoDbLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AllowSelfSignedServerCert *bool                      `json:"allowSelfSignedServerCert,omitempty"`
+		AuthSource                *interface{}               `json:"authSource,omitempty"`
+		AuthenticationType        *MongoDbAuthenticationType `json:"authenticationType,omitempty"`
+		DatabaseName              interface{}                `json:"databaseName"`
+		EnableSsl                 *bool                      `json:"enableSsl,omitempty"`
+		EncryptedCredential       *string                    `json:"encryptedCredential,omitempty"`
+		Port                      *int64                     `json:"port,omitempty"`
+		Server                    interface{}                `json:"server"`
+		Username                  *interface{}               `json:"username,omitempty"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into MongoDbLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AllowSelfSignedServerCert = decoded.AllowSelfSignedServerCert
@@ -46,11 +55,12 @@ func (s *MongoDbLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
 	}
 
 	if v, ok := temp["password"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'Password' for 'MongoDbLinkedServiceTypeProperties': %+v", err)
 		}
 		s.Password = impl
 	}
+
 	return nil
 }

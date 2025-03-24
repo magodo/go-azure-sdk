@@ -10,21 +10,27 @@ import (
 
 type AzureBatchLinkedServiceTypeProperties struct {
 	AccessKey           SecretBase             `json:"accessKey"`
-	AccountName         string                 `json:"accountName"`
-	BatchUri            string                 `json:"batchUri"`
+	AccountName         interface{}            `json:"accountName"`
+	BatchUri            interface{}            `json:"batchUri"`
 	Credential          *CredentialReference   `json:"credential,omitempty"`
 	EncryptedCredential *string                `json:"encryptedCredential,omitempty"`
 	LinkedServiceName   LinkedServiceReference `json:"linkedServiceName"`
-	PoolName            string                 `json:"poolName"`
+	PoolName            interface{}            `json:"poolName"`
 }
 
 var _ json.Unmarshaler = &AzureBatchLinkedServiceTypeProperties{}
 
 func (s *AzureBatchLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) error {
-	type alias AzureBatchLinkedServiceTypeProperties
-	var decoded alias
+	var decoded struct {
+		AccountName         interface{}            `json:"accountName"`
+		BatchUri            interface{}            `json:"batchUri"`
+		Credential          *CredentialReference   `json:"credential,omitempty"`
+		EncryptedCredential *string                `json:"encryptedCredential,omitempty"`
+		LinkedServiceName   LinkedServiceReference `json:"linkedServiceName"`
+		PoolName            interface{}            `json:"poolName"`
+	}
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling into AzureBatchLinkedServiceTypeProperties: %+v", err)
+		return fmt.Errorf("unmarshaling: %+v", err)
 	}
 
 	s.AccountName = decoded.AccountName
@@ -40,11 +46,12 @@ func (s *AzureBatchLinkedServiceTypeProperties) UnmarshalJSON(bytes []byte) erro
 	}
 
 	if v, ok := temp["accessKey"]; ok {
-		impl, err := unmarshalSecretBaseImplementation(v)
+		impl, err := UnmarshalSecretBaseImplementation(v)
 		if err != nil {
 			return fmt.Errorf("unmarshaling field 'AccessKey' for 'AzureBatchLinkedServiceTypeProperties': %+v", err)
 		}
 		s.AccessKey = impl
 	}
+
 	return nil
 }
