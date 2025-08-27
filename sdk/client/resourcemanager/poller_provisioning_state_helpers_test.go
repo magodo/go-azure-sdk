@@ -79,19 +79,20 @@ func (e *provisioningStateEndpoint) endpoint(t *testing.T) func(w http.ResponseW
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(payload); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			t.Fatalf(err.Error())
+			t.Fatal(err.Error())
 			return
 		}
 	}
 }
 
-func (e provisioningStateEndpoint) assertCalled(t *testing.T, expected int) {
+func (e *provisioningStateEndpoint) assertCalled(t *testing.T, expected int) {
 	if e.numberOfTimesCalled != expected {
 		t.Fatalf("expected to be called %d times but got %d", expected, e.numberOfTimesCalled)
 	}
 }
 
-func (e provisioningStateEndpoint) response() *http.Response {
+// nolint: unused
+func (e *provisioningStateEndpoint) response() *http.Response {
 	return &http.Response{
 		Header: map[string][]string{
 			// NOTE: any custom host/port is discarded, since we use the host from the Client when building the

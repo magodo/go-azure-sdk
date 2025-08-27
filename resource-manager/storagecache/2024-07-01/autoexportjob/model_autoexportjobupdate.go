@@ -4,5 +4,6 @@ package autoexportjob
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type AutoExportJobUpdate struct {
-	Tags *map[string]string `json:"tags,omitempty"`
+	Properties *AutoExportJobUpdateProperties `json:"properties,omitempty"`
+	Tags       *map[string]string             `json:"tags,omitempty"`
 }
