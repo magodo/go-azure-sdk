@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/backupstatus"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/backupusagesummaries"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/backupworkloaditems"
-	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/datamove"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/featuresupport"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/fetchtieringcost"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/itemlevelrecoveryconnections"
@@ -27,13 +26,13 @@ import (
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/jobdetails"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/jobs"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/operation"
-	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/privateendpointconnection"
+	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/privateendpointconnectionresources"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protectablecontainers"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protecteditems"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protectioncontainers"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protectionintent"
+	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protectionintentresources"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/protectionpolicies"
-	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/recoverypoint"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/recoverypoints"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/recoverypointsrecommendedformove"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/recoveryservicesbackup/2025-02-01/resourceguardproxies"
@@ -59,7 +58,6 @@ type Client struct {
 	BackupUsageSummaries               *backupusagesummaries.BackupUsageSummariesClient
 	BackupWorkloadItems                *backupworkloaditems.BackupWorkloadItemsClient
 	Backups                            *backups.BackupsClient
-	DataMove                           *datamove.DataMoveClient
 	FeatureSupport                     *featuresupport.FeatureSupportClient
 	FetchTieringCost                   *fetchtieringcost.FetchTieringCostClient
 	ItemLevelRecoveryConnections       *itemlevelrecoveryconnections.ItemLevelRecoveryConnectionsClient
@@ -67,13 +65,13 @@ type Client struct {
 	JobDetails                         *jobdetails.JobDetailsClient
 	Jobs                               *jobs.JobsClient
 	Operation                          *operation.OperationClient
-	PrivateEndpointConnection          *privateendpointconnection.PrivateEndpointConnectionClient
+	PrivateEndpointConnectionResources *privateendpointconnectionresources.PrivateEndpointConnectionResourcesClient
 	ProtectableContainers              *protectablecontainers.ProtectableContainersClient
 	ProtectedItems                     *protecteditems.ProtectedItemsClient
 	ProtectionContainers               *protectioncontainers.ProtectionContainersClient
 	ProtectionIntent                   *protectionintent.ProtectionIntentClient
+	ProtectionIntentResources          *protectionintentresources.ProtectionIntentResourcesClient
 	ProtectionPolicies                 *protectionpolicies.ProtectionPoliciesClient
-	RecoveryPoint                      *recoverypoint.RecoveryPointClient
 	RecoveryPoints                     *recoverypoints.RecoveryPointsClient
 	RecoveryPointsRecommendedForMove   *recoverypointsrecommendedformove.RecoveryPointsRecommendedForMoveClient
 	ResourceGuardProxies               *resourceguardproxies.ResourceGuardProxiesClient
@@ -128,9 +126,6 @@ func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Cl
 	backupsClient := backups.NewBackupsClientWithBaseURI(endpoint)
 	configureAuthFunc(&backupsClient.Client)
 
-	dataMoveClient := datamove.NewDataMoveClientWithBaseURI(endpoint)
-	configureAuthFunc(&dataMoveClient.Client)
-
 	featureSupportClient := featuresupport.NewFeatureSupportClientWithBaseURI(endpoint)
 	configureAuthFunc(&featureSupportClient.Client)
 
@@ -152,8 +147,8 @@ func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Cl
 	operationClient := operation.NewOperationClientWithBaseURI(endpoint)
 	configureAuthFunc(&operationClient.Client)
 
-	privateEndpointConnectionClient := privateendpointconnection.NewPrivateEndpointConnectionClientWithBaseURI(endpoint)
-	configureAuthFunc(&privateEndpointConnectionClient.Client)
+	privateEndpointConnectionResourcesClient := privateendpointconnectionresources.NewPrivateEndpointConnectionResourcesClientWithBaseURI(endpoint)
+	configureAuthFunc(&privateEndpointConnectionResourcesClient.Client)
 
 	protectableContainersClient := protectablecontainers.NewProtectableContainersClientWithBaseURI(endpoint)
 	configureAuthFunc(&protectableContainersClient.Client)
@@ -167,11 +162,11 @@ func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Cl
 	protectionIntentClient := protectionintent.NewProtectionIntentClientWithBaseURI(endpoint)
 	configureAuthFunc(&protectionIntentClient.Client)
 
+	protectionIntentResourcesClient := protectionintentresources.NewProtectionIntentResourcesClientWithBaseURI(endpoint)
+	configureAuthFunc(&protectionIntentResourcesClient.Client)
+
 	protectionPoliciesClient := protectionpolicies.NewProtectionPoliciesClientWithBaseURI(endpoint)
 	configureAuthFunc(&protectionPoliciesClient.Client)
-
-	recoveryPointClient := recoverypoint.NewRecoveryPointClientWithBaseURI(endpoint)
-	configureAuthFunc(&recoveryPointClient.Client)
 
 	recoveryPointsClient := recoverypoints.NewRecoveryPointsClientWithBaseURI(endpoint)
 	configureAuthFunc(&recoveryPointsClient.Client)
@@ -212,7 +207,6 @@ func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Cl
 		BackupUsageSummaries:               &backupUsageSummariesClient,
 		BackupWorkloadItems:                &backupWorkloadItemsClient,
 		Backups:                            &backupsClient,
-		DataMove:                           &dataMoveClient,
 		FeatureSupport:                     &featureSupportClient,
 		FetchTieringCost:                   &fetchTieringCostClient,
 		ItemLevelRecoveryConnections:       &itemLevelRecoveryConnectionsClient,
@@ -220,13 +214,13 @@ func NewClientWithBaseURI(endpoint string, configureAuthFunc func(c *autorest.Cl
 		JobDetails:                         &jobDetailsClient,
 		Jobs:                               &jobsClient,
 		Operation:                          &operationClient,
-		PrivateEndpointConnection:          &privateEndpointConnectionClient,
+		PrivateEndpointConnectionResources: &privateEndpointConnectionResourcesClient,
 		ProtectableContainers:              &protectableContainersClient,
 		ProtectedItems:                     &protectedItemsClient,
 		ProtectionContainers:               &protectionContainersClient,
 		ProtectionIntent:                   &protectionIntentClient,
+		ProtectionIntentResources:          &protectionIntentResourcesClient,
 		ProtectionPolicies:                 &protectionPoliciesClient,
-		RecoveryPoint:                      &recoveryPointClient,
 		RecoveryPoints:                     &recoveryPointsClient,
 		RecoveryPointsRecommendedForMove:   &recoveryPointsRecommendedForMoveClient,
 		ResourceGuardProxies:               &resourceGuardProxiesClient,
