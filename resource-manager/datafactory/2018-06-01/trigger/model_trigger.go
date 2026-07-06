@@ -28,9 +28,9 @@ func (s BaseTriggerImpl) Trigger() BaseTriggerImpl {
 
 var _ Trigger = RawTriggerImpl{}
 
-// RawTriggerImpl is returned when the Discriminated Value doesn't match any of the defined types
-// NOTE: this should only be used when a type isn't defined for this type of Object (as a workaround)
-// and is used only for Deserialization (e.g. this cannot be used as a Request Payload).
+// RawTriggerImpl is returned when the Discriminated Value doesn't match any of the defined types.
+// It can also be used as a Request Payload to provide a raw JSON payload, which is useful
+// for preserving arbitrary/extensible JSON properties across a round-trip.
 type RawTriggerImpl struct {
 	trigger BaseTriggerImpl
 	Type    string
@@ -39,6 +39,10 @@ type RawTriggerImpl struct {
 
 func (s RawTriggerImpl) Trigger() BaseTriggerImpl {
 	return s.trigger
+}
+
+func (s RawTriggerImpl) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Values)
 }
 
 func UnmarshalTriggerImplementation(input []byte) (Trigger, error) {
@@ -56,10 +60,34 @@ func UnmarshalTriggerImplementation(input []byte) (Trigger, error) {
 		value = fmt.Sprintf("%v", v)
 	}
 
+	if strings.EqualFold(value, "BlobEventsTrigger") {
+		var out BlobEventsTrigger
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into BlobEventsTrigger: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "BlobTrigger") {
+		var out BlobTrigger
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into BlobTrigger: %+v", err)
+		}
+		return out, nil
+	}
+
 	if strings.EqualFold(value, "ChainingTrigger") {
 		var out ChainingTrigger
 		if err := json.Unmarshal(input, &out); err != nil {
 			return nil, fmt.Errorf("unmarshaling into ChainingTrigger: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "CustomEventsTrigger") {
+		var out CustomEventsTrigger
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into CustomEventsTrigger: %+v", err)
 		}
 		return out, nil
 	}
@@ -76,6 +104,14 @@ func UnmarshalTriggerImplementation(input []byte) (Trigger, error) {
 		var out RerunTumblingWindowTrigger
 		if err := json.Unmarshal(input, &out); err != nil {
 			return nil, fmt.Errorf("unmarshaling into RerunTumblingWindowTrigger: %+v", err)
+		}
+		return out, nil
+	}
+
+	if strings.EqualFold(value, "ScheduleTrigger") {
+		var out ScheduleTrigger
+		if err := json.Unmarshal(input, &out); err != nil {
+			return nil, fmt.Errorf("unmarshaling into ScheduleTrigger: %+v", err)
 		}
 		return out, nil
 	}

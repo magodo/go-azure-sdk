@@ -5,16 +5,129 @@ on:
     types: ['opened', 'synchronize']
 
 jobs:
-  unit-test:
-    runs-on: custom-linux-medium
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      sdk: ${{ steps.filter.outputs.sdk }}
+      resource-manager: ${{ steps.filter.outputs.resource-manager }}
+      microsoft-graph: ${{ steps.filter.outputs.microsoft-graph }}
+      data-plane: ${{ steps.filter.outputs.data-plane }}
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
+        id: filter
+        with:
+          filters: |
+            sdk:
+              - 'sdk/**'
+              - '.github/workflows/pr-unit-tests.yaml'
+              - 'GNUmakefile'
+            resource-manager:
+              - 'resource-manager/**'
+              - 'sdk/**'
+              - '.github/workflows/pr-unit-tests.yaml'
+              - 'GNUmakefile'
+            microsoft-graph:
+              - 'microsoft-graph/**'
+              - 'sdk/**'
+              - '.github/workflows/pr-unit-tests.yaml'
+              - 'GNUmakefile'
+            data-plane:
+              - 'data-plane/**'
+              - 'sdk/**'
+              - '.github/workflows/pr-unit-tests.yaml'
+              - 'GNUmakefile'
 
-      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+  test-sdk:
+    needs: changes
+    if: ${{ needs.changes.outputs.sdk == 'true' }}
+    runs-on: custom-linux-xl
+    steps:
+      - name: Mount RAM Disks
+        run: |
+          sudo mount -t tmpfs -o size=16G tmpfs ${{ github.workspace }}
+          sudo chown -R $USER:$USER ${{ github.workspace }}
+          mkdir -p ~/.cache/go-build ~/go/pkg/mod
+          sudo mount -t tmpfs -o size=8G tmpfs ~/.cache/go-build
+          sudo mount -t tmpfs -o size=8G tmpfs ~/go/pkg/mod
+          sudo chown -R $USER:$USER ~/.cache/go-build ~/go/pkg/mod
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version-file: ./.go-version
 
       - name: Run unit tests
-        run: make test
+        run: make test-ci-sdk
+
+  test-resource-manager:
+    needs: changes
+    if: ${{ needs.changes.outputs.resource-manager == 'true' }}
+    runs-on: custom-linux-xl
+    steps:
+      - name: Mount RAM Disks
+        run: |
+          sudo mount -t tmpfs -o size=16G tmpfs ${{ github.workspace }}
+          sudo chown -R $USER:$USER ${{ github.workspace }}
+          mkdir -p ~/.cache/go-build ~/go/pkg/mod
+          sudo mount -t tmpfs -o size=8G tmpfs ~/.cache/go-build
+          sudo mount -t tmpfs -o size=8G tmpfs ~/go/pkg/mod
+          sudo chown -R $USER:$USER ~/.cache/go-build ~/go/pkg/mod
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: ./.go-version
+
+      - name: Run unit tests
+        run: make test-ci-resource-manager
+
+  test-microsoft-graph:
+    needs: changes
+    if: ${{ needs.changes.outputs.microsoft-graph == 'true' }}
+    runs-on: custom-linux-xl
+    steps:
+      - name: Mount RAM Disks
+        run: |
+          sudo mount -t tmpfs -o size=16G tmpfs ${{ github.workspace }}
+          sudo chown -R $USER:$USER ${{ github.workspace }}
+          mkdir -p ~/.cache/go-build ~/go/pkg/mod
+          sudo mount -t tmpfs -o size=8G tmpfs ~/.cache/go-build
+          sudo mount -t tmpfs -o size=8G tmpfs ~/go/pkg/mod
+          sudo chown -R $USER:$USER ~/.cache/go-build ~/go/pkg/mod
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: ./.go-version
+
+      - name: Run unit tests
+        run: make test-ci-microsoft-graph
+
+  test-data-plane:
+    needs: changes
+    if: ${{ needs.changes.outputs.data-plane == 'true' }}
+    runs-on: custom-linux-xl
+    steps:
+      - name: Mount RAM Disks
+        run: |
+          sudo mount -t tmpfs -o size=16G tmpfs ${{ github.workspace }}
+          sudo chown -R $USER:$USER ${{ github.workspace }}
+          mkdir -p ~/.cache/go-build ~/go/pkg/mod
+          sudo mount -t tmpfs -o size=8G tmpfs ~/.cache/go-build
+          sudo mount -t tmpfs -o size=8G tmpfs ~/go/pkg/mod
+          sudo chown -R $USER:$USER ~/.cache/go-build ~/go/pkg/mod
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: ./.go-version
+
+      - name: Run unit tests
+        run: make test-ci-data-plane
 
 # vim: set ts=2 sts=2 sw=2 et:

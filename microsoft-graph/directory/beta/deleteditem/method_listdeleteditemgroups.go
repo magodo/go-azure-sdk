@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/go-azure-sdk/sdk/odata"
 )
 
-// Copyright IBM Corp. 2021, 2025 All rights reserved.
+// Copyright IBM Corp. 2023, 2026 All rights reserved.
 // Licensed under the MIT License. See NOTICE.txt in the project root for license information.
 
 type ListDeletedItemGroupsOperationResponse struct {
@@ -110,7 +110,7 @@ func (c DeletedItemClient) ListDeletedItemGroups(ctx context.Context, options Li
 		HttpMethod:    http.MethodGet,
 		OptionsObject: options,
 		Pager:         &ListDeletedItemGroupsCustomPager{},
-		Path:          "/directory/deletedItems/group",
+		Path:          "/directory/deletedItems/microsoft.graph.group",
 		RetryFunc:     options.RetryFunc,
 	}
 

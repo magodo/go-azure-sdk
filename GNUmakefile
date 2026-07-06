@@ -9,6 +9,7 @@ fmt: tools
 
 imports: tools
 	@echo "==> Fixing source code with goimports..."
+	goimports -w ./data-plane
 	goimports -w ./microsoft-graph
 	goimports -w ./resource-manager
 	goimports -w ./sdk
@@ -30,8 +31,22 @@ test: fmt
 	cd ./resource-manager/ && go test -v ./... && cd ../
 	cd ./microsoft-graph/ && go test -v ./... && cd ../
 
+test-ci-sdk:
+	cd ./sdk/ && go test -short -v ./...
+
+test-ci-resource-manager:
+	cd ./resource-manager/ && go test -v ./...
+
+test-ci-microsoft-graph:
+	cd ./microsoft-graph/ && go test -v ./...
+
+test-ci-data-plane:
+	cd ./data-plane/ && go test -v ./...
+
+test-ci: test-ci-sdk test-ci-resource-manager test-ci-microsoft-graph test-ci-data-plane
+
 tools:
 	@echo "==> installing required tooling..."
 	go install golang.org/x/tools/cmd/goimports@latest
 
-.PHONY: fmt imports prepare test tools
+.PHONY: fmt imports prepare test test-ci test-ci-sdk test-ci-resource-manager test-ci-microsoft-graph test-ci-data-plane tools

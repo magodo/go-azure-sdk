@@ -7,12 +7,14 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/go-azure-sdk/resource-manager/resources/2022-06-01/policyassignments"
+	"github.com/hashicorp/go-azure-sdk/resource-manager/resources/2022-06-01/resourcevalidator"
 	"github.com/hashicorp/go-azure-sdk/sdk/client/resourcemanager"
 	sdkEnv "github.com/hashicorp/go-azure-sdk/sdk/environments"
 )
 
 type Client struct {
 	PolicyAssignments *policyassignments.PolicyAssignmentsClient
+	ResourceValidator *resourcevalidator.ResourceValidatorClient
 }
 
 func NewClientWithBaseURI(sdkApi sdkEnv.Api, configureFunc func(c *resourcemanager.Client)) (*Client, error) {
@@ -22,7 +24,14 @@ func NewClientWithBaseURI(sdkApi sdkEnv.Api, configureFunc func(c *resourcemanag
 	}
 	configureFunc(policyAssignmentsClient.Client)
 
+	resourceValidatorClient, err := resourcevalidator.NewResourceValidatorClientWithBaseURI(sdkApi)
+	if err != nil {
+		return nil, fmt.Errorf("building ResourceValidator client: %+v", err)
+	}
+	configureFunc(resourceValidatorClient.Client)
+
 	return &Client{
 		PolicyAssignments: policyAssignmentsClient,
+		ResourceValidator: resourceValidatorClient,
 	}, nil
 }
