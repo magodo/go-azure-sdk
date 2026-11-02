@@ -135,12 +135,15 @@ func NewAuthorizerFromCredentials(ctx context.Context, c Credentials, api enviro
 
 	if c.EnableAuthenticationUsingManagedIdentityOIDC {
 		opts := ManagedIdentityOIDCAuthorizerOptions{
-			Environment:             c.Environment,
-			Api:                     api,
-			TenantId:                c.TenantID,
-			AuxiliaryTenantIds:      c.AuxiliaryTenantIDs,
-			AppClientId:             c.ClientID,
-			ManagedIdentityClientId: c.ManagedIdentityClientID,
+			Environment:                     c.Environment,
+			Api:                             api,
+			TenantId:                        c.TenantID,
+			AuxiliaryTenantIds:              c.AuxiliaryTenantIDs,
+			AppClientId:                     c.ClientID,
+			ManagedIdentityClientId:         c.ManagedIdentityClientID,
+			CustomManagedIdentityEndpoint:   c.CustomManagedIdentityEndpoint,
+			CustomManagedIdentityAPIVersion: c.CustomManagedIdentityAPIVersion,
+			CustomManagedIdentityHeaders:    c.CustomManagedIdentityHeaders,
 		}
 		a, err := NewManagedIdentityOIDCAuthorizer(ctx, opts)
 		if err != nil {
