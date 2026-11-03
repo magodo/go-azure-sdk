@@ -133,7 +133,7 @@ func NewAuthorizerFromCredentials(ctx context.Context, c Credentials, api enviro
 		}
 	}
 
-	if c.EnableAuthenticationUsingManagedIdentityOIDC {
+	if c.EnableAuthenticationUsingManagedIdentityOIDC && strings.TrimSpace(c.TenantID) != "" && strings.TrimSpace(c.ClientID) != "" && strings.TrimSpace(c.ManagedIdentityClientID) != "" {
 		opts := ManagedIdentityOIDCAuthorizerOptions{
 			Environment:                     c.Environment,
 			Api:                             api,
@@ -149,7 +149,9 @@ func NewAuthorizerFromCredentials(ctx context.Context, c Credentials, api enviro
 		if err != nil {
 			return nil, fmt.Errorf("could not configure ManagedIdentityOIDC Authorizer: %w", err)
 		}
-		return a, nil
+		if a != nil {
+			return a, nil
+		}
 	}
 
 	if c.EnableAuthenticatingUsingManagedIdentity {
