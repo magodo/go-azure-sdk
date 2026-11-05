@@ -57,6 +57,7 @@ func NewManagedIdentityOIDCAuthorizer(ctx context.Context, options ManagedIdenti
 	customManagedIdentityAPIVersion := options.CustomManagedIdentityAPIVersion
 	customManagedIdentityHeaders := maps.Clone(options.CustomManagedIdentityHeaders)
 
+	// On ACS, the endpoint and header environment are always set.
 	if identityEndpoint, identityHeader := os.Getenv("IDENTITY_ENDPOINT"), os.Getenv("IDENTITY_HEADER"); identityEndpoint != "" && identityHeader != "" {
 		if customManagedIdentityEndpoint == "" {
 			customManagedIdentityEndpoint = identityEndpoint
